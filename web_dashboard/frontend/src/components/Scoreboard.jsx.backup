@@ -1,0 +1,146 @@
+import React from 'react';
+import { getChampionIconUrl, getItemIconUrl, getSpellIconUrl, getRuneIconUrl, getItemData, getSummonerSpellData, getRuneData } from '../utils/dataDragon';
+import Tooltip, { TooltipContent } from './Tooltip';
+import clsx from 'clsx';
+
+function TeamTable({ teamId, participants, isWin, maxDamage }) {
+    const totalKills = participants.reduce((acc, p) => acc + p.kills, 0);
+    const totalGold = participants.reduce((acc, p) => acc + p.gold_earned, 0);
+
+    return (
+        <div className="mb-4">
+            {/* Header */}
+            <div className={clsx(
+                "flex justify-between items-center px-4 py-2 text-sm font-bold rounded-t-lg",
+                isWin ? "bg-blue-900/40 text-blue-400" : "bg-red-900/40 text-red-400"
+            )}>
+                <div className="flex gap-4">
+                    <span>{isWin ? "Victory" : "Defeat"}</span>
+                    <span className="text-slate-400 font-normal">Team {teamId === 100 ? "Blue" : "Red"}</span>
+                </div>
+                <div className="flex gap-4 text-slate-300">
+                    <span>{totalKills} Kills</span>
+                    <span>{(totalGold / 1000).toFixed(1)}k Gold</span>
+                </div>
+            </div>
+
+            {/* Table */}
+            <div className="bg-slate-800/50 border-x border-b border-slate-700 rounded-b-lg overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                    <thead className="text-slate-500 border-b border-slate-700/50">
+                        <tr>
+                            <th className="px-3 py-2 font-medium w-48">Champion</th>
+                            <th className="px-3 py-2 font-medium w-24 text-center">Score</th>
+                            <th className="px-3 py-2 font-medium w-32">Damage</th>
+                            <th className="px-3 py-2 font-medium w-20 text-center">Wards</th>
+                            <th className="px-3 py-2 font-medium w-20 text-center">CS</th>
+                            <th className="px-3 py-2 font-medium w-52">Items</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {participants.map(p => (
+                            <tr key={p.puuid} className={clsx(
+                                "border-b border-slate-700/30 last:border-0 hover:bg-white/5 transition-colors",
+                                p.is_self && "bg-white/5"
+                            )}>
+                                {/* Champion & Name */}
+                                <td className="px-3 py-2 w-48">
+                                    <div className="flex items-center gap-2">
+                                        <div className="relative shrink-0">
+                                            <img src={getChampionIconUrl(p.champion_name)} className="w-8 h-8 rounded" alt={p.champion_name} />
+                                            <div className="absolute -bottom-1 -right-1 bg-slate-900 text-[10px] w-4 h-4 flex items-center justify-center rounded-full border border-slate-700">
+                                                {/* Level placeholder */}
+                                                18
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <div className="flex gap-0.5 mb-0.5">
+                                                <Tooltip content={getSummonerSpellData(p.summoner1Id)?.name}>
+                                                    <img src={getSpellIconUrl(p.summoner1Id)} className="w-3 h-3 rounded cursor-help" alt="Summoner 1" />
+                                                </Tooltip>
+                                                <Tooltip content={getSummonerSpellData(p.summoner2Id)?.name}>
+                                                    <img src={getSpellIconUrl(p.summoner2Id)} className="w-3 h-3 rounded cursor-help" alt="Summoner 2" />
+                                                </Tooltip>
+                                                <Tooltip content={getRuneData(p.perks.keystone)?.name}>
+                                                    <img src={getRuneIconUrl(p.perks.keystone)} className="w-3 h-3 rounded-full bg-black cursor-help" alt="Keystone" />
+                                                </Tooltip>
+                                            </div>
+                                            <span className={clsx("truncate max-w-[100px]", p.is_self ? "text-white font-bold" : "text-slate-400")}>
+                                                {p.riot_id.split('#')[0]}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                {/* KDA */}
+                                <td className="px-3 py-2 w-24">
+                                    <div className="flex flex-col text-center w-16">
+                                        <div className="text-slate-300 font-medium">
+                                            {p.kills}/{p.deaths}/{p.assists}
+                                        </div>
+                                        <div className="text-slate-500">{p.kda}:1</div>
+                                    </div>
+                                </td>
+
+                                {/* Damage */}
+                                <td className="px-3 py-2 w-32">
+                                    <div className="flex flex-col justify-center w-24 gap-1">
+                                        <div className="flex items-center gap-1 text-slate-400">
+                                            <span className="w-8 text-right">{p.total_damage_dealt_to_champions.toLocaleString()}</span>
+                                            <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-red-500 rounded-full"
+                                                    style={{ width: `${(p.total_damage_dealt_to_champions / maxDamage) * 100}%` }}
+                                                ></div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-1 text-slate-500">
+                                            <span className="w-8 text-right">{p.total_damage_taken.toLocaleString()}</span>
+                                            <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-slate-500 rounded-full"
+                                                    style={{ width: `${(p.total_damage_taken / 50000) * 100}%` }} // Arbitrary max for taken
+                                                ></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                {/* Wards */}
+                                <td className="px-3 py-2 w-20 text-center text-slate-400">
+                                    <div>{p.vision_score}</div>
+                                    <div className="text-[10px]">{p.wards_placed} / {p.wards_killed}</div>
+                                </td>
+
+                                {/* CS */}
+                                <td className="px-3 py-2 w-20 text-center text-slate-400">
+                                    <div className="text-slate-300">{p.cs}</div>
+                                    <div className="text-[10px]">({p.cs_per_min})</div>
+                                </td>
+
+                                {/* Items */}
+                            </div>
+                                </td>
+                </tr>
+                        ))}
+            </tbody>
+        </table>
+            </div >
+        </div >
+    );
+}
+
+export default function Scoreboard({ match, puuid }) {
+    const team100 = match.participants.filter(p => p.team_id === 100);
+    const team200 = match.participants.filter(p => p.team_id === 200);
+
+    const maxDamage = Math.max(...match.participants.map(p => p.total_damage_dealt_to_champions));
+    const win100 = team100.some(p => p.win);
+
+    return (
+        <div>
+            <TeamTable teamId={100} participants={team100} isWin={win100} maxDamage={maxDamage} />
+            <TeamTable teamId={200} participants={team200} isWin={!win100} maxDamage={maxDamage} />
+        </div>
+    );
+}

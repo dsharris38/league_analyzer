@@ -1,0 +1,2728 @@
+{
+  "__meta__": {
+    "description": "Comprehensive champion profiles for AI coaching.",
+    "schema_version": "1.1"
+  },
+  "Darius": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Garen": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Mordekaiser": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Nasus": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Sett": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Illaoi": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Yorick": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Urgot": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Volibear": {
+    "recommended_roles": [
+      "TOP",
+      "JUNGLE"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Trundle": {
+    "recommended_roles": [
+      "TOP",
+      "JUNGLE"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Shyvana": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Udyr": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "DrMundo": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Olaf": {
+    "recommended_roles": [
+      "TOP",
+      "JUNGLE"
+    ],
+    "archetype": "juggernaut",
+    "strengths": [
+      "high durability and close-range damage",
+      "strong side lane pressure",
+      "raid boss potential if ahead"
+    ],
+    "core_goals": [
+      "dominate lane with superior stats",
+      "split push to draw pressure",
+      "flank or flash-engage on carries"
+    ]
+  },
+  "Vi": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "XinZhao": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "JarvanIV": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Diana": {
+    "recommended_roles": [
+      "JUNGLE",
+      "MIDDLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Hecarim": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Irelia": {
+    "recommended_roles": [
+      "TOP",
+      "MIDDLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Renekton": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "MonkeyKing": {
+    "recommended_roles": [
+      "TOP",
+      "JUNGLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Pantheon": {
+    "recommended_roles": [
+      "TOP",
+      "MIDDLE",
+      "UTILITY"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Warwick": {
+    "recommended_roles": [
+      "JUNGLE",
+      "TOP"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "LeeSin": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Elise": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "RekSai": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Camille": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Kled": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Briar": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "diver",
+    "strengths": [
+      "reliable backline access",
+      "strong early/mid game skirmishing",
+      "good pick potential"
+    ],
+    "core_goals": [
+      "isolate and eliminate priority targets",
+      "force fights around objectives",
+      "dive backline when main CC is down"
+    ]
+  },
+  "Zed": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Talon": {
+    "recommended_roles": [
+      "MIDDLE",
+      "JUNGLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Qiyana": {
+    "recommended_roles": [
+      "MIDDLE",
+      "JUNGLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Katarina": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Akali": {
+    "recommended_roles": [
+      "MIDDLE",
+      "TOP"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Fizz": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Kassadin": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Khazix": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Rengar": {
+    "recommended_roles": [
+      "JUNGLE",
+      "TOP"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Evelynn": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Shaco": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Nocturne": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Pyke": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Kayn": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Naafiri": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Nidalee": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "assassin",
+    "strengths": [
+      "extreme burst damage",
+      "high mobility",
+      "excellent roaming and pick potential"
+    ],
+    "core_goals": [
+      "roam to side lanes for kills",
+      "track enemy squishies in teamfights",
+      "enter fights late to clean up"
+    ]
+  },
+  "Yasuo": {
+    "recommended_roles": [
+      "MIDDLE",
+      "TOP"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Yone": {
+    "recommended_roles": [
+      "MIDDLE",
+      "TOP"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Fiora": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Riven": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Jax": {
+    "recommended_roles": [
+      "TOP",
+      "JUNGLE"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Tryndamere": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Viego": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Belveth": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Gwen": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Sylas": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "MasterYi": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Graves": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Kindred": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Nilah": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Aatrox": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Kayle": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Lillia": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "skirmisher",
+    "strengths": [
+      "high sustained DPS",
+      "defensive tools to outplay",
+      "excellent 1v1 and 2v2"
+    ],
+    "core_goals": [
+      "farm for 2-item power spike",
+      "look for side lane duels",
+      "wait for key CC before entering teamfights"
+    ]
+  },
+  "Syndra": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Annie": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Vex": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Ahri": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Leblanc": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Zoe": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Neeko": {
+    "recommended_roles": [
+      "MIDDLE",
+      "UTILITY"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Lissandra": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Lux": {
+    "recommended_roles": [
+      "UTILITY",
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Brand": {
+    "recommended_roles": [
+      "UTILITY",
+      "JUNGLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Veigar": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Ekko": {
+    "recommended_roles": [
+      "JUNGLE",
+      "MIDDLE"
+    ],
+    "archetype": "burst mage",
+    "strengths": [
+      "high AoE or single-target burst",
+      "CC for picks",
+      "strong waveclear"
+    ],
+    "core_goals": [
+      "poke and clear waves safely",
+      "look for picks with CC",
+      "blow up a carry in teamfights"
+    ]
+  },
+  "Xerath": {
+    "recommended_roles": [
+      "UTILITY",
+      "MIDDLE"
+    ],
+    "archetype": "artillery mage",
+    "strengths": [
+      "extreme range poke",
+      "safe waveclear",
+      "objective control/zoning"
+    ],
+    "core_goals": [
+      "poke enemies down before objectives",
+      "stay out of vision/range",
+      "clear waves to stall games"
+    ]
+  },
+  "Ziggs": {
+    "recommended_roles": [
+      "BOTTOM",
+      "MIDDLE"
+    ],
+    "archetype": "artillery mage",
+    "strengths": [
+      "extreme range poke",
+      "safe waveclear",
+      "objective control/zoning"
+    ],
+    "core_goals": [
+      "poke enemies down before objectives",
+      "stay out of vision/range",
+      "clear waves to stall games"
+    ]
+  },
+  "Velkoz": {
+    "recommended_roles": [
+      "UTILITY",
+      "MIDDLE"
+    ],
+    "archetype": "artillery mage",
+    "strengths": [
+      "extreme range poke",
+      "safe waveclear",
+      "objective control/zoning"
+    ],
+    "core_goals": [
+      "poke enemies down before objectives",
+      "stay out of vision/range",
+      "clear waves to stall games"
+    ]
+  },
+  "Hwei": {
+    "recommended_roles": [
+      "MIDDLE",
+      "UTILITY"
+    ],
+    "archetype": "artillery mage",
+    "strengths": [
+      "extreme range poke",
+      "safe waveclear",
+      "objective control/zoning"
+    ],
+    "core_goals": [
+      "poke enemies down before objectives",
+      "stay out of vision/range",
+      "clear waves to stall games"
+    ]
+  },
+  "Jayce": {
+    "recommended_roles": [
+      "TOP",
+      "MIDDLE"
+    ],
+    "archetype": "artillery mage",
+    "strengths": [
+      "extreme range poke",
+      "safe waveclear",
+      "objective control/zoning"
+    ],
+    "core_goals": [
+      "poke enemies down before objectives",
+      "stay out of vision/range",
+      "clear waves to stall games"
+    ]
+  },
+  "Viktor": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Orianna": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Cassiopeia": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Ryze": {
+    "recommended_roles": [
+      "MIDDLE",
+      "TOP"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Vladimir": {
+    "recommended_roles": [
+      "MIDDLE",
+      "TOP"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Swain": {
+    "recommended_roles": [
+      "UTILITY",
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Taliyah": {
+    "recommended_roles": [
+      "JUNGLE",
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "AurelionSol": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Anivia": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Karthus": {
+    "recommended_roles": [
+      "JUNGLE",
+      "BOTTOM"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Rumble": {
+    "recommended_roles": [
+      "TOP",
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Malzahar": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Azir": {
+    "recommended_roles": [
+      "MIDDLE"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Aurora": {
+    "recommended_roles": [
+      "MIDDLE",
+      "TOP"
+    ],
+    "archetype": "battlemage",
+    "strengths": [
+      "sustained AoE damage",
+      "zone control",
+      "scales well into late game"
+    ],
+    "core_goals": [
+      "scale safely to mid-game",
+      "control zones in teamfights",
+      "kite back while dealing DPS"
+    ]
+  },
+  "Jinx": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "KogMaw": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "Twitch": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "Vayne": {
+    "recommended_roles": [
+      "BOTTOM",
+      "TOP"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "Aphelios": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "Zeri": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "Kaisa": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "Tristana": {
+    "recommended_roles": [
+      "BOTTOM",
+      "MIDDLE"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "Sivir": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "Smolder": {
+    "recommended_roles": [
+      "BOTTOM",
+      "TOP"
+    ],
+    "archetype": "hyper-carry marksman",
+    "strengths": [
+      "massive late-game DPS",
+      "tank shredding",
+      "teamfight cleanup"
+    ],
+    "core_goals": [
+      "farm 10cs/min to hit item spikes",
+      "position safely behind frontline",
+      "hit the closest high-priority target"
+    ]
+  },
+  "Ashe": {
+    "recommended_roles": [
+      "BOTTOM",
+      "UTILITY"
+    ],
+    "archetype": "utility marksman",
+    "strengths": [
+      "long range engage/pick tools",
+      "lane safety",
+      "team utility"
+    ],
+    "core_goals": [
+      "use ult to start fights or make picks",
+      "poke in lane",
+      "support team with CC/vision"
+    ]
+  },
+  "Varus": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "utility marksman",
+    "strengths": [
+      "long range engage/pick tools",
+      "lane safety",
+      "team utility"
+    ],
+    "core_goals": [
+      "use ult to start fights or make picks",
+      "poke in lane",
+      "support team with CC/vision"
+    ]
+  },
+  "Jhin": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "utility marksman",
+    "strengths": [
+      "long range engage/pick tools",
+      "lane safety",
+      "team utility"
+    ],
+    "core_goals": [
+      "use ult to start fights or make picks",
+      "poke in lane",
+      "support team with CC/vision"
+    ]
+  },
+  "Caitlyn": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "utility marksman",
+    "strengths": [
+      "long range engage/pick tools",
+      "lane safety",
+      "team utility"
+    ],
+    "core_goals": [
+      "use ult to start fights or make picks",
+      "poke in lane",
+      "support team with CC/vision"
+    ]
+  },
+  "Ezreal": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "utility marksman",
+    "strengths": [
+      "long range engage/pick tools",
+      "lane safety",
+      "team utility"
+    ],
+    "core_goals": [
+      "use ult to start fights or make picks",
+      "poke in lane",
+      "support team with CC/vision"
+    ]
+  },
+  "MissFortune": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "utility marksman",
+    "strengths": [
+      "long range engage/pick tools",
+      "lane safety",
+      "team utility"
+    ],
+    "core_goals": [
+      "use ult to start fights or make picks",
+      "poke in lane",
+      "support team with CC/vision"
+    ]
+  },
+  "Senna": {
+    "recommended_roles": [
+      "UTILITY",
+      "BOTTOM"
+    ],
+    "archetype": "utility marksman",
+    "strengths": [
+      "long range engage/pick tools",
+      "lane safety",
+      "team utility"
+    ],
+    "core_goals": [
+      "use ult to start fights or make picks",
+      "poke in lane",
+      "support team with CC/vision"
+    ]
+  },
+  "Corki": {
+    "recommended_roles": [
+      "MIDDLE",
+      "BOTTOM"
+    ],
+    "archetype": "utility marksman",
+    "strengths": [
+      "long range engage/pick tools",
+      "lane safety",
+      "team utility"
+    ],
+    "core_goals": [
+      "use ult to start fights or make picks",
+      "poke in lane",
+      "support team with CC/vision"
+    ]
+  },
+  "Xayah": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "utility marksman",
+    "strengths": [
+      "long range engage/pick tools",
+      "lane safety",
+      "team utility"
+    ],
+    "core_goals": [
+      "use ult to start fights or make picks",
+      "poke in lane",
+      "support team with CC/vision"
+    ]
+  },
+  "Draven": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "lane bully marksman",
+    "strengths": [
+      "early game dominance",
+      "snowball potential",
+      "strong trading"
+    ],
+    "core_goals": [
+      "win lane and take tower plates",
+      "transition lead to dragon control",
+      "end game before falling off"
+    ]
+  },
+  "Kalista": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "lane bully marksman",
+    "strengths": [
+      "early game dominance",
+      "snowball potential",
+      "strong trading"
+    ],
+    "core_goals": [
+      "win lane and take tower plates",
+      "transition lead to dragon control",
+      "end game before falling off"
+    ]
+  },
+  "Lucian": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "lane bully marksman",
+    "strengths": [
+      "early game dominance",
+      "snowball potential",
+      "strong trading"
+    ],
+    "core_goals": [
+      "win lane and take tower plates",
+      "transition lead to dragon control",
+      "end game before falling off"
+    ]
+  },
+  "Samira": {
+    "recommended_roles": [
+      "BOTTOM"
+    ],
+    "archetype": "lane bully marksman",
+    "strengths": [
+      "early game dominance",
+      "snowball potential",
+      "strong trading"
+    ],
+    "core_goals": [
+      "win lane and take tower plates",
+      "transition lead to dragon control",
+      "end game before falling off"
+    ]
+  },
+  "Akshan": {
+    "recommended_roles": [
+      "MIDDLE",
+      "TOP"
+    ],
+    "archetype": "lane bully marksman",
+    "strengths": [
+      "early game dominance",
+      "snowball potential",
+      "strong trading"
+    ],
+    "core_goals": [
+      "win lane and take tower plates",
+      "transition lead to dragon control",
+      "end game before falling off"
+    ]
+  },
+  "Quinn": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "lane bully marksman",
+    "strengths": [
+      "early game dominance",
+      "snowball potential",
+      "strong trading"
+    ],
+    "core_goals": [
+      "win lane and take tower plates",
+      "transition lead to dragon control",
+      "end game before falling off"
+    ]
+  },
+  "Ornn": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Malphite": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Sion": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Sejuani": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Amumu": {
+    "recommended_roles": [
+      "JUNGLE",
+      "UTILITY"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Zac": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Rammus": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Nunu": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Maokai": {
+    "recommended_roles": [
+      "UTILITY",
+      "JUNGLE",
+      "TOP"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Gragas": {
+    "recommended_roles": [
+      "JUNGLE",
+      "TOP"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Chogath": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Shen": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Galio": {
+    "recommended_roles": [
+      "MIDDLE",
+      "UTILITY"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Alistar": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Leona": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Nautilus": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Rell": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Blitzcrank": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Skarner": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Ksante": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "engage tank",
+    "strengths": [
+      "hard engage",
+      "extreme durability",
+      "CC chains"
+    ],
+    "core_goals": [
+      "find good engage angles",
+      "peel for carries if engage fails",
+      "soak damage and CC"
+    ]
+  },
+  "Braum": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "peel tank",
+    "strengths": [
+      "defensive CC",
+      "protecting allies",
+      "disengage"
+    ],
+    "core_goals": [
+      "stand on top of your carry",
+      "block skillshots and dashes",
+      "disengage bad fights"
+    ]
+  },
+  "Taric": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "peel tank",
+    "strengths": [
+      "defensive CC",
+      "protecting allies",
+      "disengage"
+    ],
+    "core_goals": [
+      "stand on top of your carry",
+      "block skillshots and dashes",
+      "disengage bad fights"
+    ]
+  },
+  "TahmKench": {
+    "recommended_roles": [
+      "TOP",
+      "UTILITY"
+    ],
+    "archetype": "peel tank",
+    "strengths": [
+      "defensive CC",
+      "protecting allies",
+      "disengage"
+    ],
+    "core_goals": [
+      "stand on top of your carry",
+      "block skillshots and dashes",
+      "disengage bad fights"
+    ]
+  },
+  "Poppy": {
+    "recommended_roles": [
+      "JUNGLE",
+      "TOP",
+      "UTILITY"
+    ],
+    "archetype": "peel tank",
+    "strengths": [
+      "defensive CC",
+      "protecting allies",
+      "disengage"
+    ],
+    "core_goals": [
+      "stand on top of your carry",
+      "block skillshots and dashes",
+      "disengage bad fights"
+    ]
+  },
+  "Lulu": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Janna": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Soraka": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Nami": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Yuumi": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "attach to strongest carry",
+      "time shields perfectly",
+      "hit Qs for poke"
+    ]
+  },
+  "Sona": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Milio": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Karma": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Renata": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Seraphine": {
+    "recommended_roles": [
+      "UTILITY",
+      "BOTTOM"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Ivern": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Zilean": {
+    "recommended_roles": [
+      "UTILITY",
+      "MIDDLE"
+    ],
+    "archetype": "enchanter",
+    "strengths": [
+      "buffing allies",
+      "peel and sustain",
+      "scaling utility"
+    ],
+    "core_goals": [
+      "keep your carry alive at all costs",
+      "stay safe in backline",
+      "ward safely with team"
+    ]
+  },
+  "Thresh": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "catcher support",
+    "strengths": [
+      "pick potential",
+      "roaming",
+      "vision control"
+    ],
+    "core_goals": [
+      "roam mid/jungle to make plays",
+      "control vision around objectives",
+      "look for picks with CC"
+    ]
+  },
+  "Bard": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "catcher support",
+    "strengths": [
+      "pick potential",
+      "roaming",
+      "vision control"
+    ],
+    "core_goals": [
+      "roam mid/jungle to make plays",
+      "control vision around objectives",
+      "look for picks with CC"
+    ]
+  },
+  "Morgana": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "catcher support",
+    "strengths": [
+      "pick potential",
+      "roaming",
+      "vision control"
+    ],
+    "core_goals": [
+      "roam mid/jungle to make plays",
+      "control vision around objectives",
+      "look for picks with CC"
+    ]
+  },
+  "Zyra": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "catcher support",
+    "strengths": [
+      "pick potential",
+      "roaming",
+      "vision control"
+    ],
+    "core_goals": [
+      "roam mid/jungle to make plays",
+      "control vision around objectives",
+      "look for picks with CC"
+    ]
+  },
+  "Rakan": {
+    "recommended_roles": [
+      "UTILITY"
+    ],
+    "archetype": "catcher support",
+    "strengths": [
+      "pick potential",
+      "roaming",
+      "vision control"
+    ],
+    "core_goals": [
+      "roam mid/jungle to make plays",
+      "control vision around objectives",
+      "look for picks with CC"
+    ]
+  },
+  "Singed": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "specialist",
+    "strengths": [
+      "unique playstyle",
+      "zone control or split push",
+      "disruption"
+    ],
+    "core_goals": [
+      "proxy waves to draw pressure",
+      "disrupt teamfights with poison trail",
+      "fling priority targets"
+    ]
+  },
+  "Teemo": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "specialist",
+    "strengths": [
+      "unique playstyle",
+      "zone control or split push",
+      "disruption"
+    ],
+    "core_goals": [
+      "play to your specific win condition",
+      "annoy and disrupt enemies",
+      "draw pressure"
+    ]
+  },
+  "Heimerdinger": {
+    "recommended_roles": [
+      "UTILITY",
+      "TOP"
+    ],
+    "archetype": "specialist",
+    "strengths": [
+      "unique playstyle",
+      "zone control or split push",
+      "disruption"
+    ],
+    "core_goals": [
+      "play to your specific win condition",
+      "annoy and disrupt enemies",
+      "draw pressure"
+    ]
+  },
+  "Gangplank": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "specialist",
+    "strengths": [
+      "unique playstyle",
+      "zone control or split push",
+      "disruption"
+    ],
+    "core_goals": [
+      "play to your specific win condition",
+      "annoy and disrupt enemies",
+      "draw pressure"
+    ]
+  },
+  "Gnar": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "specialist",
+    "strengths": [
+      "unique playstyle",
+      "zone control or split push",
+      "disruption"
+    ],
+    "core_goals": [
+      "play to your specific win condition",
+      "annoy and disrupt enemies",
+      "draw pressure"
+    ]
+  },
+  "Kennen": {
+    "recommended_roles": [
+      "TOP"
+    ],
+    "archetype": "specialist",
+    "strengths": [
+      "unique playstyle",
+      "zone control or split push",
+      "disruption"
+    ],
+    "core_goals": [
+      "play to your specific win condition",
+      "annoy and disrupt enemies",
+      "draw pressure"
+    ]
+  },
+  "Fiddlesticks": {
+    "recommended_roles": [
+      "JUNGLE"
+    ],
+    "archetype": "specialist",
+    "strengths": [
+      "unique playstyle",
+      "zone control or split push",
+      "disruption"
+    ],
+    "core_goals": [
+      "play to your specific win condition",
+      "annoy and disrupt enemies",
+      "draw pressure"
+    ]
+  }
+}
