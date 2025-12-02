@@ -243,7 +243,11 @@ def build_detailed_match_info(
                     "primary_style": primary_style,
                     "sub_style": sub_style,
                     "keystone": keystone,
-                    "styles": styles # Keep full styles for detailed view
+                    "primary_style": primary_style,
+                    "sub_style": sub_style,
+                    "keystone": keystone,
+                    "styles": styles, # Keep full styles for detailed view
+                    "statPerks": perks.get("statPerks", {})
                 },
                 
                 # Flags

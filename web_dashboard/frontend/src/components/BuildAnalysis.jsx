@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getItemIconUrl, getRuneIconUrl, getItemData, getRuneData, fetchChampionData, getAbilityIconUrl, getAbilityData, getAllRunes } from '../utils/dataDragon';
-import Tooltip, { TooltipContent, ItemTooltip, AbilityTooltip, RuneTooltip } from './Tooltip';
+import Tooltip, { TooltipContent, ItemTooltip, AbilityTooltip, RuneTooltip, StatModTooltip } from './Tooltip';
 import clsx from 'clsx';
 
 export default function BuildAnalysis({ match, puuid }) {
@@ -227,7 +227,7 @@ export default function BuildAnalysis({ match, puuid }) {
                                                         <div key={rune.id} className="relative group">
                                                             <Tooltip content={<RuneTooltip runeData={getRuneData(rune.id)} />}>
                                                                 <div className={clsx(
-                                                                    "w-9 h-9 md:w-10 md:h-10 rounded-full cursor-help transition-all duration-300",
+                                                                    "w-10 h-10 md:w-12 md:h-12 rounded-full cursor-help transition-all duration-300",
                                                                     isSelected
                                                                         ? "opacity-100 grayscale-0 ring-2 ring-[#c8aa6e] bg-[#1e2328]"
                                                                         : "opacity-40 grayscale hover:opacity-70 hover:grayscale-0"
@@ -287,19 +287,35 @@ export default function BuildAnalysis({ match, puuid }) {
                                                     return map[id] ? `https://ddragon.leagueoflegends.com/cdn/img/perk-images/StatMods/${map[id]}` : '';
                                                 };
 
+                                                const statDescriptions = {
+                                                    5001: { name: 'Health Scaling', description: '+10-180 Health (based on level)' },
+                                                    5002: { name: 'Armor', description: '+6 Armor' },
+                                                    5003: { name: 'Magic Resist', description: '+8 Magic Resist' },
+                                                    5005: { name: 'Attack Speed', description: '+10% Attack Speed' },
+                                                    5007: { name: 'Ability Haste', description: '+8 Ability Haste' },
+                                                    5008: { name: 'Adaptive Force', description: '+9 Adaptive Force' },
+                                                    5010: { name: 'Movement Speed', description: '+2% Movement Speed' },
+                                                    5011: { name: 'Health', description: '+65 Health' },
+                                                    5013: { name: 'Tenacity', description: '+10% Tenacity and Slow Resist' }
+                                                };
+
+                                                const statData = statDescriptions[statId] || { name: 'Stat Mod', description: 'Unknown Stat Mod' };
+
                                                 return (
-                                                    <div key={colIdx} className={clsx(
-                                                        "w-8 h-8 rounded-full border border-slate-700 flex items-center justify-center transition-all duration-300",
-                                                        isSelected
-                                                            ? "bg-[#1e2328] border-[#c8aa6e] opacity-100"
-                                                            : "bg-transparent border-transparent opacity-30 grayscale"
-                                                    )}>
-                                                        <img
-                                                            src={getStatIcon(statId)}
-                                                            alt="Stat Mod"
-                                                            className="w-5 h-5"
-                                                        />
-                                                    </div>
+                                                    <Tooltip key={colIdx} content={<StatModTooltip statData={statData} />}>
+                                                        <div className={clsx(
+                                                            "w-10 h-10 md:w-12 md:h-12 rounded-full border border-slate-700 flex items-center justify-center transition-all duration-300",
+                                                            isSelected
+                                                                ? "bg-[#1e2328] border-[#c8aa6e] opacity-100"
+                                                                : "bg-transparent border-transparent opacity-30 grayscale"
+                                                        )}>
+                                                            <img
+                                                                src={getStatIcon(statId)}
+                                                                alt={statData.name}
+                                                                className="w-full h-full p-2"
+                                                            />
+                                                        </div>
+                                                    </Tooltip>
                                                 );
                                             })}
                                         </div>

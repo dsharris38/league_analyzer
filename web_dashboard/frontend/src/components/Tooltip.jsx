@@ -225,6 +225,22 @@ export function RuneTooltip({ runeData }) {
     );
 }
 
+export function StatModTooltip({ statData }) {
+    if (!statData) return null;
+
+    return (
+        <div className="space-y-3 font-sans">
+            {/* Header */}
+            <div className="text-[#f0e6d2] font-bold text-lg tracking-wide">{statData.name}</div>
+
+            {/* Description */}
+            <div className="text-sm leading-relaxed text-[#a09b8c] border-t border-[#1e2328] pt-2">
+                {statData.description}
+            </div>
+        </div>
+    );
+}
+
 export function SummonerSpellTooltip({ spellData }) {
     if (!spellData) return null;
 
