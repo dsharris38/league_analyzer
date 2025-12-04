@@ -140,6 +140,8 @@ class DeepDiveAnalysisView(APIView):
             return Response({'report': report_markdown, 'match_data': target_match})
             
         except Exception as e:
+            print(f"Deep Dive Error: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 class PingView(APIView):
     permission_classes = [] # Allow anyone to ping
     def get(self, request):
