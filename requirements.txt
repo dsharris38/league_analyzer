@@ -5,3 +5,7 @@ google-generativeai>=0.8.0
 django
 djangorestframework
 django-cors-headers
+gunicorn
+psycopg2-binary
+dj-database-url
+whitenoise
