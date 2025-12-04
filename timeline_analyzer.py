@@ -49,6 +49,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 from collections import defaultdict
+from ward_data import WARD_HOTSPOTS
 
 
 # ---------------------------------------------------------------------------
@@ -800,6 +801,28 @@ def _extract_all_item_builds(events: List[Dict[str, Any]]) -> Dict[int, List[Dic
     return dict(builds)
 
 
+def _snap_to_hotspot(x: int, y: int, threshold: int = 1000) -> Dict[str, int]:
+    """Snap position to nearest hotspot if within threshold distance."""
+    if not WARD_HOTSPOTS:
+        return {"x": x, "y": y}
+        
+    best_spot = None
+    min_dist_sq = float('inf')
+    threshold_sq = threshold * threshold
+    
+    for spot in WARD_HOTSPOTS:
+        sx, sy = spot['x'], spot['y']
+        dist_sq = (x - sx)**2 + (y - sy)**2
+        if dist_sq < min_dist_sq:
+            min_dist_sq = dist_sq
+            best_spot = spot
+            
+    if min_dist_sq <= threshold_sq and best_spot:
+        return {"x": best_spot['x'], "y": best_spot['y']}
+        
+    return {"x": x, "y": y}
+
+
 def _extract_ward_events(events: List[Dict[str, Any]], frames: List[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
     """Extract ward placement and kill events."""
     ward_events = []
@@ -851,6 +874,13 @@ def _extract_ward_events(events: List[Dict[str, Any]], frames: List[Dict[str, An
                      if "position" in p_data:
                          pos = p_data["position"]
 
+            is_estimated = bool(etype == "WARD_PLACED" and not e.get("position"))
+            
+            # Snap to nearest hotspot if estimated
+            if is_estimated and pos:
+                snapped = _snap_to_hotspot(pos['x'], pos['y'])
+                pos = snapped
+
             ward_events.append({
                 "timestamp": e.get("timestamp", 0),
                 "type": etype,
@@ -858,6 +888,7 @@ def _extract_ward_events(events: List[Dict[str, Any]], frames: List[Dict[str, An
                 "creatorId": e.get("creatorId", 0),  # For WARD_PLACED
                 "killerId": e.get("killerId", 0),    # For WARD_KILL
                 "position": pos,
+                "isEstimated": is_estimated
             })
     return ward_events
 
