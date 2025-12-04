@@ -36,6 +36,10 @@ if RENDER_EXTERNAL_HOSTNAME:
 if 'RENDER' in os.environ:
     ALLOWED_HOSTS.append('.onrender.com')
 
+print(f"DEBUG: {DEBUG}")
+print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+print(f"CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
+
 
 # Application definition
 
