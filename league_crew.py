@@ -2,7 +2,7 @@
 
 import os
 import json
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import google.generativeai as genai
 
@@ -427,3 +427,225 @@ def call_league_crew(agent_payload: Dict[str, Any]) -> Dict[str, str]:
             "itemization_tips": "",
             "goals": ""
         }
+
+
+def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[List[Dict[str, Any]], Dict[str, List[str]]]:
+    """
+    Classify ALL matches with descriptive tags and identify high-value review candidates.
+    
+    Returns:
+        candidates: List of matches worth reviewing.
+        match_tags: Dict mapping match_id to a list of descriptive tags.
+    """
+    candidates = []
+    match_tags = {}
+    
+    # We need per-game details
+    # per_game_loss usually only has losses. We should use detailed_matches for ALL games.
+    detailed_matches = analysis.get("detailed_matches", [])
+    timeline_diag = analysis.get("timeline_loss_diagnostics", [])
+    
+    # Create a map for easy lookup
+    timeline_map = {t["match_id"]: t for t in timeline_diag}
+    
+    for d_match in detailed_matches:
+        mid = d_match.get("match_id")
+        if not mid:
+            continue
+            
+        tags = []
+        reasons = []
+        
+        # Find self participant
+        self_p = next((p for p in d_match["participants"] if p.get("is_self")), None)
+        if not self_p:
+            continue
+
+        # Stats
+        kills = float(self_p.get("kills", 0))
+        deaths = float(self_p.get("deaths", 0))
+        assists = float(self_p.get("assists", 0))
+        kda = (kills + assists) / max(1, deaths)
+        
+        # Calculate KP and Dmg Share if not directly available in self_p
+        challenges = self_p.get("challenges", {})
+        kp = challenges.get("killParticipation", 0.0)
+        dmg_share = challenges.get("teamDamagePercentage", 0.0)
+        
+        # Fallback calculation if challenges are missing (common in some data exports)
+        if kp == 0.0 or dmg_share == 0.0:
+            team_id = self_p.get("teamId")
+            teammates = [p for p in d_match["participants"] if p.get("teamId") == team_id]
+            
+            team_kills = sum(p.get("kills", 0) for p in teammates)
+            team_dmg = sum(p.get("totalDamageDealtToChampions", 0) for p in teammates)
+            
+            if team_kills > 0:
+                kp = (kills + assists) / team_kills
+                
+            if team_dmg > 0:
+                my_dmg = self_p.get("totalDamageDealtToChampions", 0)
+                dmg_share = my_dmg / team_dmg
+        
+        # Timeline stats
+        t_data = timeline_map.get(mid, {})
+        loss_tags = t_data.get("tags", [])
+        details = t_data.get("details", {})
+        max_lead = float(details.get("max_lead", 0))
+        early_min = float(details.get("early_min", 0))
+        
+        is_win = self_p.get("win", False)
+
+        # --- TAGGING LOGIC ---
+
+        if is_win:
+            if kda > 4.0 and kp > 0.55 and dmg_share > 0.25:
+                tags.append("Hyper Carry")
+            elif kda < 2.0 and kp < 0.40:
+                tags.append("Passenger") # You got carried
+            elif max_lead > 5000 and d_match.get("game_duration", 0) < 1500: # < 25 min
+                tags.append("Stomp")
+            else:
+                tags.append("Solid Win")
+        else:
+            # Losses
+            if "threw_lead" in loss_tags or max_lead > 2000:
+                tags.append("Throw")
+                reasons.append("Threw significant lead")
+            elif kp > 0.50 and kda > 2.5: # Lowered KDA req slightly for Ace
+                tags.append("Ace in Defeat") # High Agency Loss
+                reasons.append("High Agency Loss (Strong performance but lost)")
+            elif deaths >= 10 or (kp < 0.25 and dmg_share < 0.15): # Stricter Weak Link
+                tags.append("Weak Link") # High Blame Loss
+                reasons.append("High Blame Loss (Struggled early or fed)")
+            elif early_min < -2000:
+                tags.append("Early Gap")
+            elif kda > 1.5 and kp > 0.25: # Decent performance but lost
+                tags.append("Team Gap")
+            else:
+                tags.append("Tough Loss")
+
+        # Store tags
+        match_tags[mid] = tags
+
+        # --- CANDIDATE LOGIC ---
+        if reasons:
+            candidates.append({
+                "match_id": mid,
+                "champion": self_p.get("champion_name"),
+                "reasons": reasons,
+                "score": len(reasons) + (1 if "Ace in Defeat" in tags else 0)
+            })
+            
+    # Sort by score (most interesting first)
+    candidates.sort(key=lambda x: x["score"], reverse=True)
+    return candidates, match_tags
+
+
+def _build_single_game_prompt(match_data: Dict[str, Any]) -> str:
+    """Build a prompt for a deep-dive analysis of a single game."""
+    
+    participants = match_data.get("participants", [])
+    self_p = next((p for p in participants if p.get("is_self")), None)
+    
+    if not self_p:
+        return "Error: Could not find player in match data."
+        
+    win = self_p.get("win", False)
+    result = "VICTORY" if win else "DEFEAT"
+    champion = self_p.get("champion_name", "Unknown")
+    kda = f"{self_p.get('kills')}/{self_p.get('deaths')}/{self_p.get('assists')}"
+    
+    # Construct Timeline Story
+    events = []
+    
+    # Items
+    for item in self_p.get("item_build", []):
+        ts = item.get("timestamp", 0)
+        ts_min = int(ts / 60000)
+        item_id = item.get("itemId")
+        etype = item.get("type")
+        if etype == "ITEM_PURCHASED":
+            events.append(f"[{ts_min}m] BOUGHT Item {item_id}")
+            
+    # Kills/Deaths
+    for k in match_data.get("kill_events", []):
+        ts = k.get("timestamp", 0)
+        ts_min = int(ts / 60000)
+        killer = k.get("killerId")
+        victim = k.get("victimId")
+        
+        pid_map = {p["participant_id"]: p["champion_name"] for p in participants}
+        
+        killer_name = pid_map.get(killer, "Minion/Tower")
+        victim_name = pid_map.get(victim, "Unknown")
+        
+        if self_p["participant_id"] == killer:
+            events.append(f"[{ts_min}m] KILL: You killed {victim_name}")
+        elif self_p["participant_id"] == victim:
+            events.append(f"[{ts_min}m] DEATH: You were killed by {killer_name}")
+            
+    prompt = f"""
+You are an expert League of Legends coach doing a **Deep Dive Analysis** of a single match.
+
+**Match Context**:
+- Result: {result}
+- Champion: {champion}
+- KDA: {kda}
+- Duration: {match_data.get("game_duration", 0) // 60} minutes
+
+**Your Goal**:
+Analyze this specific game to find the *root cause* of the result. 
+Focus on:
+1. **Build Adaptation**: Did the player build correctly for *this specific enemy comp*?
+2. **Key Turning Points**: Look at deaths and objective fights.
+3. **Lane Phase**: CS numbers and early kills/deaths.
+
+**Data**:
+
+### Team Composition
+{json.dumps(participants, indent=2, default=str)}
+
+### Timeline Events (Items, Kills)
+{chr(10).join(events)}
+
+### Output Format
+Return a Markdown report with:
+## The Story of the Game
+(A brief narrative of what happened)
+
+## Critical Mistakes
+(Bulleted list of specific moments or decisions)
+
+## Build Review
+(Critique of the item build vs this enemy team)
+
+## Verdict
+(Was this game winnable? Who is to blame?)
+"""
+    return prompt.strip()
+
+
+def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> str:
+    """
+    Run a deep-dive analysis on a single game using Gemini.
+    Returns the raw Markdown response.
+    """
+    if not full_match_data:
+        return "Error: No match data provided."
+        
+    prompt = _build_single_game_prompt(full_match_data)
+    
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return "Error: GEMINI_API_KEY not set."
+        
+    genai.configure(api_key=api_key)
+    model_name = _get_gemini_model_name()
+    model = genai.GenerativeModel(model_name)
+    
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"Error calling Gemini: {e}"

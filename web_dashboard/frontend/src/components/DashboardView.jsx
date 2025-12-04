@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import SummaryCards from './SummaryCards';
 import MatchSummaryCard from './MatchSummaryCard';
 import MatchDetailView from './MatchDetailView';
+import DeepDiveView from './DeepDiveView';
 import { ArrowLeft, ChevronDown, ChevronUp, Filter, Search, X } from 'lucide-react';
 
 export default function DashboardView({ data, onBack }) {
@@ -12,9 +13,13 @@ export default function DashboardView({ data, onBack }) {
         return <div className="p-8 text-center text-slate-400">Analysis data is missing or corrupt.</div>;
     }
 
-    const { summary, per_champion, detailed_matches } = analysis;
+    const { summary, per_champion, detailed_matches, review_candidates } = analysis;
     const [expandedMatchId, setExpandedMatchId] = useState(null);
     const [isHistoryOpen, setIsHistoryOpen] = useState(true);
+
+    // Deep Dive State
+    const [deepDiveReport, setDeepDiveReport] = useState(null);
+    const [isDeepDiveLoading, setIsDeepDiveLoading] = useState(false);
 
     // Filters
     const [filters, setFilters] = useState({
@@ -48,8 +53,49 @@ export default function DashboardView({ data, onBack }) {
     const clearFilters = () => setFilters({ champion: '', role: 'ALL', result: 'ALL' });
     const hasActiveFilters = filters.champion || filters.role !== 'ALL' || filters.result !== 'ALL';
 
+    const handleDeepDive = async (matchId) => {
+        setIsDeepDiveLoading(true);
+        setDeepDiveReport(null); // Open modal immediately in loading state
+
+        try {
+            const response = await fetch(`http://localhost:8000/api/analyses/${data.filename}/deep_dive/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ match_id: matchId }),
+            });
+
+            const result = await response.json();
+            if (result.report) {
+                setDeepDiveReport(result.report);
+            } else if (result.error) {
+                setDeepDiveReport(`Error: ${result.error}`);
+            } else {
+                setDeepDiveReport("Failed to generate analysis. Please try again.");
+            }
+        } catch (error) {
+            console.error("Deep dive error:", error);
+            setDeepDiveReport(`Error: ${error.message}`);
+        } finally {
+            setIsDeepDiveLoading(false);
+        }
+    };
+
     return (
-        <div className="max-w-7xl mx-auto p-6">
+        <div className="max-w-7xl mx-auto p-6 relative">
+            {/* Deep Dive Modal */}
+            {(deepDiveReport || isDeepDiveLoading) && (
+                <DeepDiveView
+                    report={deepDiveReport}
+                    isLoading={isDeepDiveLoading}
+                    onClose={() => {
+                        setDeepDiveReport(null);
+                        setIsDeepDiveLoading(false);
+                    }}
+                />
+            )}
+
             <button
                 onClick={onBack}
                 className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
@@ -182,18 +228,26 @@ export default function DashboardView({ data, onBack }) {
                                         No matches found matching filters.
                                     </div>
                                 ) : (
-                                    filteredMatches.map((match) => (
-                                        <div key={match.match_id}>
-                                            <MatchSummaryCard
-                                                match={match}
-                                                puuid={data.puuid}
-                                                onExpand={() => setExpandedMatchId(expandedMatchId === match.match_id ? null : match.match_id)}
-                                            />
-                                            {expandedMatchId === match.match_id && (
-                                                <MatchDetailView match={match} puuid={data.puuid} />
-                                            )}
-                                        </div>
-                                    ))
+                                    filteredMatches.map((match) => {
+                                        // Check if this match is a review candidate
+                                        const candidate = review_candidates?.find(c => c.match_id === match.match_id);
+
+                                        return (
+                                            <div key={match.match_id}>
+                                                <MatchSummaryCard
+                                                    match={match}
+                                                    puuid={data.puuid}
+                                                    onExpand={() => setExpandedMatchId(expandedMatchId === match.match_id ? null : match.match_id)}
+                                                    onDeepDive={handleDeepDive}
+                                                    isReviewCandidate={!!candidate}
+                                                    reviewReason={candidate?.reasons?.[0]}
+                                                />
+                                                {expandedMatchId === match.match_id && (
+                                                    <MatchDetailView match={match} puuid={data.puuid} />
+                                                )}
+                                            </div>
+                                        );
+                                    })
                                 )}
                             </div>
                         </div>

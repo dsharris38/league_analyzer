@@ -1,10 +1,10 @@
 import React from 'react';
 import { getChampionIconUrl, getItemIconUrl, getSpellIconUrl, getRuneIconUrl, getItemData, getSummonerSpellData, getRuneData } from '../utils/dataDragon';
 import Tooltip, { ItemTooltip, RuneTooltip, SummonerSpellTooltip } from './Tooltip';
-import { Clock, Trophy, Skull } from 'lucide-react';
+import { Clock, Trophy, Skull, Microscope } from 'lucide-react';
 import clsx from 'clsx';
 
-export default function MatchSummaryCard({ match, puuid, onExpand }) {
+export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidate, reviewReason }) {
     const self = match.participants.find(p => p.is_self);
     const win = self.win;
     const durationMin = Math.floor(match.game_duration / 60);
@@ -16,9 +16,18 @@ export default function MatchSummaryCard({ match, puuid, onExpand }) {
 
     return (
         <div className={clsx(
-            "flex flex-col md:flex-row items-stretch rounded-lg border-l-4 mb-2 shadow-sm transition-all hover:shadow-md h-auto md:h-28",
-            win ? "bg-blue-900/20 border-blue-500" : "bg-red-900/20 border-red-500"
+            "flex flex-col md:flex-row items-stretch rounded-lg border-l-4 mb-2 shadow-sm transition-all hover:shadow-md h-auto md:h-28 relative group",
+            win ? "bg-blue-900/20 border-blue-500" : "bg-red-900/20 border-red-500",
+            isReviewCandidate && "ring-1 ring-purple-500/50"
         )}>
+            {/* Review Candidate Badge */}
+            {isReviewCandidate && (
+                <div className="absolute -top-2.5 left-4 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1">
+                    <Trophy size={10} />
+                    {reviewReason || "Review Recommended"}
+                </div>
+            )}
+
             {/* Game Info */}
             <div className="w-full md:w-28 p-2 flex flex-col justify-center text-xs text-slate-400 shrink-0 border-b md:border-b-0 md:border-r border-white/5">
                 <div className={clsx("font-bold mb-0.5", win ? "text-blue-400" : "text-red-400")}>
@@ -30,6 +39,25 @@ export default function MatchSummaryCard({ match, puuid, onExpand }) {
                 </div>
                 <div className="font-bold text-slate-300">{win ? "Victory" : "Defeat"}</div>
                 <div>{durationMin}m {durationSec}s</div>
+
+                {/* Performance Tags */}
+                {match.tags && match.tags.length > 0 && (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                        {match.tags.map(tag => (
+                            <span key={tag} className={clsx(
+                                "text-[9px] px-1 rounded font-bold",
+                                tag === "Hyper Carry" ? "bg-yellow-500/20 text-yellow-400" :
+                                    tag === "Ace in Defeat" ? "bg-orange-500/20 text-orange-400" :
+                                        tag === "Weak Link" ? "bg-red-500/20 text-red-400" :
+                                            tag === "Stomp" ? "bg-green-500/20 text-green-400" :
+                                                tag === "Passenger" ? "bg-slate-500/20 text-slate-400" :
+                                                    "bg-slate-700/40 text-slate-400"
+                            )}>
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Player Stats */}
@@ -132,16 +160,34 @@ export default function MatchSummaryCard({ match, puuid, onExpand }) {
                 </div>
             </div>
 
-            {/* Expand Action */}
-            <button
-                onClick={onExpand}
-                className={clsx(
-                    "w-8 flex items-center justify-center border-l transition-colors shrink-0",
-                    win ? "bg-blue-900/30 border-blue-500/30 hover:bg-blue-800/50" : "bg-red-900/30 border-red-500/30 hover:bg-red-800/50"
-                )}
-            >
-                <div className="rotate-90 text-lg font-bold text-slate-500">›</div>
-            </button>
+            {/* Actions */}
+            <div className="flex flex-col border-l border-white/5">
+                {/* Deep Dive Button */}
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDeepDive(match.match_id);
+                    }}
+                    className={clsx(
+                        "flex-1 w-8 flex items-center justify-center transition-colors border-b border-white/5",
+                        isReviewCandidate ? "bg-purple-900/30 hover:bg-purple-800/50 text-purple-400" : "bg-slate-900/30 hover:bg-slate-800/50 text-slate-500"
+                    )}
+                    title="Deep Dive Analysis"
+                >
+                    <Microscope size={16} />
+                </button>
+
+                {/* Expand Button */}
+                <button
+                    onClick={onExpand}
+                    className={clsx(
+                        "flex-1 w-8 flex items-center justify-center transition-colors",
+                        win ? "bg-blue-900/30 hover:bg-blue-800/50" : "bg-red-900/30 hover:bg-red-800/50"
+                    )}
+                >
+                    <div className="rotate-90 text-lg font-bold text-slate-500">›</div>
+                </button>
+            </div>
         </div>
     );
 }

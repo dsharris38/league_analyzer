@@ -1,69 +1,47 @@
-import json
-import os
-from pathlib import Path
-from datetime import datetime
+from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
+import json
+import os
+from pathlib import Path
+from urllib.parse import unquote
 
-# Path to the saves directory
-# BASE_DIR is web_dashboard/backend
-# We need to go up to league_analyzer/saves
+# Import the analyzer function
+# We need to make sure league_crew is in the python path or importable
+import sys
+sys.path.append(str(settings.BASE_DIR.parent.parent)) # Add league_analyzer root
+from league_crew import analyze_specific_game
+
 SAVES_DIR = settings.BASE_DIR.parent.parent / 'saves'
 
 class AnalysisListView(APIView):
     def get(self, request):
-        if not SAVES_DIR.exists():
-            return Response([], status=status.HTTP_200_OK)
-
         files = []
-        for f in SAVES_DIR.glob('league_analysis_*.json'):
-            stat = f.stat()
-            metadata = {
-                'filename': f.name,
-                'created': datetime.fromtimestamp(stat.st_mtime).isoformat(),
-                'size': stat.st_size,
-                'riot_id': 'Unknown',
-                'match_count': 0,
-                'primary_role': 'Unknown'
-            }
-            
-            # Peek into the file for metadata
-            try:
-                with open(f, 'r', encoding='utf-8') as json_file:
-                    # Read only the first 4KB to avoid loading huge files if possible, 
-                    # but JSON parsing requires full content usually. 
-                    # Given these are < 1MB typically, full load is fine.
-                    data = json.load(json_file)
-                    metadata['riot_id'] = data.get('riot_id', 'Unknown')
-                    metadata['match_count'] = data.get('match_count_requested', 0)
-                    metadata['primary_role'] = data.get('analysis', {}).get('primary_role', 'Unknown')
-            except Exception:
-                # If reading fails, just return basic file info
-                pass
-
-            files.append(metadata)
+        if SAVES_DIR.exists():
+            for f in SAVES_DIR.glob('league_analysis_*.json'):
+                try:
+                    stats = f.stat()
+                    files.append({
+                        'filename': f.name,
+                        'created': stats.st_mtime,
+                        'size': stats.st_size
+                    })
+                except OSError:
+                    pass
         
-        # Sort by newest first
+        # Sort by created desc
         files.sort(key=lambda x: x['created'], reverse=True)
         return Response(files)
 
-import sys
-
-# Add the project root to sys.path to allow importing main.py and other modules
-PROJECT_ROOT = settings.BASE_DIR.parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.append(str(PROJECT_ROOT))
-
-from main import run_analysis_pipeline
-
 class AnalysisDetailView(APIView):
     def get(self, request, filename):
+        filename = unquote(filename)
         file_path = SAVES_DIR / filename
         if not file_path.exists():
             return Response({'error': 'File not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+            
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -71,25 +49,44 @@ class AnalysisDetailView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class RunAnalysisView(APIView):
-    def post(self, request):
-        riot_id = request.data.get('riot_id')
-        match_count = int(request.data.get('match_count', 20))
+class DeepDiveAnalysisView(APIView):
+    def post(self, request, filename):
+        filename = unquote(filename)
+        match_id = request.data.get('match_id')
+        print(f"Deep Dive Request: filename={filename}, match_id={match_id}")
         
-        if not riot_id:
-            return Response({'error': 'Riot ID is required'}, status=status.HTTP_400_BAD_REQUEST)
-
+        if not match_id:
+            return Response({'error': 'match_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        file_path = SAVES_DIR / filename
+        if not file_path.exists():
+            print(f"File not found: {file_path}")
+            return Response({'error': 'File not found'}, status=status.HTTP_404_NOT_FOUND)
+            
         try:
-            # Run the analysis pipeline
-            # We disable open_dashboard since we are already in the web app
-            result = run_analysis_pipeline(
-                riot_id=riot_id,
-                match_count=match_count,
-                use_timeline=True,
-                call_ai=True,
-                save_json=True,
-                open_dashboard=False
-            )
-            return Response({'status': 'success', 'riot_id': riot_id})
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+            # Find the match in detailed_matches
+            analysis = data.get("analysis", {})
+            detailed_matches = analysis.get("detailed_matches", [])
+            
+            target_match = next((m for m in detailed_matches if m["match_id"] == match_id), None)
+            
+            if not target_match:
+                print(f"Match {match_id} not found in detailed_matches (count={len(detailed_matches)})")
+                return Response({'error': 'Match not found in this analysis file'}, status=status.HTTP_404_NOT_FOUND)
+                
+            # Run the deep dive
+            print(f"Running deep dive for {match_id}...")
+            report_markdown = analyze_specific_game(match_id, target_match)
+            print(f"Deep dive complete. Report length: {len(report_markdown)}")
+            
+            if not report_markdown:
+                 print("Report is empty!")
+            
+            return Response({'report': report_markdown})
+            
         except Exception as e:
+            print(f"Deep Dive Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
