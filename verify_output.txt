@@ -1,0 +1,15 @@
+Loading saves\league_analysis_Potato Grip_na1.json...
+
+--- Testing identify_review_candidates ---
+Found 6 candidates.
+Match NA1_5425892216 (Yone): ['High Blame Loss (Struggled early or fed)']
+Match NA1_5404005980 (Ahri): ['High Blame Loss (Struggled early or fed)']
+Match NA1_5401792675 (Lucian): ['High Blame Loss (Struggled early or fed)']
+Match NA1_5401688497 (Xayah): ['High Blame Loss (Struggled early or fed)']
+Match NA1_5398458756 (Jax): ['High Blame Loss (Struggled early or fed)']
+Match NA1_5396459658 (Riven): ['High Blame Loss (Struggled early or fed)']
+
+--- Testing analyze_specific_game for NA1_5425892216 ---
+
+Result:
+Error: GEMINI_API_KEY not set.

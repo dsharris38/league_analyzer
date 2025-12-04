@@ -23,7 +23,11 @@ pip install -r requirements.txt >nul 2>&1
 
 REM 2. Start Django Server in background
 echo [Backend] Starting Django API on port 8000...
-start "Django Backend" cmd /k "cd web_dashboard\backend && python manage.py runserver 0.0.0.0:8000"
+REM We need to activate venv inside the new window
+REM The path to activate.bat is relative to where the new cmd starts (which is %~dp0 by default or System32)
+REM Let's use absolute path for safety
+set "VENV_PATH=%~dp0.venv\Scripts\activate.bat"
+start "Django Backend" cmd /k "call "%VENV_PATH%" && cd web_dashboard\backend && python manage.py runserver 0.0.0.0:8000"
 
 REM 3. Start React Frontend
 echo [Frontend] Starting React Dev Server...

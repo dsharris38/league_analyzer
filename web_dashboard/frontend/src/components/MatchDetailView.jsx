@@ -45,7 +45,7 @@ export default function MatchDetailView({ match, puuid }) {
                             goldXpSeries={match.gold_xp_series}
                             teamGoldDiff={match.team_gold_diff}
                         />
-                        <TimelineMap match={match} puuid={puuid} />
+                        <TimelineMap match={match} puuid={puuid} showWards={false} />
                     </div>
                 )}
             </div>

@@ -5,6 +5,42 @@ import json
 from typing import Any, Dict, List
 
 import google.generativeai as genai
+import requests
+from functools import lru_cache
+
+# --- Item Name Resolution Helpers ---
+
+@lru_cache(maxsize=1)
+def _get_latest_ddragon_version() -> str:
+    try:
+        resp = requests.get("https://ddragon.leagueoflegends.com/api/versions.json", timeout=5)
+        if resp.status_code == 200:
+            return resp.json()[0]
+    except Exception:
+        pass
+    return "14.23.1" # Fallback
+
+@lru_cache(maxsize=1)
+def _get_item_map(version: str) -> Dict[str, str]:
+    try:
+        url = f"https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/item.json"
+        resp = requests.get(url, timeout=10)
+        if resp.status_code == 200:
+            data = resp.json()
+            return {k: v["name"] for k, v in data["data"].items()}
+    except Exception:
+        pass
+    return {}
+
+def _get_item_name(item_id: int) -> str:
+    if not item_id or item_id == 0:
+        return "Empty Slot"
+    
+    version = _get_latest_ddragon_version()
+    item_map = _get_item_map(version)
+    
+    return item_map.get(str(item_id), f"Item {item_id}")
+
 
 
 def _get_gemini_model_name() -> str:
@@ -517,7 +553,18 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
                 reasons.append("High Agency Loss (Strong performance but lost)")
             elif deaths >= 10 or (kp < 0.25 and dmg_share < 0.15): # Stricter Weak Link
                 tags.append("Weak Link") # High Blame Loss
-                reasons.append("High Blame Loss (Struggled early or fed)")
+                
+                # Dynamic Reason Generation
+                blame_reasons = []
+                if deaths >= 10:
+                    blame_reasons.append(f"High Deaths ({int(deaths)})")
+                if kp < 0.25:
+                    blame_reasons.append("Low Participation")
+                if dmg_share < 0.15:
+                    blame_reasons.append("Low Damage")
+                
+                reason_str = ", ".join(blame_reasons) if blame_reasons else "Poor Performance"
+                reasons.append(f"High Blame Loss ({reason_str})")
             elif early_min < -2000:
                 tags.append("Early Gap")
             elif kda > 1.5 and kp > 0.25: # Decent performance but lost
@@ -554,74 +601,178 @@ def _build_single_game_prompt(match_data: Dict[str, Any]) -> str:
     win = self_p.get("win", False)
     result = "VICTORY" if win else "DEFEAT"
     champion = self_p.get("champion_name", "Unknown")
+    role = self_p.get("teamPosition", "UNKNOWN")
     kda = f"{self_p.get('kills')}/{self_p.get('deaths')}/{self_p.get('assists')}"
     
-    # Construct Timeline Story
+    # --- 1. Team Context ---
+    your_team_id = self_p.get("team_id")
+    your_team = []
+    enemy_team = []
+    lane_opponent = None
+    
+    pid_map = {} # ID -> Name (Champ)
+    
+    for p in participants:
+        p_name = p.get("champion_name", "Unknown")
+        p_role = p.get("teamPosition", "UNKNOWN")
+        p_kda = f"{p.get('kills')}/{p.get('deaths')}/{p.get('assists')}"
+        pid_map[p.get("participant_id")] = p_name
+        
+        info = f"{p_name} ({p_role}) - {p_kda}"
+        
+        if p.get("team_id") == your_team_id:
+            your_team.append(info)
+        else:
+            enemy_team.append(info)
+            if p_role == role and role != "UNKNOWN":
+                lane_opponent = f"{p_name} ({p_kda})"
+
+    # --- 2. Rich Timeline Construction ---
     events = []
     
-    # Items
+    # A. Items (with resolved names)
     for item in self_p.get("item_build", []):
         ts = item.get("timestamp", 0)
         ts_min = int(ts / 60000)
         item_id = item.get("itemId")
         etype = item.get("type")
+        
         if etype == "ITEM_PURCHASED":
-            events.append(f"[{ts_min}m] BOUGHT Item {item_id}")
+            item_name = _get_item_name(item_id)
+            events.append({"t": ts, "msg": f"[{ts_min}m] BOUGHT {item_name}"})
             
-    # Kills/Deaths
+    # B. Kills/Deaths
     for k in match_data.get("kill_events", []):
         ts = k.get("timestamp", 0)
         ts_min = int(ts / 60000)
-        killer = k.get("killerId")
-        victim = k.get("victimId")
+        killer_id = k.get("killerId")
+        victim_id = k.get("victimId")
         
-        pid_map = {p["participant_id"]: p["champion_name"] for p in participants}
+        killer_name = pid_map.get(killer_id, "Minion/Tower")
+        victim_name = pid_map.get(victim_id, "Unknown")
         
-        killer_name = pid_map.get(killer, "Minion/Tower")
-        victim_name = pid_map.get(victim, "Unknown")
-        
-        if self_p["participant_id"] == killer:
-            events.append(f"[{ts_min}m] KILL: You killed {victim_name}")
-        elif self_p["participant_id"] == victim:
-            events.append(f"[{ts_min}m] DEATH: You were killed by {killer_name}")
+        if self_p["participant_id"] == killer_id:
+            events.append({"t": ts, "msg": f"[{ts_min}m] KILL: You killed {victim_name}"})
+        elif self_p["participant_id"] == victim_id:
+            events.append({"t": ts, "msg": f"[{ts_min}m] DEATH: You were killed by {killer_name}"})
             
+    # C. Objectives (Dragon, Baron, Herald, Towers)
+    # Note: building_events and elite_monster_events might be in match_data if enriched, 
+    # but standard Riot match DTO puts them in 'info.frames' which we might not have fully parsed here 
+    # unless coach_data_enricher did it. 
+    # Assuming match_data has 'building_events' and 'monster_events' from the enricher.
+    
+    for b in match_data.get("building_events", []):
+        if b.get("type") == "BUILDING_KILL":
+            ts = b.get("timestamp", 0)
+            ts_min = int(ts / 60000)
+            lane = b.get("laneType", "LANE")
+            tower = b.get("towerType", "TURRET")
+            team_id = b.get("teamId") # Team of the building (victim)
+            
+            victim_team = "Your" if team_id == your_team_id else "Enemy"
+            events.append({"t": ts, "msg": f"[{ts_min}m] TOWER: {victim_team} {lane} {tower} Destroyed"})
+
+    for m in match_data.get("monster_events", []): # Assuming we have this, or elite_monster_kills
+         # If not present, we skip. The enricher needs to provide this.
+         # Let's check if we have standard elite monster kills in participants? No, that's summary.
+         # We'll rely on what's available. If 'monster_events' isn't there, we miss it.
+         pass
+
+    # D. Wards (Grouped & Filtered)
+    ward_counts = {} # (minute) -> count
+    for w in match_data.get("ward_events", []):
+        if w.get("creatorId") == self_p["participant_id"] and w.get("type") == "WARD_PLACED":
+            ts = w.get("timestamp", 0)
+            ts_min = int(ts / 60000)
+            ward_type = w.get("wardType", "WARD")
+            
+            # Only log Control Wards explicitly, group others
+            if ward_type == "CONTROL_WARD":
+                events.append({"t": ts, "msg": f"[{ts_min}m] VISION: Placed Control Ward"})
+            else:
+                # We'll summarize stealth wards later if needed, or just log them sparingly
+                pass
+
+    # E. Location Snapshots (Every 3 mins)
+    # We need position data. match_data['all_positions'] has it?
+    # Or self_p['position_history']?
+    # The enricher puts 'all_positions' in the root usually.
+    all_positions = match_data.get("all_positions", {}).get(str(self_p["participant_id"]), [])
+    
+    # Sort positions by time
+    all_positions.sort(key=lambda x: x["t"])
+    
+    last_snapshot = -10
+    for pos in all_positions:
+        t_min = pos["t"]
+        if t_min - last_snapshot >= 3.0: # Every 3 mins
+            # Determine rough area
+            x, y = pos["x"], pos["y"]
+            area = "Base"
+            if x < 3000 and y < 3000: area = "Blue Base"
+            elif x > 12000 and y > 12000: area = "Red Base"
+            elif x < 5000 and y > 10000: area = "Top Lane"
+            elif x > 10000 and y < 5000: area = "Bot Lane"
+            elif 5000 < x < 10000 and 5000 < y < 10000: area = "Mid Lane"
+            else: area = "Jungle/River"
+            
+            events.append({"t": t_min * 60000, "msg": f"[{int(t_min)}m] LOCATION: {area}"})
+            last_snapshot = t_min
+
+    # Sort all events by timestamp
+    events.sort(key=lambda x: x["t"])
+    
+    # Format for Prompt
+    timeline_str = chr(10).join([e["msg"] for e in events])
+
     prompt = f"""
 You are an expert League of Legends coach doing a **Deep Dive Analysis** of a single match.
 
 **Match Context**:
 - Result: {result}
-- Champion: {champion}
+- Champion: {champion} ({role})
 - KDA: {kda}
 - Duration: {match_data.get("game_duration", 0) // 60} minutes
+- Lane Opponent: {lane_opponent or "Unknown"}
 
 **Your Goal**:
 Analyze this specific game to find the *root cause* of the result. 
 Focus on:
 1. **Build Adaptation**: Did the player build correctly for *this specific enemy comp*?
-2. **Key Turning Points**: Look at deaths and objective fights.
-3. **Lane Phase**: CS numbers and early kills/deaths.
+   - **CRITICAL RULE**: Do NOT recommend mutually exclusive items.
+   - **Lifeline**: Shieldbow, Sterak's, and Maw are exclusive. Pick ONE.
+   - **Spellblade**: Trinity, Lich Bane, and Iceborn are exclusive. Pick ONE.
+   - **Last Whisper**: LDR, Mortal Reminder, and Serylda's are exclusive. Pick ONE.
+   - **Hydra**: Ravenous, Titanic, and Profane are exclusive. Pick ONE.
+2. **Macro & Rotation**: Look at their location snapshots. Were they in the right place?
+3. **Vision**: Are they buying Control Wards?
+4. **Key Turning Points**: Look at deaths and objective fights.
 
 **Data**:
 
-### Team Composition
-{json.dumps(participants, indent=2, default=str)}
+### Your Team
+{chr(10).join([f"- {x}" for x in your_team])}
 
-### Timeline Events (Items, Kills)
-{chr(10).join(events)}
+### Enemy Team
+{chr(10).join([f"- {x}" for x in enemy_team])}
+
+### Timeline Events (Items, Kills, Objectives, Location)
+{timeline_str}
 
 ### Output Format
 Return a Markdown report with:
 ## The Story of the Game
-(A brief narrative of what happened)
+(A brief narrative of what happened, citing specific times)
 
 ## Critical Mistakes
-(Bulleted list of specific moments or decisions)
+(Bulleted list of specific moments, deaths, or bad rotations)
 
-## Build Review
-(Critique of the item build vs this enemy team)
+## Build & Vision Review
+(Critique of the item build vs this enemy team, and ward usage)
 
 ## Verdict
-(Was this game winnable? Who is to blame?)
+(Was this game winnable? Who is to blame? What is the ONE thing to fix?)
 """
     return prompt.strip()
 

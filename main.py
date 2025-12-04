@@ -10,7 +10,7 @@ from rich.table import Table
 from riot_client import RiotClient
 from analyzer import analyze_matches
 from timeline_analyzer import classify_loss_reason, analyze_timeline_movement
-from league_crew import call_league_crew
+from league_crew import call_league_crew, classify_matches_and_identify_candidates
 from coach_data_enricher import enrich_coaching_data
 from champion_profile_helper import load_champion_profiles, attach_champion_profiles
 
@@ -189,6 +189,29 @@ def run_analysis_pipeline(
         f"Found account for [green]{account['gameName']}#{account['tagLine']}[/green]"
     )
 
+    # Fetch Summoner Info (Level, Profile Icon) & Rank
+    summoner = {}
+    league_entries = []
+    try:
+        console.print("[bold]Fetching summoner profile...[/bold]")
+        summoner = client.get_summoner_by_puuid(puuid)
+        
+        # Fetch League Info (Rank, LP)
+        console.print("[bold]Fetching rank data...[/bold]")
+        if "id" in summoner:
+            league_entries = client.get_league_entries(summoner["id"])
+            console.print(f"[dim]Debug: Found {len(league_entries)} league entries.[/dim]")
+            # console.print(f"[dim]Debug: {league_entries}[/dim]") # Uncomment for full dump
+        else:
+            console.print(f"[yellow]Warning: Summoner ID not found. Keys: {list(summoner.keys())}[/yellow]")
+            console.print(f"[dim]Full Summoner Data: {summoner}[/dim]")
+            
+    except Exception as e:
+        console.print(f"[yellow]Warning: Failed to fetch summoner/rank data: {e}[/yellow]")
+        import traceback
+        traceback.print_exc()
+
+
     console.print(f"[bold]Fetching last {match_count} ranked matches...[/bold]")
     match_ids = client.get_recent_match_ids(puuid, match_count)
     console.print(f"Retrieved {len(match_ids)} match IDs.")
@@ -243,6 +266,17 @@ def run_analysis_pipeline(
         timeline_loss_diagnostics=timeline_loss_diagnostics,
         movement_summaries=movement_summaries,
     )
+    
+    # Identify review candidates and classify matches
+    review_candidates, match_tags = classify_matches_and_identify_candidates(analysis)
+    analysis["review_candidates"] = review_candidates
+    
+    # Inject tags into detailed_matches for frontend
+    if "detailed_matches" in analysis:
+        for dm in analysis["detailed_matches"]:
+            mid = dm.get("match_id")
+            if mid in match_tags:
+                dm["tags"] = match_tags[mid]
 
     # First: human section (uses enriched analysis where available)
     print_human_summary(analysis, timeline_loss_diagnostics)
@@ -254,7 +288,16 @@ def run_analysis_pipeline(
         "riot_id": riot_id,
         "game_name": account.get("gameName", game_name),
         "tag_line": account.get("tagLine", tag_line),
+        "riot_id": riot_id,
+        "game_name": account.get("gameName", game_name),
+        "tag_line": account.get("tagLine", tag_line),
         "puuid": puuid,
+        "summoner_info": {
+            "level": summoner.get("summonerLevel", 0),
+            "profile_icon_id": summoner.get("profileIconId", 0),
+            "id": summoner.get("id", "")
+        },
+        "rank_info": league_entries,
         "match_count_requested": match_count,
         "match_ids": match_ids,
         "analysis": analysis,
@@ -364,7 +407,8 @@ def main() -> None:
         )
         .strip()
         .lower()
-    ) in ("", "y", "yes")
+        == "y"
+    )
 
     # Ask about saving
     save_json = (
@@ -373,7 +417,8 @@ def main() -> None:
         )
         .strip()
         .lower()
-    ) in ("", "y", "yes")
+        == "y"
+    )
 
     # Ask about opening dashboard
     open_dashboard = False
@@ -384,7 +429,8 @@ def main() -> None:
             )
             .strip()
             .lower()
-        ) in ("", "y", "yes")
+            == "y"
+        )
 
     try:
         run_analysis_pipeline(

@@ -2,10 +2,21 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from pathlib import Path
 
 
 def main():
     """Run administrative tasks."""
+    # Load .env from project root (league_analyzer/.env)
+    try:
+        from dotenv import load_dotenv
+        # manage.py is in web_dashboard/backend/
+        # .env is in league_analyzer/
+        project_root = Path(__file__).resolve().parent.parent.parent
+        load_dotenv(project_root / '.env')
+    except ImportError:
+        pass
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     try:
         from django.core.management import execute_from_command_line

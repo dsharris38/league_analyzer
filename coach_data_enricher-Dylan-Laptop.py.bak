@@ -207,7 +207,6 @@ def build_detailed_match_info(
                 "team_id": p.get("teamId", 100),
                 "position": p.get("teamPosition") or p.get("individualPosition") or "UNKNOWN",
                 "win": p.get("win", False),
-                "champ_level": p.get("champLevel", 1),
                 
                 # KDA & Combat
                 "kills": kills,

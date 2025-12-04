@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { X, Microscope } from 'lucide-react';
+import { X, Microscope, Map as MapIcon, FileText } from 'lucide-react';
+import TimelineMap from './TimelineMap';
+import clsx from 'clsx';
 
-export default function DeepDiveView({ report, onClose, isLoading }) {
+export default function DeepDiveView({ report, matchData, puuid, onClose, isLoading }) {
+    const [activeTab, setActiveTab] = useState('report');
+
     if (!report && !isLoading) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-6xl max-h-[95vh] flex flex-col shadow-2xl">
 
                 {/* Header */}
                 <div className="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-800/50 rounded-t-2xl">
@@ -20,6 +24,33 @@ export default function DeepDiveView({ report, onClose, isLoading }) {
                             <p className="text-sm text-slate-400">AI-Powered Game Review</p>
                         </div>
                     </div>
+
+                    {/* Tabs */}
+                    {!isLoading && matchData && (
+                        <div className="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
+                            <button
+                                onClick={() => setActiveTab('report')}
+                                className={clsx(
+                                    "px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors",
+                                    activeTab === 'report' ? "bg-slate-700 text-white shadow-sm" : "text-slate-400 hover:text-slate-200"
+                                )}
+                            >
+                                <FileText size={16} />
+                                Analysis
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('map')}
+                                className={clsx(
+                                    "px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors",
+                                    activeTab === 'map' ? "bg-slate-700 text-white shadow-sm" : "text-slate-400 hover:text-slate-200"
+                                )}
+                            >
+                                <MapIcon size={16} />
+                                Timeline & Map
+                            </button>
+                        </div>
+                    )}
+
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
@@ -29,16 +60,25 @@ export default function DeepDiveView({ report, onClose, isLoading }) {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-slate-900">
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center h-64 gap-4">
                             <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
                             <p className="text-slate-400 animate-pulse">Analyzing match timeline...</p>
                         </div>
                     ) : (
-                        <div className="prose prose-invert max-w-none prose-headings:text-purple-300 prose-strong:text-white prose-p:text-slate-300">
-                            <ReactMarkdown>{report}</ReactMarkdown>
-                        </div>
+                        <>
+                            {activeTab === 'report' && (
+                                <div className="prose prose-invert max-w-none prose-headings:text-purple-300 prose-strong:text-white prose-p:text-slate-300">
+                                    <ReactMarkdown>{report}</ReactMarkdown>
+                                </div>
+                            )}
+                            {activeTab === 'map' && matchData && (
+                                <div className="h-full">
+                                    <TimelineMap match={matchData} puuid={puuid} showWards={true} />
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>

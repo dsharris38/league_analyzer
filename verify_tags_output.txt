@@ -1,0 +1,25 @@
+Loading saves\league_analysis_Potato Grip_na1.json...
+
+--- Testing classify_matches_and_identify_candidates ---
+Found 9 review candidates.
+Tagged 20 matches.
+Match NA1_5425930229: ['Solid Win']
+Match NA1_5425892216: ['Weak Link']
+Match NA1_5425867190: ['Solid Win']
+Match NA1_5404017407: ['Passenger']
+Match NA1_5404005980: ['Weak Link']
+Match NA1_5401792675: ['Weak Link']
+Match NA1_5401787847: ['Weak Link']
+Match NA1_5401761061: ['Solid Win']
+Match NA1_5401730281: ['Solid Win']
+Match NA1_5401688497: ['Weak Link']
+Match NA1_5400144452: ['Solid Win']
+Match NA1_5399507477: ['Solid Win']
+Match NA1_5399495094: ['Solid Win']
+Match NA1_5398490857: ['Weak Link']
+Match NA1_5398458756: ['Weak Link']
+Match NA1_5398438279: ['Weak Link']
+Match NA1_5396639508: ['Solid Win']
+Match NA1_5396487430: ['Solid Win']
+Match NA1_5396459658: ['Weak Link']
+Match NA1_5396441501: ['Solid Win']

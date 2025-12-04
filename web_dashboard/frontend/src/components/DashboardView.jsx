@@ -6,9 +6,11 @@ import MatchDetailView from './MatchDetailView';
 import DeepDiveView from './DeepDiveView';
 import { ArrowLeft, ChevronDown, ChevronUp, Filter, Search, X } from 'lucide-react';
 import config from '../config';
+import { getVersion } from '../utils/dataDragon';
 
 export default function DashboardView({ data, filename, onBack }) {
     const { analysis, coaching_report_markdown } = data;
+    const version = getVersion();
 
     if (!analysis) {
         return <div className="p-8 text-center text-slate-400">Analysis data is missing or corrupt.</div>;
@@ -117,7 +119,7 @@ export default function DashboardView({ data, filename, onBack }) {
                     <div className="relative group">
                         <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-slate-600 shadow-md group-hover:border-blue-500 transition-colors duration-300">
                             <img
-                                src={`https://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/${data.summoner_info?.profile_icon_id || 29}.png`}
+                                src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${data.summoner_info?.profile_icon_id || 29}.png`}
                                 alt="Profile"
                                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                             />
@@ -136,7 +138,7 @@ export default function DashboardView({ data, filename, onBack }) {
                         <div className="flex items-center gap-4 text-xs">
                             {/* Rank Info */}
                             {(() => {
-                                const solo = data.rank_info?.find(r => r.queueType === "RANKED_SOLO_5x5");
+                                const solo = Array.isArray(data.rank_info) ? data.rank_info.find(r => r.queueType === "RANKED_SOLO_5x5") : null;
                                 if (solo) {
                                     return (
                                         <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md border border-white/5">
@@ -175,10 +177,10 @@ export default function DashboardView({ data, filename, onBack }) {
                                     {/* Compact Portrait */}
                                     <div className="relative w-10 h-10 shrink-0">
                                         <img
-                                            src={`https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/${champ.champion === "FiddleSticks" ? "Fiddlesticks" : champ.champion}.png`}
+                                            src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ.champion === "FiddleSticks" ? "Fiddlesticks" : champ.champion}.png`}
                                             alt={champ.champion}
                                             className="w-full h-full rounded-md object-cover border border-slate-600 shadow-sm"
-                                            onError={(e) => { e.target.src = "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/29.png" }}
+                                            onError={(e) => { e.target.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/29.png` }}
                                         />
                                         <div className={`absolute -bottom-1 -right-1 px-1 rounded text-[8px] font-bold border border-slate-900 shadow-sm ${champ.winrate >= 0.5 ? 'bg-green-500 text-green-950' : 'bg-red-500 text-white'
                                             }`}>

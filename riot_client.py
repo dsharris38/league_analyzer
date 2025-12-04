@@ -119,3 +119,14 @@ class RiotClient:
         url = f"{BASE_MATCH_URL}/lol/match/v5/matches/{match_id}/timeline"
         r = self._get(url, timeout=15)
         return r.json()
+
+    # -------------------------------
+    # League / Rank
+    # -------------------------------
+
+    def get_league_entries(self, summoner_id: str) -> List[Dict[str, Any]]:
+        """Get league entries (Rank, LP, etc.) for a summoner."""
+        url = f"{BASE_LOL_URL}/lol/league/v4/entries/by-summoner/{summoner_id}"
+        r = self._get(url, timeout=10)
+        return r.json()
+

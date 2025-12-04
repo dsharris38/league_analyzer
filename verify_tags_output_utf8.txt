@@ -1,0 +1,60 @@
+Match NA1_5427224682: ['Weak Link']
+  TeamId: None, Teammates found: 10, Team Kills: 49
+  Calc KP: 0.08
+Match NA1_5427158054: ['Weak Link']
+  TeamId: None, Teammates found: 10, Team Kills: 54
+  Calc KP: 0.22
+Match NA1_5427108078: ['Passenger']
+  TeamId: None, Teammates found: 10, Team Kills: 88
+  Calc KP: 0.30
+Match NA1_5427058040: ['Weak Link']
+  TeamId: None, Teammates found: 10, Team Kills: 60
+  Calc KP: 0.13
+Match NA1_5427042540: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 48
+  Calc KP: 0.21
+Match NA1_5427000774: ['Weak Link']
+  TeamId: None, Teammates found: 10, Team Kills: 58
+  Calc KP: 0.22
+Match NA1_5426748469: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 115
+  Calc KP: 0.20
+Match NA1_5426719892: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 57
+  Calc KP: 0.21
+Match NA1_5426684325: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 47
+  Calc KP: 0.13
+Match NA1_5426406454: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 54
+  Calc KP: 0.26
+Match NA1_5426334181: ['Weak Link']
+  TeamId: None, Teammates found: 10, Team Kills: 49
+  Calc KP: 0.14
+Match NA1_5426324213: ['Team Gap']
+  TeamId: None, Teammates found: 10, Team Kills: 70
+  Calc KP: 0.26
+Match NA1_5426315595: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 35
+  Calc KP: 0.37
+Match NA1_5426310321: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 45
+  Calc KP: 0.20
+Match NA1_5425930229: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 77
+  Calc KP: 0.25
+Match NA1_5425892216: ['Weak Link']
+  TeamId: None, Teammates found: 10, Team Kills: 95
+  Calc KP: 0.24
+Match NA1_5425867190: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 52
+  Calc KP: 0.35
+Match NA1_5423541643: ['Team Gap']
+  TeamId: None, Teammates found: 10, Team Kills: 71
+  Calc KP: 0.30
+Match NA1_5419587605: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 30
+  Calc KP: 0.33
+Match NA1_5419525203: ['Solid Win']
+  TeamId: None, Teammates found: 10, Team Kills: 99
+  Calc KP: 0.30

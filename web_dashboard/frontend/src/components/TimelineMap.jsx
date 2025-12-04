@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { getChampionIconUrl, getVersion, getItemIconUrl } from '../utils/dataDragon';
 import clsx from 'clsx';
 
-export default function TimelineMap({ match, puuid }) {
+export default function TimelineMap({ match, puuid, showWards = true }) {
     const [currentTime, setCurrentTime] = useState(0); // Minutes
     const duration = Math.ceil((match.game_duration || 1800) / 60);
     const version = getVersion();
@@ -425,10 +425,10 @@ export default function TimelineMap({ match, puuid }) {
 
     const feedEvents = useMemo(() => {
         const kills = (match.kill_events || []).map(e => ({ ...e, eventType: 'kill' }));
-        const wards = (match.ward_events || []).filter(e => e.type === 'WARD_PLACED').map(e => ({ ...e, eventType: 'ward' }));
+        const wards = showWards ? (match.ward_events || []).filter(e => e.type === 'WARD_PLACED').map(e => ({ ...e, eventType: 'ward' })) : [];
         const buildings = (match.building_events || []).map(e => ({ ...e, eventType: 'building' }));
 
-        const all = [...kills, ...wards, ...buildings].sort((a, b) => a.timestamp - b.timestamp);
+        const all = [...kills, ...buildings].sort((a, b) => a.timestamp - b.timestamp);
         return all.filter(e => e.timestamp / 60000 <= currentTime);
     }, [match, currentTime]);
 
@@ -522,7 +522,7 @@ export default function TimelineMap({ match, puuid }) {
                             ))}
 
                             {/* Wards */}
-                            {activeWards.map((ward, i) => {
+                            {showWards && activeWards.map((ward, i) => {
                                 const radiusPercent = (ward.type === "CONTROL_WARD" || ward.type === "BLUE_TRINKET") ? 6.07 : 7.42;
                                 return (
                                     <React.Fragment key={`ward-${i}`}>
@@ -693,28 +693,19 @@ export default function TimelineMap({ match, puuid }) {
                                     </>
                                 )}
 
-                                {e.eventType === 'ward' && (
-                                    <div className="flex items-center gap-1 text-slate-400">
-                                        <span>👁️</span>
-                                        <div className="flex flex-col">
-                                            <div className="flex items-center gap-1">
-                                                <span className={clsx("font-bold", getTeamColor(match.participants.find(p => p.participantId === e.creatorId)?.champion_name))}>
-                                                    {match.participants.find(p => p.participantId === e.creatorId)?.champion_name || "Unknown"}
-                                                </span>
-                                                <span>placed</span>
-                                            </div>
-                                            <span className="text-[10px] text-slate-500">
-                                                {e.wardType === "CONTROL_WARD" ? "Control Ward" :
-                                                    e.wardType === "BLUE_TRINKET" ? "Farsight Alteration" : "Stealth Ward"}
-                                            </span>
-                                        </div>
-                                    </div>
-                                )}
+
 
                                 {e.eventType === 'building' && (
                                     <div className="flex items-center gap-1 text-slate-400">
                                         <span>💥</span>
                                         <span>Turret destroyed</span>
+                                    </div>
+                                )}
+
+                                {e.eventType === 'ward' && (
+                                    <div className="flex items-center gap-1 text-slate-500">
+                                        <span>👁️</span>
+                                        <span>Ward placed</span>
                                     </div>
                                 )}
                             </div>
@@ -726,7 +717,7 @@ export default function TimelineMap({ match, puuid }) {
             {/* Scoreboard */}
             <div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
                 <div className="p-4 border-b border-slate-700 bg-slate-800/50">
-                    <h3 className="text-sm font-bold text-slate-300 uppercase">Scoreboard (Estimated)</h3>
+                    <h3 className="text-sm font-bold text-slate-300 uppercase">Scoreboard</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
@@ -736,7 +727,7 @@ export default function TimelineMap({ match, puuid }) {
                                 <th className="px-4 py-3 text-center">KDA</th>
                                 <th className="px-4 py-3 text-center">CS</th>
                                 <th className="px-4 py-3 text-center">Gold</th>
-                                <th className="px-4 py-3">Items (Final)</th>
+                                <th className="px-4 py-3">Items</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800">

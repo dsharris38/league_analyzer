@@ -18,7 +18,8 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
         <div className={clsx(
             "flex flex-col md:flex-row items-stretch rounded-lg border-l-4 mb-2 shadow-sm transition-all hover:shadow-md h-auto md:h-28 relative group",
             win ? "bg-blue-900/20 border-blue-500" : "bg-red-900/20 border-red-500",
-            isReviewCandidate && "ring-1 ring-purple-500/50"
+            isReviewCandidate && "ring-1 ring-purple-500/50",
+            match.tags?.includes("Weak Link") && "ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
         )}>
             {/* Review Candidate Badge */}
             {isReviewCandidate && (
@@ -72,7 +73,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                             className="w-12 h-12 md:w-14 md:h-14 rounded border-2 border-slate-700"
                         />
                         <div className="absolute -bottom-1 -right-1 bg-slate-800 text-[10px] rounded-full w-5 h-5 flex items-center justify-center border border-slate-600">
-                            18
+                            {self.champ_level || 18}
                         </div>
                     </div>
                     <div className="flex flex-col gap-0.5">
