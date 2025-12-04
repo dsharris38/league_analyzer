@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FileText, Clock, ChevronRight, Plus, X, Loader2 } from 'lucide-react';
+import config from '../config';
 
 export default function AnalysisList({ onSelect }) {
     const [analyses, setAnalyses] = useState([]);
@@ -16,7 +17,7 @@ export default function AnalysisList({ onSelect }) {
 
     const fetchAnalyses = () => {
         setLoading(true);
-        axios.get('http://127.0.0.1:8000/api/analyses/')
+        axios.get(`${config.API_URL}/api/analyses/`)
             .then(res => {
                 setAnalyses(res.data);
                 setLoading(false);
@@ -43,7 +44,7 @@ export default function AnalysisList({ onSelect }) {
         setAnalyzeError(null);
 
         try {
-            await axios.post('http://127.0.0.1:8000/api/analyze/', {
+            await axios.post(`${config.API_URL}/api/analyze/`, {
                 riot_id: riotId,
                 match_count: matchCount
             });

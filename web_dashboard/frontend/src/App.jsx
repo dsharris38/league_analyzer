@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import AnalysisList from './components/AnalysisList';
 import DashboardView from './components/DashboardView';
+import config from './config';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -11,7 +12,7 @@ function App() {
   const handleSelect = (filename) => {
     setSelectedFile(filename);
     setLoading(true);
-    axios.get(`http://127.0.0.1:8000/api/analyses/${filename}/`)
+    axios.get(`${config.API_URL}/api/analyses/${filename}/`)
       .then(res => {
         setAnalysisData(res.data);
         setLoading(false);
@@ -42,7 +43,7 @@ function App() {
       {!analysisData ? (
         <AnalysisList onSelect={handleSelect} />
       ) : (
-        <DashboardView data={analysisData} onBack={handleBack} />
+        <DashboardView data={analysisData} filename={selectedFile} onBack={handleBack} />
       )}
     </div>
   );
