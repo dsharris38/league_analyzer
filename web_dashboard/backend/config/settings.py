@@ -36,9 +36,7 @@ if RENDER_EXTERNAL_HOSTNAME:
 if 'RENDER' in os.environ:
     ALLOWED_HOSTS.append('.onrender.com')
 
-print(f"DEBUG: {DEBUG}")
-print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
-print(f"CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
+
 
 
 # Application definition
@@ -74,12 +72,13 @@ CORS_ALLOWED_ORIGINS = [
 
 if 'RENDER' in os.environ:
     # Add the Vercel frontend URL to CORS_ALLOWED_ORIGINS
-    if RENDER_EXTERNAL_HOSTNAME:
+    FRONTEND_URL = os.environ.get('FRONTEND_URL')
+    if FRONTEND_URL:
         # Ensure it has the scheme
-        if not RENDER_EXTERNAL_HOSTNAME.startswith('http'):
-            cors_url = f"https://{RENDER_EXTERNAL_HOSTNAME}"
+        if not FRONTEND_URL.startswith('http'):
+            cors_url = f"https://{FRONTEND_URL}"
         else:
-            cors_url = RENDER_EXTERNAL_HOSTNAME
+            cors_url = FRONTEND_URL
             
         CORS_ALLOWED_ORIGINS.append(cors_url)
         CSRF_TRUSTED_ORIGINS = [cors_url]
@@ -158,3 +157,7 @@ if not DEBUG:
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+print(f"DEBUG: {DEBUG}")
+print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+print(f"CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
