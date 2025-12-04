@@ -25,4 +25,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('ping/', root_ping),
+    path('', root_ping), # Catch-all for root
 ]

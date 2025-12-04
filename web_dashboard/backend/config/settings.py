@@ -82,6 +82,9 @@ if 'RENDER' in os.environ:
             
         CORS_ALLOWED_ORIGINS.append(cors_url)
         CSRF_TRUSTED_ORIGINS = [cors_url]
+    
+    # Trust Render's SSL termination
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = 'config.urls'
 
