@@ -16,14 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.http import HttpResponse
-
-def root_ping(request):
-    return HttpResponse("Root Pong!")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('ping/', root_ping),
-    path('', root_ping), # Catch-all for root
 ]

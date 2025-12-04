@@ -161,6 +161,4 @@ if not DEBUG:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-print(f"DEBUG: {DEBUG}")
-print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
-print(f"CORS_ALLOWED_ORIGINS: {CORS_ALLOWED_ORIGINS}")
+
