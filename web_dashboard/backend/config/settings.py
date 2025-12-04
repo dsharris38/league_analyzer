@@ -66,10 +66,16 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 if 'RENDER' in os.environ:
-    # Add your Vercel frontend URL here once you have it
-    # For now, we can allow all or wait for the user to add it
-    # CORS_ALLOW_ALL_ORIGINS = True # Optional: for testing only
-    pass
+    # Add the Vercel frontend URL to CORS_ALLOWED_ORIGINS
+    if RENDER_EXTERNAL_HOSTNAME:
+        # Ensure it has the scheme
+        if not RENDER_EXTERNAL_HOSTNAME.startswith('http'):
+            cors_url = f"https://{RENDER_EXTERNAL_HOSTNAME}"
+        else:
+            cors_url = RENDER_EXTERNAL_HOSTNAME
+            
+        CORS_ALLOWED_ORIGINS.append(cors_url)
+        CSRF_TRUSTED_ORIGINS = [cors_url]
 
 ROOT_URLCONF = 'config.urls'
 
