@@ -362,11 +362,18 @@ Synthesize your findings into the following 4 sections. **Be specific. Cite numb
 Expected format:
 
 {{{{
-  "overview": "Markdown string. 2-4 paragraphs summarizing the player's identity, strengths, weaknesses, and main bottleneck (macro/micro/consistency).",
-  "champion_feedback": "Markdown string. Specific advice for their most played champions. Discuss laning goals, power spikes, and mechanics. If available, use champion_profiles.",
-  "itemization_tips": "Markdown string. Concrete itemization and rune advice based on their build patterns and the current patch. Discuss when to build what.",
-  "goals": "Markdown string. A numbered list of 5-10 concrete, measurable drills or goals for the next 1-2 weeks."
+  "overview": "Markdown string. 2-4 paragraphs summarizing the player's identity, strengths, weaknesses, and main bottleneck. Use **bold** for key terms. Use > Blockquotes for critical takeaways.",
+  "champion_feedback": "Markdown string. Specific advice for their most played champions. Use **bullet points** for readability. Bold key stats or mechanics.",
+  "itemization_tips": "Markdown string. Concrete itemization and rune advice. Use **concise bullet points**. Use > Blockquotes for 'Golden Rules' of building.",
+  "goals": "Markdown string. A numbered list of 5-10 concrete, measurable drills or goals."
 }}}}
+
+**Formatting Guidelines (NN/g Style)**:
+1. **Summaries**: Start each section with a 1-sentence summary in *italics*.
+2. **Bullet Points**: Use bullet points for lists to improve scannability. Avoid walls of text.
+3. **Bold**: Bold important concepts, but do not exceed 30% of the text.
+4. **Callouts**: Use blockquotes (>) to highlight critical insights or "Aha!" moments.
+5. **Short Paragraphs**: Keep paragraphs under 3-4 lines.
 
 **REMINDER**: Start your response with {{{{ immediately. No preamble, no explanation, no code blocks.
 """
@@ -761,15 +768,21 @@ Focus on:
 {timeline_str}
 
 ### Output Format
-Return a Markdown report with:
+Return a Markdown report with the following structure. 
+**Formatting Rules**:
+- Use **bullet points** for lists.
+- **Bold** key terms (max 30% of text).
+- Use > Blockquotes for critical "Callouts" or takeaways.
+- Keep paragraphs short.
+
 ## The Story of the Game
-(A brief narrative of what happened, citing specific times)
+(A brief narrative of what happened, citing specific times. Start with a 1-sentence summary in *italics*.)
 
 ## Critical Mistakes
-(Bulleted list of specific moments, deaths, or bad rotations)
+(Bulleted list of specific moments, deaths, or bad rotations. Use bold for timestamps.)
 
 ## Build & Vision Review
-(Critique of the item build vs this enemy team, and ward usage)
+(Critique of the item build vs this enemy team, and ward usage. Use > Callouts for major build errors.)
 
 ## Verdict
 (Was this game winnable? Who is to blame? What is the ONE thing to fix?)

@@ -801,26 +801,54 @@ def _extract_all_item_builds(events: List[Dict[str, Any]]) -> Dict[int, List[Dic
     return dict(builds)
 
 
-def _snap_to_hotspot(x: int, y: int, threshold: int = 1000) -> Dict[str, int]:
-    """Snap position to nearest hotspot if within threshold distance."""
+def _snap_to_hotspot(player_x: int, player_y: int) -> Dict[str, int]:
+    """
+    Estimate ward position based on player location and known hotspots.
+    
+    Logic:
+    1. Wards are typically placed at max range (~600 units).
+    2. Hotspots within ~600-800 units of the player are strong candidates.
+    3. If multiple hotspots are in range, pick the one closest to the 'max range ring'.
+    4. If no hotspot is found, return the player position (fallback).
+    """
     if not WARD_HOTSPOTS:
-        return {"x": x, "y": y}
+        return {"x": player_x, "y": player_y}
         
+    MAX_WARD_RANGE = 600
+    BUFFER = 200 # Allow some leeway for movement/interpolation error
+    SEARCH_RADIUS = MAX_WARD_RANGE + BUFFER
+    
     best_spot = None
-    min_dist_sq = float('inf')
-    threshold_sq = threshold * threshold
+    best_score = float('-inf')
     
     for spot in WARD_HOTSPOTS:
         sx, sy = spot['x'], spot['y']
-        dist_sq = (x - sx)**2 + (y - sy)**2
-        if dist_sq < min_dist_sq:
-            min_dist_sq = dist_sq
+        dist_sq = (player_x - sx)**2 + (player_y - sy)**2
+        dist = dist_sq ** 0.5
+        
+        # Filter impossible spots
+        if dist > SEARCH_RADIUS:
+            continue
+            
+        # Score based on how close it is to max range
+        # We assume players want to ward as far as possible (or over walls)
+        # Score is higher if dist is closer to MAX_WARD_RANGE
+        # Penalty for being too close (dropping ward at feet) or too far (impossible)
+        
+        # Simple score: 1 / (|dist - MAX_WARD_RANGE| + epsilon)
+        # But we also want to favor spots that are "over walls" which often means
+        # they are near the max range limit.
+        
+        score = 1000 - abs(dist - MAX_WARD_RANGE)
+        
+        if score > best_score:
+            best_score = score
             best_spot = spot
             
-    if min_dist_sq <= threshold_sq and best_spot:
+    if best_spot:
         return {"x": best_spot['x'], "y": best_spot['y']}
         
-    return {"x": x, "y": y}
+    return {"x": player_x, "y": player_y}
 
 
 def _extract_ward_events(events: List[Dict[str, Any]], frames: List[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
@@ -878,6 +906,7 @@ def _extract_ward_events(events: List[Dict[str, Any]], frames: List[Dict[str, An
             
             # Snap to nearest hotspot if estimated
             if is_estimated and pos:
+                # Pass player position (pos) to snapping logic
                 snapped = _snap_to_hotspot(pos['x'], pos['y'])
                 pos = snapped
 
