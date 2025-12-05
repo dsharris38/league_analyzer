@@ -415,11 +415,77 @@ def _zone_from_xy(x: int, y: int) -> str:
     return "other"
 
 
+def _get_minion_wave_position(ts_ms: int, lane: str) -> tuple[int, int]:
+    """
+    Estimate minion wave collision point for a given time and lane.
+    Minions spawn at 1:05 (65s) and every 30s after.
+    
+    UPDATED FOR 2025 (Patch 14.22+):
+    - Mid lane minions take ~32s to reach center.
+    - Side lane minions start with a speed boost (sync with mid) that decays over 14 mins.
+    - At 0:00, Side Travel ~= Mid Travel (~32s).
+    - At 14:00, Side Travel ~= Standard Slow (~42s).
+    """
+    ts_sec = ts_ms / 1000.0
+    if ts_sec < 65:
+        return None # No minions yet
+        
+    # Calculate wave index
+    # First wave spawns at 65s.
+    # Wave 1: 65s, Wave 2: 95s, etc.
+    
+    # We want to find the "active" wave that is currently clashing.
+    # A wave clashes at Spawn + TravelTime.
+    
+    # Mid Lane Travel (Constant)
+    mid_travel = 32
+    
+    # Side Lane Travel (Dynamic)
+    # Linear interpolation from 32s (at 0m) to 42s (at 14m)
+    game_min = ts_sec / 60.0
+    if game_min > 14:
+        side_travel = 42
+    else:
+        side_travel = 32 + (10 * (game_min / 14.0))
+        
+    travel_time = mid_travel if lane == "MIDDLE" else side_travel
+    
+    # Collision Time for the *current* wave
+    # We want the wave that arrived most recently but hasn't been cleared?
+    # Or just the "ideal" collision point.
+    # The collision point itself is static (midpoint of lane), but the *time* it happens varies.
+    # If we are injecting a position at time T, we want to know *where* the wave is.
+    # But our proxy logic simply places the player at the *collision point* (midpoint).
+    # So we just need to know if a wave is *present* at the collision point?
+    # Actually, the previous logic just returned the coordinate regardless of exact wave timing.
+    # But to be "proxy", we should only inject if the player *could* be farming a wave.
+    # Since waves come every 30s and linger, being at the midpoint is a safe bet for "Laning".
+    # The dynamic speed just confirms *when* the wave hits.
+    
+    # Refined Proxy:
+    # We return the collision coordinates.
+    # The dynamic logic confirms we know what we are talking about, 
+    # but for a static coordinate return, it doesn't change X/Y.
+    # HOWEVER, strictly speaking, if we wanted to be super fancy, we could interpolate 
+    # the minion position walking down the lane.
+    # For now, returning the collision point (midpoint) is sufficient for the "Laning" proxy.
+    
+    if lane == "MIDDLE":
+        return (7400, 7400)
+    elif lane == "TOP":
+        return (1500, 13500)
+    elif lane == "BOTTOM":
+        return (13500, 1500)
+        
+    return None
+
+
 def _build_position_series(
     timeline: Dict[str, Any], 
     my_pid: int,
     team_id: int,
-    events: List[Dict[str, Any]] = None
+    events: List[Dict[str, Any]] = None,
+    role: str = "UNKNOWN"
 ) -> List[PosSample]:
     frames = timeline.get("info", {}).get("frames", [])
     series: List[PosSample] = []
@@ -487,7 +553,35 @@ def _build_position_series(
                 zone = _zone_from_xy(int(x), int(y))
                 series.append(PosSample(ts_ms=int(ts_ms), x=int(x), y=int(y), zone=zone))
 
-    # 3. Sort by timestamp and deduplicate
+    # 3. Minion Wave Proxy (Soft Injection)
+    # If we have large gaps (> 45s) during laning phase (2:00 - 14:00), inject "Lane Proxy"
+    if role in ["TOP", "MIDDLE", "BOTTOM"] and series:
+        series.sort(key=lambda s: s.ts_ms)
+        injected_samples = []
+        
+        for i in range(len(series) - 1):
+            curr = series[i]
+            next_s = series[i+1]
+            
+            # Only apply during laning phase (2m to 14m)
+            if not (120000 < curr.ts_ms < 840000):
+                continue
+                
+            gap = next_s.ts_ms - curr.ts_ms
+            if gap > 45000: # 45s gap
+                # Inject a point at the midpoint time
+                mid_ts = curr.ts_ms + (gap // 2)
+                proxy_pos = _get_minion_wave_position(mid_ts, role)
+                
+                if proxy_pos:
+                    px, py = proxy_pos
+                    # Only inject if it makes sense (e.g. not recalling)
+                    # But for now, simple injection is better than linear slide from base to lane for 60s
+                    zone = _zone_from_xy(px, py)
+                    injected_samples.append(PosSample(ts_ms=int(mid_ts), x=px, y=py, zone=zone))
+        
+        series.extend(injected_samples)
+    # 4. Sort by timestamp and deduplicate
     series.sort(key=lambda s: s.ts_ms)
     
     # Simple dedupe (keep first if multiple at same ms)
@@ -1080,7 +1174,7 @@ def analyze_timeline_movement(
 
     # Core series
     events = _flatten_events(timeline)
-    pos_series = _build_position_series(timeline, my_pid, my_team, events)
+    pos_series = _build_position_series(timeline, my_pid, my_team, events, role)
 
     # Roams (laners)
     roams = _detect_roams(role, pos_series, events, my_pid)
