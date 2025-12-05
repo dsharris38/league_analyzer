@@ -574,18 +574,17 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
 
                 {/* Left Column: Map + Timeline */}
                 <div className="flex-1 flex flex-col gap-4 w-full max-w-[750px]">
-                    {/* ... Map and Timeline content ... */}
                     <div className="bg-slate-900 rounded-lg border border-slate-700 relative overflow-hidden flex items-center justify-center p-4">
                         {/* Map Container */}
                         <div
                             className={clsx(
-                                "relative w-[512px] h-[512px] bg-slate-900 shadow-2xl rounded-full overflow-hidden border-4 border-slate-800 select-none",
+                                "relative w-[512px] h-[512px] bg-slate-900 shadow-2xl rounded-lg overflow-hidden border-4 border-slate-800 select-none",
                                 isRecording && "cursor-crosshair ring-2 ring-red-500/50"
                             )}
                             onClick={handleMapClick}
                         >
                             <img
-                                src="/map11.png"
+                                src="/map_background.jpg"
                                 className="absolute inset-0 w-full h-full object-cover opacity-60"
                                 alt="Summoner's Rift"
                                 draggable={false}
@@ -817,9 +816,10 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                 </div>
 
                 {/* Event Feed - Fixed Height */}
-                <div
+                < div
                     className="w-full lg:w-80 bg-slate-900 rounded-lg border border-slate-700 flex flex-col shrink-0"
-                    style={{ height: '780px' }}
+                    style={{ height: '780px' }
+                    }
                 >
                     <div className="p-3 border-b border-slate-700 font-bold text-slate-300">
                         Event Log
@@ -888,7 +888,7 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
             </div>
 
             {/* Scoreboard */}
-            <div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
+            < div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden" >
                 <div className="p-4 border-b border-slate-700 bg-slate-800/50">
                     <h3 className="text-sm font-bold text-slate-300 uppercase">Scoreboard</h3>
                 </div>
@@ -957,7 +957,7 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }
