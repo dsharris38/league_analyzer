@@ -424,52 +424,30 @@ def call_league_crew(agent_payload: Dict[str, Any]) -> Dict[str, str]:
 
     # Attempt to parse JSON
     # Sometimes models wrap JSON in ```json ... ``` or add text before the JSON
-    cleaned_text = coaching_text
+    # Attempt to parse JSON with Regex which is more robust
+    import re
+    json_match = re.search(r'\{.*\}', coaching_text, re.DOTALL)
     
-    # Try to extract JSON from markdown code blocks
-    if "```json" in cleaned_text:
-        # Find the first ```json block
-        parts = cleaned_text.split("```json", 1)
-        if len(parts) > 1:
-            # Get everything after ```json
-            after_start = parts[1]
-            # Find the closing ```
-            if "```" in after_start:
-                cleaned_text = after_start.split("```", 1)[0].strip()
-    elif "```" in cleaned_text:
-        # Generic code block
-        parts = cleaned_text.split("```", 2)
-        if len(parts) >= 3:
-            cleaned_text = parts[1].strip()
-    
-    # Try to find JSON object boundaries if no code blocks
-    if not cleaned_text.startswith("{"):
-        # Look for the first { and last }
-        start_idx = cleaned_text.find("{")
-        end_idx = cleaned_text.rfind("}")
-        if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
-            cleaned_text = cleaned_text[start_idx:end_idx+1]
+    if json_match:
+        try:
+            coaching_json = json.loads(json_match.group(0))
+            if isinstance(coaching_json, dict):
+                # Ensure all required keys exist
+                required_keys = ["overview", "champion_feedback", "itemization_tips", "goals"]
+                for key in required_keys:
+                    if key not in coaching_json:
+                        coaching_json[key] = ""
+                return coaching_json
+        except Exception:
+            pass
 
-    try:
-        coaching_json = json.loads(cleaned_text)
-        if not isinstance(coaching_json, dict):
-            raise ValueError("Response is not a JSON object")
-        
-        # Ensure all required keys exist
-        required_keys = ["overview", "champion_feedback", "itemization_tips", "goals"]
-        for key in required_keys:
-            if key not in coaching_json:
-                coaching_json[key] = ""
-        
-        return coaching_json
-    except Exception as e:
-        # Fallback: treat the whole text as overview
-        return {
-            "overview": f"**Parsing Error**: Could not extract structured coaching report. Raw response:\n\n{coaching_text[:500]}...",
-            "champion_feedback": "",
-            "itemization_tips": "",
-            "goals": ""
-        }
+    # Fallback: treat the whole text as overview
+    return {
+        "overview": f"**Parsing Error**: Could not extract structured coaching report. Raw response:\n\n{coaching_text}",
+        "champion_feedback": "",
+        "itemization_tips": "",
+        "goals": ""
+    }
 
 
 def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[List[Dict[str, Any]], Dict[str, List[str]]]:

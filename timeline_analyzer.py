@@ -1005,27 +1005,42 @@ def _snap_to_hotspot(player_x: int, player_y: int) -> Dict[str, int]:
     if best_spot:
         return {"x": best_spot['x'], "y": best_spot['y']}
         
-    return {"x": player_x, "y": player_y}
+    return None
 
 
-def _extract_ward_events(events: List[Dict[str, Any]], frames: List[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-    """Extract ward placement and kill events."""
+def _extract_ward_events(
+    events: List[Dict[str, Any]], 
+    frames: List[Dict[str, Any]] = None,
+    participants: List[Dict[str, Any]] = None
+) -> List[Dict[str, Any]]:
+    """
+    Extract ward placement events and enrich them with teamId and endTime.
+    - Filters out 'phantom' estimated wards that don't snap to hotspots.
+    - Matches WARD_KILL events to WARD_PLACED events to determine lifespan.
+    """
     ward_events = []
+    active_wards = [] # List of {ward_obj} that are currently alive on the map
     
-    # Build a quick lookup for participant positions by timestamp
-    # frames is a list of {timestamp, participantFrames: {1: {position: {x, y}}, ...}}
-    # We want to find the frame closest to the event timestamp (<=)
+    # Map creatorId to teamId
+    pid_to_team = {}
+    if participants:
+        for p in participants:
+            pid = p.get("participantId")
+            team = p.get("teamId")
+            if pid and team:
+                pid_to_team[pid] = team
     
     for e in events:
         etype = e.get("type")
-        if etype in ("WARD_PLACED", "WARD_KILL"):
+        ts = e.get("timestamp", 0)
+        
+        if etype == "WARD_PLACED":
             pos = e.get("position")
+            creator_id = e.get("creatorId", 0)
+            is_estimated = False
             
-            # Fallback if position is missing for WARD_PLACED
-            if etype == "WARD_PLACED" and not pos and frames:
-                ts = e.get("timestamp", 0)
-                creator_id = e.get("creatorId")
-                
+            # Fallback if position is missing (trinkets sometimes)
+            if not pos and frames and creator_id:
                 # Find the two frames bounding this timestamp for interpolation
                 prev_frame = None
                 next_frame = None
@@ -1039,7 +1054,7 @@ def _extract_ward_events(events: List[Dict[str, Any]], frames: List[Dict[str, An
                         break
                 
                 # If we have both frames, interpolate
-                if prev_frame and next_frame and creator_id:
+                if prev_frame and next_frame:
                     t1 = prev_frame["timestamp"]
                     t2 = next_frame["timestamp"]
                     
@@ -1054,28 +1069,58 @@ def _extract_ward_events(events: List[Dict[str, Any]], frames: List[Dict[str, An
                         }
                 
                 # Fallback to nearest if interpolation failed (e.g. end of game)
-                if not pos and prev_frame and creator_id:
+                if not pos and prev_frame:
                      p_data = prev_frame.get("participantFrames", {}).get(str(creator_id), {})
                      if "position" in p_data:
                          pos = p_data["position"]
+                
+                if pos:
+                    is_estimated = True
 
-            is_estimated = bool(etype == "WARD_PLACED" and not e.get("position"))
-            
             # Snap to nearest hotspot if estimated
             if is_estimated and pos:
-                # Pass player position (pos) to snapping logic
                 snapped = _snap_to_hotspot(pos['x'], pos['y'])
+                if snapped is None:
+                    # Phantom ward detected (player not near bush/spot). Ignore it.
+                    continue
                 pos = snapped
 
-            ward_events.append({
-                "timestamp": e.get("timestamp", 0),
-                "type": etype,
-                "wardType": e.get("wardType", "UNKNOWN"),
-                "creatorId": e.get("creatorId", 0),  # For WARD_PLACED
-                "killerId": e.get("killerId", 0),    # For WARD_KILL
-                "position": pos,
-                "isEstimated": is_estimated
-            })
+            if pos:
+                ward_obj = {
+                    "timestamp": ts,
+                    "type": "WARD_PLACED",
+                    "wardType": e.get("wardType", "UNKNOWN"),
+                    "creatorId": creator_id,
+                    "teamId": pid_to_team.get(creator_id, 0),
+                    "position": pos,
+                    "isEstimated": is_estimated,
+                    "endTime": None # Populated if killed
+                }
+                ward_events.append(ward_obj)
+                active_wards.append(ward_obj)
+        
+        elif etype == "WARD_KILL":
+            k_pos = e.get("position")
+            if k_pos:
+                # Find best matching active ward
+                # Logic: Closest ward within reasonable range (200 units)
+                best_ward = None
+                min_dist_sq = 200 * 200
+                
+                for w in active_wards:
+                    if w["endTime"] is not None:
+                        continue # Already killed
+                        
+                    wx, wy = w["position"]["x"], w["position"]["y"]
+                    dist_sq = (k_pos['x'] - wx)**2 + (k_pos['y'] - wy)**2
+                    
+                    if dist_sq < min_dist_sq:
+                        min_dist_sq = dist_sq
+                        best_ward = w
+                
+                if best_ward:
+                    best_ward["endTime"] = ts
+
     return ward_events
 
 
@@ -1190,7 +1235,7 @@ def analyze_timeline_movement(
     item_build = _extract_item_build(events, my_pid)
     all_item_builds = _extract_all_item_builds(events)
     kill_events = _extract_kill_events(events, match)
-    ward_events = _extract_ward_events(events, timeline.get("info", {}).get("frames", []))
+    ward_events = _extract_ward_events(events, timeline.get("info", {}).get("frames", []), participants)
     building_events = _extract_building_events(events)
     
     # Graph data

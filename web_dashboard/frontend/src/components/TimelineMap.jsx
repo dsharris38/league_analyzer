@@ -316,20 +316,30 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
             const timeMin = e.timestamp / 60000;
             if (timeMin > currentTime) return;
 
-            // Ward Lifetimes (approximate)
-            let lifetime = 0;
-            if (e.wardType === "YELLOW_TRINKET") lifetime = 1.5; // ~90s
-            else if (e.wardType === "SIGHT_WARD") lifetime = 2.5; // ~150s
-            else if (e.wardType === "CONTROL_WARD") lifetime = 1000; // Indefinite (until killed)
-            else if (e.wardType === "BLUE_TRINKET") lifetime = 1000; // Indefinite
+            // Check visibility using backend endTime if available, otherwise fallback
+            if (e.endTime) {
+                const endTimeMin = e.endTime / 60000;
+                if (currentTime > endTimeMin) return;
+            } else {
+                // Determine lifetime based on type
+                let lifetime = 0;
+                if (e.wardType === "YELLOW_TRINKET") lifetime = 1.5; // ~90s
+                else if (e.wardType === "SIGHT_WARD") lifetime = 2.5; // ~150s
+                else if (e.wardType === "CONTROL_WARD") lifetime = 1000; // Indefinite (backend should kill these)
+                else if (e.wardType === "BLUE_TRINKET") lifetime = 1000;
 
-            // Check if expired
-            if (currentTime > timeMin + lifetime) return;
+                if (currentTime > timeMin + lifetime) return;
+            }
 
             if (e.type === "WARD_PLACED" && e.position) {
-                // Determine team color
-                const creator = match.participants.find(p => p.participantId === e.creatorId);
-                const isBlue = creator ? isBlueTeam(creator) : true; // Default to blue if unknown
+                // Determine team color (prefer backend teamId)
+                let isBlue = true;
+                if (e.teamId) {
+                    isBlue = (e.teamId === 100);
+                } else if (e.creatorId) {
+                    const creator = match.participants.find(p => p.participantId === e.creatorId);
+                    if (creator) isBlue = isBlueTeam(creator);
+                }
 
                 wards.push({
                     x: e.position.x,
@@ -613,7 +623,7 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                                                         "text-yellow-400"
                                             )}
                                             style={getMapStyle(ward.x, ward.y)}
-                                            title={`${ward.type.replace('_', ' ')} placed by ${match.participants.find(p => p.participantId === ward.creatorId)?.champion_name || 'Unknown'} ${ward.isEstimated ? '(Approximate Location)' : ''}`}
+                                            title={`${ward.type.replace('_', ' ')} placed by ${match.participants.find(p => p.participantId === ward.creatorId)?.champion_name || 'Unknown'} (${ward.isBlue ? 'Blue' : 'Red'} Team)${ward.isEstimated ? ' (Approximate Location)' : ''}`}
                                         >
                                             <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full drop-shadow-md">
                                                 <circle cx="12" cy="12" r="10" stroke="black" strokeWidth="2" strokeDasharray={ward.isEstimated ? "2 2" : "0"} />
