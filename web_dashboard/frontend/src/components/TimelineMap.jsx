@@ -497,80 +497,7 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
 
             <div className="flex flex-col lg:flex-row gap-6 items-start relative">
 
-                {/* Recorder Sidebar (Overlay) */}
-                {isRecording && (
-                    <div className="absolute top-4 left-4 z-50 w-64 bg-slate-900/95 backdrop-blur border border-white/10 rounded-lg shadow-2xl p-4 flex flex-col gap-3">
-                        <div className="flex items-center justify-between">
-                            <h3 className="font-bold text-white text-sm">Ward Recorder</h3>
-                            <span className="text-xs text-slate-400">{recordedSpots.length} spots</span>
-                        </div>
 
-                        {/* Side Toggle */}
-                        <div className="flex rounded bg-slate-800 p-1">
-                            <button
-                                onClick={() => setRecordingSide("BLUE")}
-                                className={clsx(
-                                    "flex-1 text-xs font-bold py-1 rounded transition-colors",
-                                    recordingSide === "BLUE" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-slate-200"
-                                )}
-                            >
-                                Blue Side
-                            </button>
-                            <button
-                                onClick={() => setRecordingSide("RED")}
-                                className={clsx(
-                                    "flex-1 text-xs font-bold py-1 rounded transition-colors",
-                                    recordingSide === "RED" ? "bg-red-600 text-white" : "text-slate-400 hover:text-slate-200"
-                                )}
-                            >
-                                Red Side
-                            </button>
-                        </div>
-
-                        <div className="text-xs text-slate-400">
-                            Click map to add a <b>{recordingSide}</b> spot.
-                        </div>
-
-                        <div className="flex-1 min-h-[100px] max-h-[300px] overflow-y-auto bg-black/30 rounded p-2 space-y-1">
-                            {recordedSpots.map((spot, i) => (
-                                <div key={i} className="flex justify-between items-center text-xs group">
-                                    <span className={clsx(
-                                        "font-medium",
-                                        spot.side === "BLUE" ? "text-blue-400" : "text-red-400"
-                                    )}>
-                                        {spot.name}
-                                    </span>
-                                    <button
-                                        onClick={() => setRecordedSpots(recordedSpots.filter((_, idx) => idx !== i))}
-                                        className="text-red-500 opacity-0 group-hover:opacity-100 hover:text-red-400"
-                                    >
-                                        ×
-                                    </button>
-                                </div>
-                            ))}
-                            {recordedSpots.length === 0 && (
-                                <div className="text-slate-600 italic text-center py-4">No spots yet</div>
-                            )}
-                        </div>
-
-                        <div className="flex gap-2">
-                            <button
-                                onClick={copyRecordedData}
-                                disabled={recordedSpots.length === 0}
-                                className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs py-1.5 rounded font-medium transition-colors"
-                            >
-                                Copy JSON
-                            </button>
-                            <button
-                                onClick={() => setRecordedSpots([])}
-                                disabled={recordedSpots.length === 0}
-                                className="px-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 text-white text-xs rounded transition-colors"
-                            >
-                                Clear
-                            </button>
-                        </div>
-                    </div>
-                )}
 
                 {/* Left Column: Map + Timeline */}
                 <div className="flex-1 flex flex-col gap-4 w-full max-w-[750px]">
@@ -815,80 +742,155 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                     </div>
                 </div>
 
-                {/* Event Feed - Fixed Height */}
-                < div
-                    className="w-full lg:w-80 bg-slate-900 rounded-lg border border-slate-700 flex flex-col shrink-0"
-                    style={{ height: '780px' }
-                    }
-                >
-                    <div className="p-3 border-b border-slate-700 font-bold text-slate-300">
-                        Event Log
-                    </div>
-                    <div className="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-                        {feedEvents.length === 0 && <div className="text-center text-slate-500 py-4">No events yet</div>}
-                        {feedEvents.slice().reverse().map((e, i) => (
-                            <div key={i} className="flex items-center gap-2 p-2 bg-slate-800/50 rounded border border-slate-700/50 text-xs">
-                                <span className="text-slate-500 font-mono w-8">{Math.floor(e.timestamp / 60000)}m</span>
-
-                                {e.eventType === 'kill' && (
-                                    <>
-                                        <div className="flex items-center gap-1">
-                                            <img src={getChampionIconUrl(e.killer?.championName)} className="w-4 h-4 rounded-full" />
-                                            <span className={clsx("font-bold", getTeamColor(e.killer?.championName))}>
-                                                {e.killer?.championName}
-                                            </span>
-                                        </div>
-                                        <span className="text-slate-600">killed</span>
-                                        <div className="flex items-center gap-1">
-                                            <img src={getChampionIconUrl(e.victim?.championName)} className="w-4 h-4 rounded-full" />
-                                            <span className={clsx("font-bold", getTeamColor(e.victim?.championName))}>
-                                                {e.victim?.championName}
-                                            </span>
-                                        </div>
-                                    </>
-                                )}
-
-
-
-                                {e.eventType === 'building' && (
-                                    <div className="flex items-center gap-1 text-slate-400">
-                                        <span>💥</span>
-                                        <span>Turret destroyed</span>
-                                    </div>
-                                )}
-
-                                {e.eventType === 'ward' && (() => {
-                                    const creator = match.participants.find(p => p.participantId === e.creatorId);
-                                    return (
-                                        <div className="flex items-center gap-1 text-slate-500">
-                                            {creator && (
-                                                <>
-                                                    <img src={getChampionIconUrl(creator.champion_name)} className="w-4 h-4 rounded-full" />
-                                                    <span className={clsx("font-bold", getTeamColor(creator.champion_name))}>
-                                                        {creator.champion_name}
-                                                    </span>
-                                                </>
-                                            )}
-                                            <span>placed</span>
-                                            <span className={clsx(
-                                                "font-medium",
-                                                e.wardType === "CONTROL_WARD" ? "text-red-400" :
-                                                    e.wardType === "BLUE_TRINKET" ? "text-blue-400" : "text-yellow-400"
-                                            )}>
-                                                {e.wardType === "CONTROL_WARD" ? "Control Ward" :
-                                                    e.wardType === "BLUE_TRINKET" ? "Blue Trinket" : "Ward"}
-                                            </span>
-                                        </div>
-                                    );
-                                })()}
+                <div className="flex flex-col gap-4 w-full lg:w-80 shrink-0">
+                    {/* Ward Recorder Panel */}
+                    {isRecording && (
+                        <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-lg p-4 flex flex-col gap-3">
+                            <div className="flex items-center justify-between">
+                                <h3 className="font-bold text-white text-sm">Ward Recorder</h3>
+                                <span className="text-xs text-slate-400">{recordedSpots.length} spots</span>
                             </div>
-                        ))}
+
+                            <div className="flex rounded bg-slate-800 p-1">
+                                <button
+                                    onClick={() => setRecordingSide("BLUE")}
+                                    className={clsx(
+                                        "flex-1 text-xs font-bold py-1 rounded transition-colors",
+                                        recordingSide === "BLUE" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-slate-200"
+                                    )}
+                                >
+                                    Blue Side
+                                </button>
+                                <button
+                                    onClick={() => setRecordingSide("RED")}
+                                    className={clsx(
+                                        "flex-1 text-xs font-bold py-1 rounded transition-colors",
+                                        recordingSide === "RED" ? "bg-red-600 text-white" : "text-slate-400 hover:text-slate-200"
+                                    )}
+                                >
+                                    Red Side
+                                </button>
+                            </div>
+
+                            <div className="text-xs text-slate-400">
+                                Click map to add a <b>{recordingSide}</b> spot.
+                            </div>
+
+                            <div className="flex-1 min-h-[100px] max-h-[300px] overflow-y-auto bg-black/30 rounded p-2 space-y-1">
+                                {recordedSpots.map((spot, i) => (
+                                    <div key={i} className="flex justify-between items-center text-xs group">
+                                        <span className={clsx(
+                                            "font-medium",
+                                            spot.side === "BLUE" ? "text-blue-400" : "text-red-400"
+                                        )}>
+                                            {spot.name}
+                                        </span>
+                                        <button
+                                            onClick={() => setRecordedSpots(recordedSpots.filter((_, idx) => idx !== i))}
+                                            className="text-red-500 opacity-0 group-hover:opacity-100 hover:text-red-400"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
+                                {recordedSpots.length === 0 && (
+                                    <div className="text-slate-600 italic text-center py-4">No spots yet</div>
+                                )}
+                            </div>
+
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={copyRecordedData}
+                                    disabled={recordedSpots.length === 0}
+                                    className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs py-1.5 rounded font-medium transition-colors"
+                                >
+                                    Copy JSON
+                                </button>
+                                <button
+                                    onClick={() => setRecordedSpots([])}
+                                    disabled={recordedSpots.length === 0}
+                                    className="px-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 text-white text-xs rounded transition-colors"
+                                >
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Event Feed */}
+                    <div
+                        className="w-full bg-slate-900 rounded-lg border border-slate-700 flex flex-col"
+                        style={{ height: isRecording ? '480px' : '780px' }}
+                    >
+                        <div className="p-3 border-b border-slate-700 font-bold text-slate-300">
+                            Event Log
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                            {feedEvents.length === 0 && <div className="text-center text-slate-500 py-4">No events yet</div>}
+                            {feedEvents.slice().reverse().map((e, i) => (
+                                <div key={i} className="flex items-center gap-2 p-2 bg-slate-800/50 rounded border border-slate-700/50 text-xs">
+                                    <span className="text-slate-500 font-mono w-8">{Math.floor(e.timestamp / 60000)}m</span>
+
+                                    {e.eventType === 'kill' && (
+                                        <>
+                                            <div className="flex items-center gap-1">
+                                                <img src={getChampionIconUrl(e.killer?.championName)} className="w-4 h-4 rounded-full" />
+                                                <span className={clsx("font-bold", getTeamColor(e.killer?.championName))}>
+                                                    {e.killer?.championName}
+                                                </span>
+                                            </div>
+                                            <span className="text-slate-600">killed</span>
+                                            <div className="flex items-center gap-1">
+                                                <img src={getChampionIconUrl(e.victim?.championName)} className="w-4 h-4 rounded-full" />
+                                                <span className={clsx("font-bold", getTeamColor(e.victim?.championName))}>
+                                                    {e.victim?.championName}
+                                                </span>
+                                            </div>
+                                        </>
+                                    )}
+
+
+
+                                    {e.eventType === 'building' && (
+                                        <div className="flex items-center gap-1 text-slate-400">
+                                            <span>💥</span>
+                                            <span>Turret destroyed</span>
+                                        </div>
+                                    )}
+
+                                    {e.eventType === 'ward' && (() => {
+                                        const creator = match.participants.find(p => p.participantId === e.creatorId);
+                                        return (
+                                            <div className="flex items-center gap-1 text-slate-500">
+                                                {creator && (
+                                                    <>
+                                                        <img src={getChampionIconUrl(creator.champion_name)} className="w-4 h-4 rounded-full" />
+                                                        <span className={clsx("font-bold", getTeamColor(creator.champion_name))}>
+                                                            {creator.champion_name}
+                                                        </span>
+                                                    </>
+                                                )}
+                                                <span>placed</span>
+                                                <span className={clsx(
+                                                    "font-medium",
+                                                    e.wardType === "CONTROL_WARD" ? "text-red-400" :
+                                                        e.wardType === "BLUE_TRINKET" ? "text-blue-400" : "text-yellow-400"
+                                                )}>
+                                                    {e.wardType === "CONTROL_WARD" ? "Control Ward" :
+                                                        e.wardType === "BLUE_TRINKET" ? "Blue Trinket" : "Ward"}
+                                                </span>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Scoreboard */}
-            < div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden" >
+            <div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
                 <div className="p-4 border-b border-slate-700 bg-slate-800/50">
                     <h3 className="text-sm font-bold text-slate-300 uppercase">Scoreboard</h3>
                 </div>
