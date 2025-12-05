@@ -768,41 +768,39 @@ Focus on:
 {timeline_str}
 
 ### Output Format
-Return a Markdown report with the following structure. 
-**Formatting Rules**:
-- Use **bullet points** for lists.
-- **Bold** key terms (max 30% of text).
-- Use > Blockquotes for critical "Callouts" or takeaways.
-- Keep paragraphs short.
+Return a **valid JSON object** with the following keys. Each value must be a Markdown string.
+**DO NOT** include any thought process. Start with {{ and end with }}.
 
-## The Story of the Game
-(A brief narrative of what happened, citing specific times. Start with a 1-sentence summary in *italics*.)
+{{{{
+  "story": "Markdown string. A brief narrative of what happened, citing specific times. Start with a 1-sentence summary in *italics*.",
+  "mistakes": "Markdown string. Bulleted list of specific moments, deaths, or bad rotations. Use **bold** for timestamps.",
+  "build_vision": "Markdown string. Critique of the item build vs this enemy team, and ward usage. Use > Callouts for major build errors.",
+  "verdict": "Markdown string. Was this game winnable? Who is to blame? What is the ONE thing to fix?"
+}}}}
 
-## Critical Mistakes
-(Bulleted list of specific moments, deaths, or bad rotations. Use bold for timestamps.)
-
-## Build & Vision Review
-(Critique of the item build vs this enemy team, and ward usage. Use > Callouts for major build errors.)
-
-## Verdict
-(Was this game winnable? Who is to blame? What is the ONE thing to fix?)
+**Formatting Guidelines (NN/g Style)**:
+1. **Summaries**: Start each section with a 1-sentence summary in *italics*.
+2. **Bullet Points**: Use bullet points for lists to improve scannability.
+3. **Bold**: Bold important concepts (max 30% of text).
+4. **Callouts**: Use blockquotes (>) to highlight critical insights.
+5. **Short Paragraphs**: Keep paragraphs under 3-4 lines.
 """
     return prompt.strip()
 
 
-def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> str:
+def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dict[str, str]:
     """
     Run a deep-dive analysis on a single game using Gemini.
-    Returns the raw Markdown response.
+    Returns a structured dict with keys: story, mistakes, build_vision, verdict.
     """
     if not full_match_data:
-        return "Error: No match data provided."
+        return {"story": "Error: No match data provided.", "mistakes": "", "build_vision": "", "verdict": ""}
         
     prompt = _build_single_game_prompt(full_match_data)
     
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        return "Error: GEMINI_API_KEY not set."
+        return {"story": "Error: GEMINI_API_KEY not set.", "mistakes": "", "build_vision": "", "verdict": ""}
         
     genai.configure(api_key=api_key)
     model_name = _get_gemini_model_name()
@@ -810,6 +808,43 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> str
     
     try:
         response = model.generate_content(prompt)
-        return response.text
+        text = getattr(response, "text", "") or ""
+        text = text.strip()
+        
+        # Attempt to parse JSON
+        cleaned_text = text
+        if "```json" in cleaned_text:
+            parts = cleaned_text.split("```json", 1)
+            if len(parts) > 1:
+                after_start = parts[1]
+                if "```" in after_start:
+                    cleaned_text = after_start.split("```", 1)[0].strip()
+        elif "```" in cleaned_text:
+            parts = cleaned_text.split("```", 2)
+            if len(parts) >= 3:
+                cleaned_text = parts[1].strip()
+        
+        if not cleaned_text.startswith("{"):
+            start_idx = cleaned_text.find("{")
+            end_idx = cleaned_text.rfind("}")
+            if start_idx != -1 and end_idx != -1:
+                cleaned_text = cleaned_text[start_idx:end_idx+1]
+
+        try:
+            return json.loads(cleaned_text)
+        except json.JSONDecodeError:
+            # Fallback if JSON parsing fails
+            return {
+                "story": f"**Parsing Error**: Could not extract structured report.\n\n{text}",
+                "mistakes": "",
+                "build_vision": "",
+                "verdict": ""
+            }
+            
     except Exception as e:
-        return f"Error calling Gemini: {e}"
+        return {
+            "story": f"Error calling Gemini: {e}",
+            "mistakes": "",
+            "build_vision": "",
+            "verdict": ""
+        }

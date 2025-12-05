@@ -415,10 +415,16 @@ def _zone_from_xy(x: int, y: int) -> str:
     return "other"
 
 
-def _build_position_series(timeline: Dict[str, Any], my_pid: int) -> List[PosSample]:
+def _build_position_series(
+    timeline: Dict[str, Any], 
+    my_pid: int,
+    team_id: int,
+    events: List[Dict[str, Any]] = None
+) -> List[PosSample]:
     frames = timeline.get("info", {}).get("frames", [])
     series: List[PosSample] = []
 
+    # 1. Frame-based positions (every 60s)
     for frame in frames:
         ts_ms = frame.get("timestamp", 0)
         pf = frame.get("participantFrames", {})
@@ -435,7 +441,64 @@ def _build_position_series(timeline: Dict[str, Any], my_pid: int) -> List[PosSam
         zone = _zone_from_xy(int(x), int(y))
         series.append(PosSample(ts_ms=int(ts_ms), x=int(x), y=int(y), zone=zone))
 
-    return series
+    # 2. Event-based positions (intermediate waypoints)
+    if events:
+        for e in events:
+            # Item Purchase -> Snap to Fountain
+            # This fixes "leaving base late" visuals
+            if e.get("type") == "ITEM_PURCHASED" and e.get("participantId") == my_pid:
+                ts_ms = e.get("timestamp", 0)
+                # Blue Fountain: ~200, 200 | Red Fountain: ~14600, 14600
+                # We'll use slightly safer values inside the platform
+                fx, fy = (400, 400) if team_id == 100 else (14400, 14400)
+                zone = "blue_base" if team_id == 100 else "red_base"
+                series.append(PosSample(ts_ms=int(ts_ms), x=fx, y=fy, zone=zone))
+                continue
+
+            # Check if this event has position data
+            pos = e.get("position")
+            if not pos:
+                continue
+            
+            x = pos.get("x")
+            y = pos.get("y")
+            if x is None or y is None:
+                continue
+                
+            # Check if this event involves the player
+            # We want to capture their position at this time
+            involved = False
+            
+            # Creator (Wards)
+            if e.get("creatorId") == my_pid:
+                involved = True
+            # Killer (Kills, Objectives, Wards)
+            elif e.get("killerId") == my_pid:
+                involved = True
+            # Victim (Deaths) - Position is usually where they died
+            elif e.get("victimId") == my_pid:
+                involved = True
+            # Assistant (Kills) - We don't know their exact pos, usually close but risky.
+            # Let's skip assists to be safe, or maybe include if we are desperate.
+            # For now, stick to direct involvement where pos is likely the player's pos.
+            
+            if involved:
+                ts_ms = e.get("timestamp", 0)
+                zone = _zone_from_xy(int(x), int(y))
+                series.append(PosSample(ts_ms=int(ts_ms), x=int(x), y=int(y), zone=zone))
+
+    # 3. Sort by timestamp and deduplicate
+    series.sort(key=lambda s: s.ts_ms)
+    
+    # Simple dedupe (keep first if multiple at same ms)
+    unique_series = []
+    if series:
+        unique_series.append(series[0])
+        for s in series[1:]:
+            if s.ts_ms > unique_series[-1].ts_ms:
+                unique_series.append(s)
+                
+    return unique_series
 
 
 def _detect_roams(
@@ -1016,8 +1079,8 @@ def analyze_timeline_movement(
     duration_min = float(duration_s) / 60.0 if duration_s else 0.0
 
     # Core series
-    pos_series = _build_position_series(timeline, my_pid)
     events = _flatten_events(timeline)
+    pos_series = _build_position_series(timeline, my_pid, my_team, events)
 
     # Roams (laners)
     roams = _detect_roams(role, pos_series, events, my_pid)

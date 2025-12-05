@@ -15,7 +15,7 @@ export default function MatchDetailView({ match, puuid }) {
     ];
 
     return (
-        <div className="bg-slate-800 border-x border-b border-slate-700 rounded-b-lg -mt-3 mx-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="bg-slate-800 border-x border-b border-slate-700 rounded-b-xl -mt-2 mx-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 shadow-xl relative z-0">
             {/* Tabs */}
             <div className="flex border-b border-slate-700 bg-slate-900/50">
                 {tabs.map(tab => (

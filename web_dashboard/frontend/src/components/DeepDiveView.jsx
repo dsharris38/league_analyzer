@@ -69,8 +69,61 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                     ) : (
                         <>
                             {activeTab === 'report' && (
-                                <div className="prose prose-invert max-w-none prose-headings:text-purple-300 prose-strong:text-white prose-p:text-slate-300">
-                                    <ReactMarkdown>{report}</ReactMarkdown>
+                                <div className="space-y-6">
+                                    {/* Story Card */}
+                                    {typeof report === 'object' && report.story ? (
+                                        <>
+                                            <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                                                <div className="p-4 border-b border-slate-700 bg-slate-800/50 flex items-center gap-2">
+                                                    <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                                                    <h3 className="text-lg font-bold text-white">The Story of the Game</h3>
+                                                </div>
+                                                <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                    <ReactMarkdown>{report.story}</ReactMarkdown>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                                {/* Mistakes Card */}
+                                                <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                                                    <div className="p-4 border-b border-slate-700 bg-slate-800/50 flex items-center gap-2">
+                                                        <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                                                        <h3 className="text-lg font-bold text-white">Critical Mistakes</h3>
+                                                    </div>
+                                                    <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                        <ReactMarkdown>{report.mistakes}</ReactMarkdown>
+                                                    </div>
+                                                </div>
+
+                                                {/* Build & Vision Card */}
+                                                <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                                                    <div className="p-4 border-b border-slate-700 bg-slate-800/50 flex items-center gap-2">
+                                                        <div className="w-1 h-6 bg-yellow-500 rounded-full"></div>
+                                                        <h3 className="text-lg font-bold text-white">Build & Vision</h3>
+                                                    </div>
+                                                    <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                        <ReactMarkdown>{report.build_vision}</ReactMarkdown>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Verdict Card */}
+                                            <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+                                                <div className="p-4 border-b border-slate-700 bg-slate-800/50 flex items-center gap-2">
+                                                    <div className="w-1 h-6 bg-purple-500 rounded-full"></div>
+                                                    <h3 className="text-lg font-bold text-white">Final Verdict</h3>
+                                                </div>
+                                                <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                    <ReactMarkdown>{report.verdict}</ReactMarkdown>
+                                                </div>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        // Fallback for old string reports or errors
+                                        <div className="prose prose-invert max-w-none prose-headings:text-purple-300 prose-strong:text-white prose-p:text-slate-300">
+                                            <ReactMarkdown>{typeof report === 'string' ? report : report.story || "No analysis available."}</ReactMarkdown>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                             {activeTab === 'map' && matchData && (

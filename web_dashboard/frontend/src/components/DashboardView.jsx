@@ -324,29 +324,31 @@ export default function DashboardView({ data, filename, onBack }) {
                         : { overview: data.coaching_report || data.coaching_report_markdown };
 
                     return (
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-2 mb-2">
-                                <h2 className="text-xl font-bold text-white">AI Coaching Report</h2>
+                        <div className="space-y-8">
+                            <div className="flex items-center gap-2 mb-4">
+                                <h2 className="text-2xl font-bold text-white">AI Coaching Report</h2>
                             </div>
 
                             {/* Overview Card */}
                             {report.overview && (
-                                <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
-                                    <div className="p-4 border-b border-slate-700 bg-slate-800/50">
-                                        <h3 className="text-lg font-bold text-blue-400">Strategic Overview</h3>
+                                <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg">
+                                    <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
+                                        <div className="w-1.5 h-6 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                                        <h3 className="text-xl font-bold text-white">Strategic Overview</h3>
                                     </div>
-                                    <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                    <div className="p-8 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white prose-li:text-slate-300">
                                         <ReactMarkdown>{report.overview}</ReactMarkdown>
                                     </div>
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                 {/* Champion Feedback */}
                                 {report.champion_feedback && (
-                                    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col">
-                                        <div className="p-4 border-b border-slate-700 bg-slate-800/50">
-                                            <h3 className="text-lg font-bold text-green-400">Champion Specifics</h3>
+                                    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-lg hover:border-green-500/30 transition-colors">
+                                        <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
+                                            <div className="w-1.5 h-6 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
+                                            <h3 className="text-lg font-bold text-white">Champion Specifics</h3>
                                         </div>
                                         <div className="p-6 prose prose-invert max-w-none text-sm prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white flex-1">
                                             <ReactMarkdown>{report.champion_feedback}</ReactMarkdown>
@@ -356,9 +358,10 @@ export default function DashboardView({ data, filename, onBack }) {
 
                                 {/* Itemization */}
                                 {report.itemization_tips && (
-                                    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col">
-                                        <div className="p-4 border-b border-slate-700 bg-slate-800/50">
-                                            <h3 className="text-lg font-bold text-yellow-400">Itemization & Builds</h3>
+                                    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-lg hover:border-yellow-500/30 transition-colors">
+                                        <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
+                                            <div className="w-1.5 h-6 bg-yellow-500 rounded-full shadow-[0_0_8px_rgba(234,179,8,0.5)]"></div>
+                                            <h3 className="text-lg font-bold text-white">Itemization & Builds</h3>
                                         </div>
                                         <div className="p-6 prose prose-invert max-w-none text-sm prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white flex-1">
                                             <ReactMarkdown>{report.itemization_tips}</ReactMarkdown>
@@ -368,9 +371,10 @@ export default function DashboardView({ data, filename, onBack }) {
 
                                 {/* Goals */}
                                 {report.goals && (
-                                    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col">
-                                        <div className="p-4 border-b border-slate-700 bg-slate-800/50">
-                                            <h3 className="text-lg font-bold text-purple-400">Focus Goals</h3>
+                                    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-lg hover:border-purple-500/30 transition-colors">
+                                        <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
+                                            <div className="w-1.5 h-6 bg-purple-500 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
+                                            <h3 className="text-lg font-bold text-white">Focus Goals</h3>
                                         </div>
                                         <div className="p-6 prose prose-invert max-w-none text-sm prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white flex-1">
                                             <ReactMarkdown>{report.goals}</ReactMarkdown>

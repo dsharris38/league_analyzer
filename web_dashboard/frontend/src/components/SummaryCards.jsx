@@ -16,14 +16,14 @@ export default function SummaryCards({ summary, analysis }) {
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {cards.map((card) => (
-                <div key={card.label} className="bg-slate-800 border border-slate-700 p-5 rounded-xl">
+                <div key={card.label} className="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow-lg hover:border-slate-600 transition-all duration-300 group">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-slate-400 text-sm font-medium">{card.label}</span>
-                        <div className={`p-2 rounded-lg ${card.bg} ${card.color}`}>
+                        <span className="text-slate-400 text-sm font-medium group-hover:text-slate-300 transition-colors">{card.label}</span>
+                        <div className={`p-2 rounded-lg ${card.bg} ${card.color} group-hover:scale-110 transition-transform duration-300`}>
                             <card.icon size={18} />
                         </div>
                     </div>
-                    <div className="text-2xl font-bold text-white">{card.value}</div>
+                    <div className="text-2xl font-bold text-white tracking-tight">{card.value}</div>
                 </div>
             ))}
         </div>
