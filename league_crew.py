@@ -812,38 +812,32 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dic
         text = text.strip()
         
         # Attempt to parse JSON
-        cleaned_text = text
-        if "```json" in cleaned_text:
-            parts = cleaned_text.split("```json", 1)
-            if len(parts) > 1:
-                after_start = parts[1]
-                if "```" in after_start:
-                    cleaned_text = after_start.split("```", 1)[0].strip()
-        elif "```" in cleaned_text:
-            parts = cleaned_text.split("```", 2)
-            if len(parts) >= 3:
-                cleaned_text = parts[1].strip()
+        import re
+        json_match = re.search(r'\{.*\}', text, re.DOTALL)
         
-        if not cleaned_text.startswith("{"):
-            start_idx = cleaned_text.find("{")
-            end_idx = cleaned_text.rfind("}")
-            if start_idx != -1 and end_idx != -1:
-                cleaned_text = cleaned_text[start_idx:end_idx+1]
+        if json_match:
+            try:
+                data = json.loads(json_match.group(0))
+                return {
+                    "story": data.get("story", text),
+                    "mistakes": data.get("mistakes", ""),
+                    "build_vision": data.get("build_vision", ""),
+                    "verdict": data.get("verdict", "")
+                }
+            except json.JSONDecodeError:
+                pass
 
-        try:
-            return json.loads(cleaned_text)
-        except json.JSONDecodeError:
-            # Fallback if JSON parsing fails
-            return {
-                "story": f"**Parsing Error**: Could not extract structured report.\n\n{text}",
-                "mistakes": "",
-                "build_vision": "",
-                "verdict": ""
-            }
+        # Fallback if no JSON found or parse failed
+        return {
+            "story": text,
+            "mistakes": "",
+            "build_vision": "",
+            "verdict": ""
+        }
             
     except Exception as e:
         return {
-            "story": f"Error calling Gemini: {e}",
+            "story": f"Analysis failed: {str(e)}",
             "mistakes": "",
             "build_vision": "",
             "verdict": ""
