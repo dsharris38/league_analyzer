@@ -183,7 +183,13 @@ def run_analysis_pipeline(
     client = RiotClient()
 
     console.print("[bold]Looking up account...[/bold]")
-    account = client.get_account_by_riot_id(game_name, tag_line)
+    try:
+        account = client.get_account_by_riot_id(game_name, tag_line)
+    except Exception as e:
+        msg = f"Failed to find account '{riot_id}'. Error: {e}"
+        console.print(f"[red]{msg}[/red]")
+        return {"error": msg}
+
     puuid = account["puuid"]
     console.print(
         f"Found account for [green]{account['gameName']}#{account['tagLine']}[/green]"
@@ -201,28 +207,40 @@ def run_analysis_pipeline(
         if "id" in summoner:
             league_entries = client.get_league_entries(summoner["id"])
             console.print(f"[dim]Debug: Found {len(league_entries)} league entries.[/dim]")
-            # console.print(f"[dim]Debug: {league_entries}[/dim]") # Uncomment for full dump
-        else:
-            console.print(f"[yellow]Warning: Summoner ID not found. Keys: {list(summoner.keys())}[/yellow]")
-            console.print(f"[dim]Full Summoner Data: {summoner}[/dim]")
-            
     except Exception as e:
         console.print(f"[yellow]Warning: Failed to fetch summoner/rank data: {e}[/yellow]")
-        import traceback
-        traceback.print_exc()
-
+        # Non-critical, continue
 
     console.print(f"[bold]Fetching last {match_count} ranked matches...[/bold]")
-    match_ids = client.get_recent_match_ids(puuid, match_count)
+    try:
+        match_ids = client.get_recent_match_ids(puuid, match_count)
+    except Exception as e:
+        msg = f"Failed to fetch match IDs: {e}"
+        console.print(f"[red]{msg}[/red]")
+        return {"error": msg}
+        
     console.print(f"Retrieved {len(match_ids)} match IDs.")
 
     matches: List[Dict[str, Any]] = []
     for i, match_id in enumerate(match_ids, start=1):
         console.print(f"Fetching match {i}/{len(match_ids)}: {match_id}")
-        matches.append(client.get_match(match_id))
+        try:
+            matches.append(client.get_match(match_id))
+        except Exception as e:
+            console.print(f"[yellow]Failed to fetch match {match_id}: {e}[/yellow]")
+            continue
+
+    if not matches:
+        return {"error": "No matches found or all match fetches failed."}
 
     console.print("[bold]Analyzing your performance...[/bold]")
-    base_analysis = analyze_matches(matches, puuid)
+    try:
+        base_analysis = analyze_matches(matches, puuid)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": f"Analysis failed: {e}"}
+
     if "error" in base_analysis:
         console.print(f"[red]{base_analysis['error']}[/red]")
         return base_analysis

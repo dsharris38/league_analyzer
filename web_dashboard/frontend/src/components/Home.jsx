@@ -60,8 +60,11 @@ export default function Home({ onSelect, onAnalyze }) {
 
         try {
             await onAnalyze(targetId, matchCount);
-        } catch (err) {
-            setAnalyzeError(err.message || 'Analysis failed');
+        } catch (error) {
+            console.error('Analysis failed:', error);
+            const errorMsg = error.response?.data?.error || error.message || "Unknown error occurred";
+            setAnalyzeError(`Failed to start analysis: ${errorMsg}`);
+            setAnalyzing(false);
         } finally {
             setAnalyzing(false);
         }

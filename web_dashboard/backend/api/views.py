@@ -92,6 +92,9 @@ class RunAnalysisView(APIView):
                 open_dashboard=False
             )
             
+            if "error" in analysis_result:
+                return Response({'error': analysis_result['error']}, status=status.HTTP_400_BAD_REQUEST)
+            
             return Response({'status': 'success', 'riot_id': riot_id})
             
         except Exception as e:
