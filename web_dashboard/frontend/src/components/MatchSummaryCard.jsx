@@ -23,7 +23,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
         )}>
             {/* Review Candidate Badge */}
             {isReviewCandidate && (
-                <div className="absolute -top-2.5 left-4 bg-slate-200 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-blue-500/20">
+                <div className="absolute -top-2.5 left-4 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-purple-400/50 shadow-purple-500/20">
                     <Trophy size={10} />
                     {reviewReason || "Review Recommended"}
                 </div>
@@ -72,7 +72,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                             alt={self.champion_name}
                             className="w-12 h-12 md:w-14 md:h-14 rounded border-2 border-rose-vale/30"
                         />
-                        <div className="absolute -bottom-1 -right-1 bg-dark-bg text-[10px] rounded-full w-5 h-5 flex items-center justify-center border border-rose-vale/20 text-cornsilk">
+                        <div className="absolute -bottom-1 -right-1 bg-slate-900 text-[10px] rounded-full w-5 h-5 flex items-center justify-center border border-slate-600 text-white">
                             {self.champ_level || 18}
                         </div>
                     </div>
@@ -98,22 +98,22 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
 
                 {/* KDA - Fixed Width */}
                 <div className="flex flex-col items-center md:items-start w-full md:w-32 shrink-0">
-                    <div className="text-base font-bold text-cornsilk font-serif">
+                    <div className="text-base font-bold text-white font-serif">
                         <span>{self.kills}</span>
-                        <span className="text-rose-vale mx-1">/</span>
-                        <span className="text-rose-vale">{self.deaths}</span>
-                        <span className="text-rose-vale mx-1">/</span>
+                        <span className="text-slate-500 mx-1">/</span>
+                        <span className="text-red-400">{self.deaths}</span>
+                        <span className="text-slate-500 mx-1">/</span>
                         <span>{self.assists}</span>
                     </div>
-                    <div className="text-xs text-cornsilk/60">
+                    <div className="text-xs text-slate-400">
                         {self.kda}:1 KDA
                     </div>
                 </div>
 
                 {/* CS & Vision - Fixed Width */}
-                <div className="text-xs text-cornsilk/60 text-center md:text-left w-full md:w-32 shrink-0">
-                    <div className="text-cornsilk/80">CS {self.cs} ({self.cs_per_min})</div>
-                    <div className="text-rose-vale">P/Kill {Math.round(((self.kills + self.assists) / Math.max(1, team100.includes(self) ? team100.reduce((a, b) => a + b.kills, 0) : team200.reduce((a, b) => a + b.kills, 0))) * 100)}%</div>
+                <div className="text-xs text-slate-400 text-center md:text-left w-full md:w-32 shrink-0">
+                    <div className="text-slate-300">CS {self.cs} ({self.cs_per_min})</div>
+                    <div className="text-red-400">P/Kill {Math.round(((self.kills + self.assists) / Math.max(1, team100.includes(self) ? team100.reduce((a, b) => a + b.kills, 0) : team200.reduce((a, b) => a + b.kills, 0))) * 100)}%</div>
                     <div>Vis {self.vision_score}</div>
                 </div>
 
@@ -138,12 +138,12 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
             </div>
 
             {/* Participants List */}
-            <div className="hidden lg:flex w-56 py-1 px-2 flex-row gap-1 text-[10px] border-l border-rose-vale/10 bg-black/10 items-center">
+            <div className="hidden lg:flex w-56 py-1 px-2 flex-row gap-1 text-[10px] border-l border-white/10 bg-black/20 items-center">
                 <div className="flex-1 flex flex-col justify-center gap-0.5 h-full">
                     {team100.map(p => (
                         <div key={p.puuid} className="flex items-center gap-1 w-full">
                             <img src={getChampionIconUrl(p.champion_name)} className="w-3 h-3 rounded-sm shrink-0" />
-                            <span className={clsx("truncate block w-20", p.is_self ? "font-bold text-cornsilk" : "text-cornsilk/50")}>
+                            <span className={clsx("truncate block w-20", p.is_self ? "font-bold text-white" : "text-slate-500")}>
                                 {p.riot_id.split('#')[0]}
                             </span>
                         </div>
@@ -153,7 +153,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                     {team200.map(p => (
                         <div key={p.puuid} className="flex items-center gap-1 w-full">
                             <img src={getChampionIconUrl(p.champion_name)} className="w-3 h-3 rounded-sm shrink-0" />
-                            <span className={clsx("truncate block w-20", p.is_self ? "font-bold text-cornsilk" : "text-cornsilk/50")}>
+                            <span className={clsx("truncate block w-20", p.is_self ? "font-bold text-white" : "text-slate-500")}>
                                 {p.riot_id.split('#')[0]}
                             </span>
                         </div>
@@ -170,8 +170,8 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                         onDeepDive(match.match_id);
                     }}
                     className={clsx(
-                        "flex-1 w-8 flex items-center justify-center transition-colors border-b border-rose-vale/10",
-                        isReviewCandidate ? "bg-cornsilk/20 hover:bg-cornsilk/30 text-cornsilk" : "bg-dark-bg/30 hover:bg-dark-bg/50 text-cornsilk/30"
+                        "flex-1 w-8 flex items-center justify-center transition-colors border-b border-white/10",
+                        isReviewCandidate ? "bg-purple-500/20 hover:bg-purple-500/40 text-purple-300" : "bg-slate-800/50 hover:bg-purple-500/20 text-slate-500 hover:text-purple-300"
                     )}
                     title="Deep Dive Analysis"
                 >
