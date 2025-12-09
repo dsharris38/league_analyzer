@@ -13,7 +13,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
     const version = getVersion();
 
     if (!analysis) {
-        return <div className="p-8 text-center text-cornsilk/60 text-lg font-serif">Analysis data is missing or corrupt.</div>;
+        return <div className="p-8 text-center text-slate-400 text-lg">Analysis data is missing or corrupt.</div>;
     }
 
     const { summary, per_champion, detailed_matches, review_candidates } = analysis;
@@ -113,26 +113,26 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                 Back to List
             </button>
 
-            <div className="flex items-center justify-between mb-6 bg-dark-bg/80 p-4 rounded-xl border border-rose-vale/20 backdrop-blur-md shadow-lg shadow-rose-vale/5">
+            <div className="flex items-center justify-between mb-6 bg-slate-800/80 p-4 rounded-xl border border-white/10 backdrop-blur-md shadow-lg shadow-blue-500/5">
                 <div className="flex items-center gap-4">
                     {/* Profile Icon & Level */}
                     <div className="relative group">
-                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-rose-vale/50 shadow-md group-hover:border-cornsilk transition-colors duration-300">
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-slate-600 shadow-md group-hover:border-blue-400 transition-colors duration-300">
                             <img
                                 src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${data.summoner_info?.profile_icon_id || 29}.png`}
                                 alt="Profile"
                                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                             />
                         </div>
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-dark-bg text-cornsilk text-[10px] font-bold px-2 py-0.5 rounded-full border border-rose-vale/30 shadow-sm">
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-slate-600 shadow-sm">
                             {data.summoner_info?.level || 0}
                         </div>
                     </div>
 
                     <div>
                         <div className="flex items-baseline gap-2 mb-0.5">
-                            <h1 className="text-2xl font-bold text-cornsilk tracking-tight font-serif">{data.game_name}</h1>
-                            <span className="text-sm text-cornsilk/60 font-light">#{data.tag_line}</span>
+                            <h1 className="text-2xl font-bold text-white tracking-tight">{data.game_name}</h1>
+                            <span className="text-sm text-slate-400 font-light">#{data.tag_line}</span>
                         </div>
 
                         <div className="flex items-center gap-4 text-xs">
@@ -141,24 +141,24 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                 const solo = Array.isArray(data.rank_info) ? data.rank_info.find(r => r.queueType === "RANKED_SOLO_5x5") : null;
                                 if (solo) {
                                     return (
-                                        <div className="flex items-center gap-1.5 bg-dark-bg/50 px-2 py-1 rounded-md border border-cornsilk/10 text-xs">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-rose-vale shadow-[0_0_6px_rgba(169,74,74,0.8)]"></div>
-                                            <span className="text-cornsilk/70 font-medium">Solo</span>
-                                            <span className="text-cornsilk font-bold">{solo.tier} {solo.rank}</span>
-                                            <span className="text-cornsilk/50">{solo.leaguePoints} LP</span>
+                                        <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md border border-white/10 text-xs">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></div>
+                                            <span className="text-slate-400 font-medium">Solo</span>
+                                            <span className="text-white font-bold">{solo.tier} {solo.rank}</span>
+                                            <span className="text-slate-500">{solo.leaguePoints} LP</span>
                                         </div>
                                     );
                                 }
-                                return <div className="text-cornsilk/40 text-xs">Unranked</div>;
+                                return <div className="text-slate-500 text-xs">Unranked</div>;
                             })()}
 
-                            <div className="text-cornsilk/60">
-                                <span className="text-cornsilk font-bold">{data.match_count_requested}</span> Matches
+                            <div className="text-slate-400">
+                                <span className="text-white font-bold">{data.match_count_requested}</span> Matches
                             </div>
                         </div>
 
                         {/* Last Updated info */}
-                        <div className="mt-1 text-[10px] text-cornsilk/40">
+                        <div className="mt-1 text-[10px] text-slate-600">
                             Last updated: {new Date().toLocaleDateString()} (Cached)
                         </div>
                     </div>
@@ -167,7 +167,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                 <div className="flex flex-col items-end gap-2">
                     <button
                         onClick={onUpdate}
-                        className="bg-rose-vale hover:bg-rose-vale/90 text-cornsilk px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-rose-vale/20 flex items-center gap-2 border border-cornsilk/10"
+                        className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-blue-500/20 flex items-center gap-2 border border-white/10"
                     >
                         Update
                     </button>
@@ -180,12 +180,12 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
 
                 {/* Champion Performance Cards - Compact Grid */}
                 <div>
-                    <h3 className="text-sm font-bold text-rose-vale uppercase tracking-wider mb-3 font-serif">Champion Performance</h3>
+                    <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3">Champion Performance</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                         {per_champion && per_champion.map((champ) => (
-                            <div key={champ.champion} className="bg-dark-bg/60 border border-rose-vale/20 rounded-lg p-3 hover:bg-dark-bg hover:border-cornsilk/40 transition-all group relative overflow-hidden backdrop-blur-sm">
+                            <div key={champ.champion} className="bg-slate-800/60 border border-slate-700/50 rounded-lg p-3 hover:bg-slate-800 hover:border-blue-500/30 transition-all group relative overflow-hidden backdrop-blur-sm">
                                 {/* Subtle background gradient based on winrate */}
-                                <div className={`absolute inset-0 opacity-10 ${champ.winrate >= 0.5 ? 'bg-gradient-to-br from-sage to-transparent' : 'bg-gradient-to-br from-rose-vale to-transparent'}`}></div>
+                                <div className={`absolute inset-0 opacity-10 ${champ.winrate >= 0.5 ? 'bg-gradient-to-br from-green-500 to-transparent' : 'bg-gradient-to-br from-red-500 to-transparent'}`}></div>
 
                                 <div className="flex items-center gap-3 relative z-10">
                                     {/* Compact Portrait */}
@@ -193,10 +193,10 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                         <img
                                             src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ.champion === "FiddleSticks" ? "Fiddlesticks" : champ.champion}.png`}
                                             alt={champ.champion}
-                                            className="w-full h-full rounded-md object-cover border border-rose-vale/30 shadow-sm"
+                                            className="w-full h-full rounded-md object-cover border border-slate-600 shadow-sm"
                                             onError={(e) => { e.target.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/29.png` }}
                                         />
-                                        <div className={`absolute -bottom-1 -right-1 px-1 rounded text-[8px] font-bold border border-dark-bg shadow-sm ${champ.winrate >= 0.5 ? 'bg-sage text-dark-bg' : 'bg-rose-vale text-cornsilk'
+                                        <div className={`absolute -bottom-1 -right-1 px-1 rounded text-[8px] font-bold border border-slate-900 shadow-sm ${champ.winrate >= 0.5 ? 'bg-green-500 text-slate-900' : 'bg-red-500 text-white'
                                             }`}>
                                             {(champ.winrate * 100).toFixed(0)}%
                                         </div>
@@ -204,8 +204,8 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
 
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-center">
-                                            <h4 className="text-sm font-bold text-cornsilk truncate">{champ.champion}</h4>
-                                            <span className="text-[10px] text-cornsilk/60">{champ.games} G</span>
+                                            <h4 className="text-sm font-bold text-slate-200 truncate">{champ.champion}</h4>
+                                            <span className="text-[10px] text-slate-500">{champ.games} G</span>
                                         </div>
 
                                         {/* Mini Stats Row */}
@@ -235,7 +235,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                     <div className="flex items-center justify-between mb-4">
                         <button
                             onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                            className="flex items-center gap-2 text-xl font-bold text-cornsilk hover:text-rose-vale transition-colors font-serif"
+                            className="flex items-center gap-2 text-xl font-bold text-white hover:text-blue-400 transition-colors"
                         >
                             Match History
                             {isHistoryOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
@@ -345,12 +345,12 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
 
                             {/* Overview Card */}
                             {report.overview && (
-                                <div className="bg-white/5 border border-rose-vale/20 rounded-xl overflow-hidden shadow-lg backdrop-blur-md">
-                                    <div className="p-5 border-b border-rose-vale/20 bg-rose-vale/10 flex items-center gap-3">
-                                        <div className="w-1.5 h-6 bg-rose-vale rounded-full shadow-[0_0_8px_rgba(169,74,74,0.5)]"></div>
-                                        <h3 className="text-xl font-bold text-cornsilk font-serif">Strategic Overview</h3>
+                                <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg">
+                                    <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
+                                        <div className="w-1.5 h-6 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                                        <h3 className="text-xl font-bold text-white">Strategic Overview</h3>
                                     </div>
-                                    <div className="p-8 prose prose-invert max-w-none prose-p:text-cornsilk/80 prose-headings:text-cornsilk prose-strong:text-cornsilk prose-li:text-cornsilk/80">
+                                    <div className="p-8 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white prose-li:text-slate-300">
                                         <ReactMarkdown>{report.overview}</ReactMarkdown>
                                     </div>
                                 </div>

@@ -43,7 +43,7 @@ export default function Tooltip({ content, children, className = '' }) {
                         zIndex: 99999
                     }}
                 >
-                    <div className="bg-dark-bg border border-rose-vale/30 rounded-sm shadow-[0_0_10px_rgba(0,0,0,0.8)] p-0 min-w-[300px] max-w-[350px] text-cornsilk">
+                    <div className="bg-slate-900 border border-slate-600 rounded-sm shadow-[0_0_10px_rgba(0,0,0,0.8)] p-0 min-w-[300px] max-w-[350px] text-[#f0e6d2]">
                         {/* Header Border Line */}
                         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#c8aa6e] to-transparent opacity-50 mb-1"></div>
 
@@ -134,7 +134,7 @@ export function ItemTooltip({ itemData }) {
             {Object.keys(stats).length > 0 && (
                 <div className="space-y-1 border-t border-[#1e2328] pt-2">
                     {Object.entries(stats).map(([key, value]) => {
-                        const { icon, color, name } = getStatDisplay(key);
+                        const { color, name } = getStatDisplay(key);
                         const formattedValue = formatStatValue(key, value);
                         return (
                             <div key={key} className="text-sm flex items-center gap-2">

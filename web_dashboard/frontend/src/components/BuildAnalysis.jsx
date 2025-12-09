@@ -44,8 +44,8 @@ export default function BuildAnalysis({ match, puuid }) {
         <div className="space-y-8">
             {/* Item Build Path */}
             <div>
-                <h3 className="text-sm font-bold text-cornsilk/60 uppercase mb-3 font-serif">Item Build Path</h3>
-                <div className="flex flex-wrap gap-4 items-center bg-dark-bg/40 p-4 rounded-lg border border-rose-vale/20 backdrop-blur-sm">
+                <h3 className="text-sm font-bold text-slate-400 uppercase mb-3 font-serif">Item Build Path</h3>
+                <div className="flex flex-wrap gap-4 items-center bg-slate-900/40 p-4 rounded-lg border border-slate-700/50 backdrop-blur-sm">
                     {purchases.length === 0 && <span className="text-slate-500 text-sm">No item data available</span>}
                     {(() => {
                         // Group items by time (45s window)
@@ -69,13 +69,13 @@ export default function BuildAnalysis({ match, puuid }) {
 
                         return groups.map((group, groupIdx) => (
                             <div key={groupIdx} className="flex items-center">
-                                <div className="flex gap-2 bg-dark-bg p-2 rounded border border-rose-vale/20">
+                                <div className="flex gap-2 bg-slate-900 p-2 rounded border border-slate-700/50">
                                     {group.map((item, itemIdx) => {
                                         const itemData = getItemData(item.itemId);
                                         return (
                                             <div key={itemIdx} className="flex flex-col items-center gap-1">
                                                 <Tooltip content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
-                                                    <div className="w-10 h-10 bg-dark-bg rounded border border-rose-vale/30 overflow-hidden relative group cursor-help">
+                                                    <div className="w-10 h-10 bg-slate-900 rounded border border-slate-700 overflow-hidden relative group cursor-help">
                                                         <img src={getItemIconUrl(item.itemId)} className="w-full h-full" alt={itemData?.name || 'Item'} />
                                                         <div className="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-white">
                                                             {Math.floor(item.timestamp / 60000)}m
@@ -100,8 +100,8 @@ export default function BuildAnalysis({ match, puuid }) {
 
             {/* Skill Order - Grid Layout */}
             <div>
-                <h3 className="text-sm font-bold text-cornsilk/60 uppercase mb-3 font-serif">Skill Order</h3>
-                <div className="bg-dark-bg/40 p-4 rounded-lg border border-rose-vale/20 backdrop-blur-sm">
+                <h3 className="text-sm font-bold text-slate-400 uppercase mb-3 font-serif">Skill Order</h3>
+                <div className="bg-slate-900/40 p-4 rounded-lg border border-slate-700/50 backdrop-blur-sm">
                     <div className="space-y-1">
                         {[1, 2, 3, 4].map(skillSlot => {
                             const key = skillMap[skillSlot];
@@ -113,7 +113,7 @@ export default function BuildAnalysis({ match, puuid }) {
                                 <div key={skillSlot} className="flex items-center gap-2">
                                     {/* Ability Icon */}
                                     <Tooltip content={abilityData ? <AbilityTooltip abilityData={abilityData} /> : `Ability ${key}`}>
-                                        <div className="w-10 h-10 rounded border-2 border-rose-vale/20 overflow-hidden cursor-help shrink-0 bg-dark-bg">
+                                        <div className="w-10 h-10 rounded border-2 border-slate-700 overflow-hidden cursor-help shrink-0 bg-slate-900">
                                             {abilityIconUrl ? (
                                                 <img src={abilityIconUrl} className="w-full h-full" alt={key} />
                                             ) : (
@@ -138,8 +138,8 @@ export default function BuildAnalysis({ match, puuid }) {
                                                     <div className={clsx(
                                                         "w-7 h-7 flex items-center justify-center text-xs font-bold rounded border cursor-help",
                                                         isLeveled
-                                                            ? `${skillColors[key]} text-cornsilk border-white/30 shadow-sm`
-                                                            : "bg-dark-bg/60 text-cornsilk/30 border-rose-vale/10"
+                                                            ? `${skillColors[key]} text-white border-white/30 shadow-sm`
+                                                            : "bg-slate-900/60 text-slate-600 border-slate-700/30"
                                                     )}>
                                                         {isLeveled ? level : ''}
                                                     </div>
@@ -156,13 +156,13 @@ export default function BuildAnalysis({ match, puuid }) {
 
             {/* Runes - Full Tree Layout */}
             <div>
-                <h3 className="text-sm font-bold text-cornsilk/60 uppercase mb-3 font-serif">Runes</h3>
-                <div className="bg-dark-bg/40 p-6 rounded-lg border border-rose-vale/20 backdrop-blur-sm">
+                <h3 className="text-sm font-bold text-slate-400 uppercase mb-3 font-serif">Runes</h3>
+                <div className="bg-slate-900/40 p-6 rounded-lg border border-slate-700/50 backdrop-blur-sm">
                     <div className="flex flex-col md:flex-row gap-8 md:gap-12 justify-center">
 
                         {/* Primary Runes */}
                         <div className="flex flex-col items-center">
-                            <h4 className="text-cornsilk font-bold mb-4 text-lg tracking-wide font-serif">Primary Runes</h4>
+                            <h4 className="text-slate-200 font-bold mb-4 text-lg tracking-wide font-serif">Primary Runes</h4>
                             {(() => {
                                 const allRunes = getAllRunes();
                                 const primaryStyleId = self.perks?.styles?.[0]?.style;
@@ -184,7 +184,7 @@ export default function BuildAnalysis({ match, puuid }) {
                                                                 <div className={clsx(
                                                                     "rounded-full cursor-help transition-all duration-300 w-10 h-10 md:w-12 md:h-12",
                                                                     isSelected
-                                                                        ? "opacity-100 grayscale-0 ring-2 ring-rose-vale bg-dark-bg scale-110"
+                                                                        ? "opacity-100 grayscale-0 ring-2 ring-blue-500 bg-slate-900 scale-110"
                                                                         : "opacity-40 grayscale hover:opacity-70 hover:grayscale-0"
                                                                 )}>
                                                                     <img
@@ -206,7 +206,7 @@ export default function BuildAnalysis({ match, puuid }) {
 
                         {/* Secondary Runes */}
                         <div className="flex flex-col items-center">
-                            <h4 className="text-cornsilk font-bold mb-4 text-lg tracking-wide font-serif">Secondary</h4>
+                            <h4 className="text-slate-200 font-bold mb-4 text-lg tracking-wide font-serif">Secondary</h4>
                             {(() => {
                                 const allRunes = getAllRunes();
                                 const secondaryStyleId = self.perks?.styles?.[1]?.style;
@@ -229,7 +229,7 @@ export default function BuildAnalysis({ match, puuid }) {
                                                                 <div className={clsx(
                                                                     "w-10 h-10 md:w-12 md:h-12 rounded-full cursor-help transition-all duration-300",
                                                                     isSelected
-                                                                        ? "opacity-100 grayscale-0 ring-2 ring-rose-vale bg-dark-bg scale-110"
+                                                                        ? "opacity-100 grayscale-0 ring-2 ring-blue-500 bg-slate-900 scale-110"
                                                                         : "opacity-40 grayscale hover:opacity-70 hover:grayscale-0"
                                                                 )}>
                                                                     <img
@@ -251,7 +251,7 @@ export default function BuildAnalysis({ match, puuid }) {
 
                         {/* Stat Mods */}
                         <div className="flex flex-col items-center">
-                            <h4 className="text-cornsilk font-bold mb-4 text-lg tracking-wide font-serif">Stat Mods</h4>
+                            <h4 className="text-slate-200 font-bold mb-4 text-lg tracking-wide font-serif">Stat Mods</h4>
                             <div className="space-y-3 mt-2">
                                 {(() => {
                                     const statRows = [
@@ -304,9 +304,9 @@ export default function BuildAnalysis({ match, puuid }) {
                                                 return (
                                                     <Tooltip key={colIdx} content={<StatModTooltip statData={statData} />}>
                                                         <div className={clsx(
-                                                            "w-10 h-10 md:w-12 md:h-12 rounded-full border border-rose-vale/20 flex items-center justify-center transition-all duration-300",
+                                                            "w-10 h-10 md:w-12 md:h-12 rounded-full border border-slate-700/50 flex items-center justify-center transition-all duration-300",
                                                             isSelected
-                                                                ? "bg-dark-bg border-rose-vale opacity-100"
+                                                                ? "bg-slate-900 border-blue-500 opacity-100"
                                                                 : "bg-transparent border-transparent opacity-30 grayscale"
                                                         )}>
                                                             <img

@@ -17,28 +17,28 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
     return (
         <div className={clsx(
             "flex flex-col md:flex-row items-stretch rounded-lg border-l-4 mb-2 shadow-sm transition-all hover:shadow-md h-auto md:h-28 relative group backdrop-blur-sm",
-            win ? "bg-sage/10 border-sage" : "bg-rose-vale/10 border-rose-vale",
-            isReviewCandidate && "ring-1 ring-cornsilk/50",
-            match.tags?.includes("Weak Link") && "ring-2 ring-rose-vale shadow-[0_0_15px_rgba(169,74,74,0.4)]"
+            win ? "bg-blue-500/10 border-blue-500 bg-gradient-to-r from-blue-500/5 to-transparent" : "bg-red-500/10 border-red-500 bg-gradient-to-r from-red-500/5 to-transparent",
+            isReviewCandidate && "ring-1 ring-slate-400/50",
+            match.tags?.includes("Weak Link") && "ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
         )}>
             {/* Review Candidate Badge */}
             {isReviewCandidate && (
-                <div className="absolute -top-2.5 left-4 bg-cornsilk text-dark-bg text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-rose-vale/20">
+                <div className="absolute -top-2.5 left-4 bg-slate-200 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-blue-500/20">
                     <Trophy size={10} />
                     {reviewReason || "Review Recommended"}
                 </div>
             )}
 
             {/* Game Info */}
-            <div className="w-full md:w-28 p-2 flex flex-col justify-center text-xs text-cornsilk/60 shrink-0 border-b md:border-b-0 md:border-r border-rose-vale/10">
-                <div className={clsx("font-bold mb-0.5", win ? "text-sage" : "text-rose-vale")}>
+            <div className="w-full md:w-28 p-2 flex flex-col justify-center text-xs text-slate-400 shrink-0 border-b md:border-b-0 md:border-r border-slate-700">
+                <div className={clsx("font-bold mb-0.5", win ? "text-blue-400" : "text-red-400")}>
                     {match.game_mode}
                 </div>
                 <div className="mb-0.5">{new Date(match.game_creation).toLocaleDateString()}</div>
                 <div className="flex items-center gap-1 mb-1">
-                    <div className={clsx("w-8 h-0.5 rounded", win ? "bg-sage" : "bg-rose-vale")}></div>
+                    <div className={clsx("w-8 h-0.5 rounded", win ? "bg-blue-500" : "bg-red-500")}></div>
                 </div>
-                <div className="font-bold text-cornsilk/80">{win ? "Victory" : "Defeat"}</div>
+                <div className={clsx("font-bold", win ? "text-blue-300" : "text-red-300")}>{win ? "Victory" : "Defeat"}</div>
                 <div>{durationMin}m {durationSec}s</div>
 
                 {/* Performance Tags */}
@@ -47,12 +47,12 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                         {match.tags.map(tag => (
                             <span key={tag} className={clsx(
                                 "text-[9px] px-1 rounded font-bold",
-                                tag === "Hyper Carry" ? "bg-cornsilk/20 text-cornsilk" :
-                                    tag === "Ace in Defeat" ? "bg-rose-vale/20 text-cornsilk" :
-                                        tag === "Weak Link" ? "bg-rose-vale/20 text-rose-vale" :
-                                            tag === "Stomp" ? "bg-sage/20 text-sage" :
-                                                tag === "Passenger" ? "bg-dark-bg/40 text-cornsilk/40" :
-                                                    "bg-dark-bg/40 text-cornsilk/60"
+                                tag === "Hyper Carry" ? "bg-blue-500/20 text-blue-300" :
+                                    tag === "Ace in Defeat" ? "bg-red-500/20 text-red-300" :
+                                        tag === "Weak Link" ? "bg-red-500/10 text-red-500" :
+                                            tag === "Stomp" ? "bg-blue-500/20 text-blue-500 border border-blue-500/30" :
+                                                tag === "Passenger" ? "bg-slate-700/40 text-slate-500" :
+                                                    "bg-slate-800 text-slate-400"
                             )}>
                                 {tag}
                             </span>
