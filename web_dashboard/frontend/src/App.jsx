@@ -79,7 +79,7 @@ function App() {
       // Refresh data
       // We need to re-fetch the specific file. 
       // Since the filename usually stays the same if riot_id is same, just re-call handleSelect
-      handleSelect(filename || selectedFile);
+      handleSelect(selectedFile);
     } catch (err) {
       console.error(err);
       alert('Update failed');
