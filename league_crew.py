@@ -2,11 +2,18 @@
 
 import os
 import json
+import hashlib
+from pathlib import Path
 from typing import Any, Dict, List
 
 from openai import OpenAI
 import requests
 from functools import lru_cache
+
+# --- Configuration ---
+SCRIPT_DIR = Path(__file__).resolve().parent
+CACHE_DIR = SCRIPT_DIR / "saves" / "cache"
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 # --- Item Name Resolution Helpers ---
 
@@ -140,12 +147,12 @@ def _build_crew_prompt(agent_payload: Dict[str, Any]) -> str:
 
     # Serialize slices of the payload as compact JSON for the model to inspect.
     # This keeps the prompt deterministic and avoids giant walls of prose.
-    summary_json = json.dumps(summary, ensure_ascii=False, indent=2)
-    per_champ_json = json.dumps(per_champion, ensure_ascii=False, indent=2)
-    loss_patterns_json = json.dumps(loss_patterns, ensure_ascii=False, indent=2)
-    baseline_json = json.dumps(baseline, ensure_ascii=False, indent=2)
-    you_vs_team_json = json.dumps(you_vs_team, ensure_ascii=False, indent=2)
-    per_game_loss_json = json.dumps(per_game_loss, ensure_ascii=False, indent=2)
+    summary_json = json.dumps(summary, ensure_ascii=False, separators=(',', ':'))
+    per_champ_json = json.dumps(per_champion, ensure_ascii=False, separators=(',', ':'))
+    loss_patterns_json = json.dumps(loss_patterns, ensure_ascii=False, separators=(',', ':'))
+    baseline_json = json.dumps(baseline, ensure_ascii=False, separators=(',', ':'))
+    you_vs_team_json = json.dumps(you_vs_team, ensure_ascii=False, separators=(',', ':'))
+    per_game_loss_json = json.dumps(per_game_loss, ensure_ascii=False, separators=(',', ':'))
     # Filter movement summaries to remove heavy coordinate data not needed by LLM
     movement_for_llm = []
     for m in movement:
@@ -164,14 +171,14 @@ def _build_crew_prompt(agent_payload: Dict[str, Any]) -> str:
         clean_m.pop("team_gold_diff", None)
         movement_for_llm.append(clean_m)
 
-    timeline_json = json.dumps(timeline_diag, ensure_ascii=False, indent=2)
-    movement_json = json.dumps(movement_for_llm, ensure_ascii=False, indent=2)
-    patch_summary_json = json.dumps(patch_summary, ensure_ascii=False, indent=2)
-    champion_profiles_json = json.dumps(champion_profiles, ensure_ascii=False, indent=2)
-    macro_profile_json = json.dumps(macro_profile, ensure_ascii=False, indent=2)
-    per_game_comp_json = json.dumps(per_game_comp, ensure_ascii=False, indent=2)
-    itemization_profile_json = json.dumps(itemization_profile, ensure_ascii=False, indent=2)
-    per_game_items_json = json.dumps(per_game_items, ensure_ascii=False, indent=2)
+    timeline_json = json.dumps(timeline_diag, ensure_ascii=False, separators=(',', ':'))
+    movement_json = json.dumps(movement_for_llm, ensure_ascii=False, separators=(',', ':'))
+    patch_summary_json = json.dumps(patch_summary, ensure_ascii=False, separators=(',', ':'))
+    champion_profiles_json = json.dumps(champion_profiles, ensure_ascii=False, separators=(',', ':'))
+    macro_profile_json = json.dumps(macro_profile, ensure_ascii=False, separators=(',', ':'))
+    per_game_comp_json = json.dumps(per_game_comp, ensure_ascii=False, separators=(',', ':'))
+    itemization_profile_json = json.dumps(itemization_profile, ensure_ascii=False, separators=(',', ':'))
+    per_game_items_json = json.dumps(per_game_items, ensure_ascii=False, separators=(',', ':'))
 
     prompt = f"""
 You are a **League of Legends multi-agent coaching crew** analyzing a player's recent ranked games.
@@ -435,10 +442,23 @@ def call_league_crew(agent_payload: Dict[str, Any]) -> Dict[str, str]:
             "OPENAI_API_KEY is not set. Please add it to your .env or environment."
         )
 
-    client = OpenAI(api_key=api_key)
     model_name = _get_openai_model_name()
-    
     prompt = _build_crew_prompt(agent_payload)
+
+    # --- Caching Strategy ---
+    # We hash the full prompt. If we've seen this exact context before, reuse the result.
+    prompt_hash = hashlib.md5(prompt.encode("utf-8")).hexdigest()
+    cache_file = CACHE_DIR / f"crew_{prompt_hash}.json"
+
+    if cache_file.exists():
+        try:
+            with open(cache_file, "r", encoding="utf-8") as f:
+                print(f"   [AI] Cache Hit! Loading {cache_file.name}")
+                return json.load(f)
+        except Exception:
+            print("   [AI] Cache Corrupted, re-running...")
+
+    client = OpenAI(api_key=api_key)
 
     try:
         response = client.chat.completions.create(
@@ -475,6 +495,14 @@ def call_league_crew(agent_payload: Dict[str, Any]) -> Dict[str, str]:
         for key in required_keys:
             if key not in coaching_json:
                 coaching_json[key] = ""
+        
+        # Save to cache if successful
+        try:
+            with open(cache_file, "w", encoding="utf-8") as f:
+                json.dump(coaching_json, f, indent=2)
+        except Exception as e:
+            print(f"[AI] Error saving cache: {e}")
+
         return coaching_json
 
     # Fallback: treat the whole text as overview
@@ -861,6 +889,19 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dic
         
     prompt = _build_single_game_prompt(full_match_data)
     
+    # --- Caching Strategy ---
+    prompt_hash = hashlib.md5(prompt.encode("utf-8")).hexdigest()
+    # Include match_id in filename for easier manual inspection if needed
+    cache_file = CACHE_DIR / f"game_{match_id}_{prompt_hash}.json"
+
+    if cache_file.exists():
+        try:
+            with open(cache_file, "r", encoding="utf-8") as f:
+                print(f"   [AI] Game Cache Hit! Loading {cache_file.name}")
+                return json.load(f)
+        except Exception:
+            pass
+
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         return {"story": "Error: OPENAI_API_KEY not set.", "mistakes": "", "build_vision": "", "verdict": ""}
@@ -882,21 +923,31 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dic
         # Attempt to parse JSON using helper
         data = _extract_json_from_text(text)
         
+        result = {}
         if data:
-            return {
+            result = {
                 "story": data.get("story", text),
                 "mistakes": data.get("mistakes", ""),
                 "build_vision": data.get("build_vision", ""),
                 "verdict": data.get("verdict", "")
             }
+        else:
+            # Fallback if no JSON found
+            result = {
+                "story": text,
+                "mistakes": "",
+                "build_vision": "",
+                "verdict": ""
+            }
 
-        # Fallback if no JSON found
-        return {
-            "story": text,
-            "mistakes": "",
-            "build_vision": "",
-            "verdict": ""
-        }
+        # Save to cache
+        try:
+            with open(cache_file, "w", encoding="utf-8") as f:
+                json.dump(result, f, indent=2)
+        except Exception as e:
+            print(f"[AI] Error saving game cache: {e}")
+            
+        return result
             
     except Exception as e:
         return {

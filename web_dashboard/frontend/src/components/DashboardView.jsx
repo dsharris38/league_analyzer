@@ -8,7 +8,7 @@ import { ArrowLeft, ChevronDown, ChevronUp, Filter, Search, X } from 'lucide-rea
 import config from '../config';
 import { getVersion } from '../utils/dataDragon';
 
-export default function DashboardView({ data, filename, onBack }) {
+export default function DashboardView({ data, filename, onBack, onUpdate }) {
     const { analysis, coaching_report_markdown } = data;
     const version = getVersion();
 
@@ -153,10 +153,24 @@ export default function DashboardView({ data, filename, onBack }) {
                             })()}
 
                             <div className="text-slate-500">
-                                <span className="text-white font-bold">{data.match_count_requested}</span> Games Analyzed
+                                <span className="text-white font-bold">{data.match_count_requested}</span> Matches
                             </div>
                         </div>
+
+                        {/* Last Updated info */}
+                        <div className="mt-1 text-[10px] text-slate-500">
+                            Last updated: {new Date().toLocaleDateString()} (Cached)
+                        </div>
                     </div>
+                </div>
+
+                <div className="flex flex-col items-end gap-2">
+                    <button
+                        onClick={onUpdate}
+                        className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-blue-500/20 flex items-center gap-2"
+                    >
+                        Update
+                    </button>
                 </div>
             </div>
 

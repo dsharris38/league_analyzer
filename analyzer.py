@@ -415,12 +415,12 @@ def analyze_matches(
         "games": total_games,
         "wins": wins,
         "losses": losses,
-        "winrate": winrate,
-        "avg_kda": _safe_mean(kdas),
-        "avg_damage_share": _safe_mean(dmg_shares),
-        "avg_gold_share": _safe_mean(gold_shares),
-        "avg_cs_per_min": _safe_mean(cs_per_min_list),
-        "avg_kp": _safe_mean(kp_list),
+        "winrate": round(winrate, 2),
+        "avg_kda": round(_safe_mean(kdas), 2),
+        "avg_damage_share": round(_safe_mean(dmg_shares), 3),
+        "avg_gold_share": round(_safe_mean(gold_shares), 3),
+        "avg_cs_per_min": round(_safe_mean(cs_per_min_list), 2),
+        "avg_kp": round(_safe_mean(kp_list), 3),
     }
 
     # --- Detect primary role across games ------------------------------------
@@ -443,11 +443,11 @@ def analyze_matches(
         champ_entry = {
             "champion": champ_name,
             "games": games,
-            "winrate": data["wins"] / games if games > 0 else 0.0,
-            "avg_kda": data["total_kda"] / games if games > 0 else 0.0,
-            "cs_per_min": data["total_cs_per_min"] / games if games > 0 else 0.0,
-            "dmg_share": data["total_dmg_share"] / games if games > 0 else 0.0,
-            "avg_kp": data["total_kp"] / games if games > 0 else 0.0,
+            "winrate": round(data["wins"] / games, 2) if games > 0 else 0.0,
+            "avg_kda": round(data["total_kda"] / games, 2) if games > 0 else 0.0,
+            "cs_per_min": round(data["total_cs_per_min"] / games, 2) if games > 0 else 0.0,
+            "dmg_share": round(data["total_dmg_share"] / games, 3) if games > 0 else 0.0,
+            "avg_kp": round(data["total_kp"] / games, 3) if games > 0 else 0.0,
         }
         per_champion_stats.append(champ_entry)
 
