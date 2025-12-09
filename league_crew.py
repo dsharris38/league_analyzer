@@ -4,7 +4,7 @@ import os
 import json
 from typing import Any, Dict, List
 
-import google.generativeai as genai
+from openai import OpenAI
 import requests
 from functools import lru_cache
 
@@ -42,19 +42,63 @@ def _get_item_name(item_id: int) -> str:
     return item_map.get(str(item_id), f"Item {item_id}")
 
 
-
-def _get_gemini_model_name() -> str:
+def _extract_json_from_text(text: str) -> Dict[str, Any] | None:
     """
-    Get the Gemini model name from the environment, with a safe default.
-
-    You *must* set GEMINI_MODEL_NAME in your .env to a valid model string
-    for your google-generativeai version, e.g.:
-
-      GEMINI_MODEL_NAME=gemini-2.5-flash
-
-    If it's missing, we fall back to "gemini-2.5-flash".
+    Robustly extract the first valid JSON object from a text string.
+    Handles multiple blocks, markdown wrapping, and trailing garbage.
     """
-    return os.getenv("GEMINI_MODEL_NAME", "gemini-2.5-flash")
+    text = text.strip()
+    
+    # Try direct parse
+    try:
+        return json.loads(text, strict=False)
+    except Exception:
+        pass
+
+    start_idx = text.find('{')
+    if start_idx != -1:
+        # Strategy 1: First { to Last }
+        end_idx = text.rfind('}')
+        if end_idx != -1:
+            try:
+                candidate = text[start_idx : end_idx + 1]
+                return json.loads(candidate, strict=False)
+            except Exception:
+                pass
+
+        # Strategy 2: Iterative approach for nested/multiple checks
+        balance = 0
+        for i in range(start_idx, len(text)):
+            char = text[i]
+            if char == '{':
+                balance += 1
+            elif char == '}':
+                balance -= 1
+                if balance == 0:
+                    try:
+                        candidate = text[start_idx : i + 1]
+                        return json.loads(candidate, strict=False)
+                    except Exception:
+                        pass
+    
+    # Fallback regex (rarely needed if above logic is good, but good redundancy)
+    import re
+    json_match = re.search(r'\{.*\}', text, re.DOTALL)
+    if json_match:
+        try:
+            return json.loads(json_match.group(0), strict=False)
+        except Exception:
+            pass
+            
+    return None
+
+
+
+def _get_openai_model_name() -> str:
+    """
+    Get the OpenAI model name from environment, default to gpt-4o-mini.
+    """
+    return os.getenv("OPENAI_MODEL_NAME", "gpt-4o-mini")
 
 
 def _build_crew_prompt(agent_payload: Dict[str, Any]) -> str:
@@ -382,33 +426,33 @@ Expected format:
 
 def call_league_crew(agent_payload: Dict[str, Any]) -> Dict[str, str]:
     """
-    Call Gemini once with a multi-agent-style prompt and return the coaching dict.
-
-    `agent_payload` should be the Python dict corresponding to the JSON you print
-    between BEGIN/END LEAGUE ANALYZER JSON in main.py.
+    Call OpenAI once with a multi-agent-style prompt and return the coaching dict.
     """
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
+        # Fallback to verify if GEMINI key is still around? No, we switched.
         raise RuntimeError(
-            "GEMINI_API_KEY is not set. Please add it to your .env or environment."
+            "OPENAI_API_KEY is not set. Please add it to your .env or environment."
         )
 
-    genai.configure(api_key=api_key)
-
-    model_name = _get_gemini_model_name()
-    model = genai.GenerativeModel(model_name)
-    # Force JSON response if supported by the model/lib version, otherwise we rely on prompt engineering
-    # generation_config = {"response_mime_type": "application/json"} 
+    client = OpenAI(api_key=api_key)
+    model_name = _get_openai_model_name()
     
     prompt = _build_crew_prompt(agent_payload)
 
     try:
-        response = model.generate_content(prompt)
-        coaching_text = getattr(response, "text", "") or ""
+        response = client.chat.completions.create(
+            model=model_name,
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            response_format={"type": "json_object"} # GPT-4o supports this for guaranteed strict JSON
+        )
+        coaching_text = response.choices[0].message.content or ""
         coaching_text = coaching_text.strip()
     except Exception as e:
         return {
-            "overview": f"Error calling Gemini: {e}",
+            "overview": f"Error calling OpenAI: {e}",
             "champion_feedback": "",
             "itemization_tips": "",
             "goals": ""
@@ -422,24 +466,16 @@ def call_league_crew(agent_payload: Dict[str, Any]) -> Dict[str, str]:
             "goals": ""
         }
 
-    # Attempt to parse JSON
-    # Sometimes models wrap JSON in ```json ... ``` or add text before the JSON
-    # Attempt to parse JSON with Regex which is more robust
-    import re
-    json_match = re.search(r'\{.*\}', coaching_text, re.DOTALL)
+    # Attempt to parse JSON using helper
+    coaching_json = _extract_json_from_text(coaching_text)
     
-    if json_match:
-        try:
-            coaching_json = json.loads(json_match.group(0))
-            if isinstance(coaching_json, dict):
-                # Ensure all required keys exist
-                required_keys = ["overview", "champion_feedback", "itemization_tips", "goals"]
-                for key in required_keys:
-                    if key not in coaching_json:
-                        coaching_json[key] = ""
-                return coaching_json
-        except Exception:
-            pass
+    if coaching_json and isinstance(coaching_json, dict):
+        # Ensure all required keys exist
+        required_keys = ["overview", "champion_feedback", "itemization_tips", "goals"]
+        for key in required_keys:
+            if key not in coaching_json:
+                coaching_json[key] = ""
+        return coaching_json
 
     # Fallback: treat the whole text as overview
     return {
@@ -519,6 +555,28 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
 
         # --- TAGGING LOGIC ---
 
+        # 1. Lane Opponent Analysis
+        lane_opponent = None
+        if self_p.get("teamPosition") != "UTILITY": # Skip for support for now as lane opponent is fuzzy
+            lane_opponent = next((p for p in d_match["participants"] 
+                                  if p.get("teamPosition") == self_p.get("teamPosition") 
+                                  and p.get("teamId") != self_p.get("teamId")), None)
+        
+        opponent_gap = False
+        if lane_opponent:
+            opp_kda = (lane_opponent.get("kills", 0) + lane_opponent.get("assists", 0)) / max(1, lane_opponent.get("deaths", 0))
+            opp_gold = lane_opponent.get("goldEarned", 0)
+            my_gold = self_p.get("goldEarned", 0)
+            
+            # If opponent has 20% more gold and high KDA while you struggled
+            if opp_gold > my_gold * 1.2 and opp_kda > 4.0 and kda < 2.0:
+                opponent_gap = True
+
+        # 2. Objective Death Analysis
+        bad_death = False
+        if "got_picked_before_objective" in loss_tags:
+            bad_death = True
+
         if is_win:
             if kda > 4.0 and kp > 0.55 and dmg_share > 0.25:
                 tags.append("Hyper Carry")
@@ -530,32 +588,59 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
                 tags.append("Solid Win")
         else:
             # Losses
-            if "threw_lead" in loss_tags or max_lead > 2000:
+            
+            # A. Throw Detection
+            if "threw_lead" in loss_tags or max_lead > 2500:
                 tags.append("Throw")
                 reasons.append("Threw significant lead")
-            elif kp > 0.50 and kda > 2.5: # Lowered KDA req slightly for Ace
-                tags.append("Ace in Defeat") # High Agency Loss
+            
+            # B. Ace in Defeat (High Agency)
+            elif kp > 0.50 and kda > 2.5: 
+                tags.append("Ace in Defeat") 
                 reasons.append("High Agency Loss (Strong performance but lost)")
-            elif deaths >= 10 or (kp < 0.25 and dmg_share < 0.15): # Stricter Weak Link
-                tags.append("Weak Link") # High Blame Loss
-                
-                # Dynamic Reason Generation
-                blame_reasons = []
-                if deaths >= 10:
-                    blame_reasons.append(f"High Deaths ({int(deaths)})")
-                if kp < 0.25:
-                    blame_reasons.append("Low Participation")
-                if dmg_share < 0.15:
-                    blame_reasons.append("Low Damage")
-                
-                reason_str = ", ".join(blame_reasons) if blame_reasons else "Poor Performance"
-                reasons.append(f"High Blame Loss ({reason_str})")
-            elif early_min < -2000:
+            
+            # C. Lane Gap (Specific to laning phase)
+            elif opponent_gap:
+                tags.append("Lane Gap")
+                reasons.append(f"Gap vs {lane_opponent.get('champion_name')} (Opponent snowballed)")
+
+            # D. Bad Death (Objective)
+            elif bad_death:
+                tags.append("Bad Death")
+                reasons.append("Died before key objective (Costly mistake)")
+
+            # E. Early Game Deficit (Gold @ 10-15m)
+            elif early_min < -1500:
                 tags.append("Early Gap")
-            elif kda > 1.5 and kp > 0.25: # Decent performance but lost
-                tags.append("Team Gap")
-            else:
-                tags.append("Tough Loss")
+                reasons.append("Fell behind early (>1.5k gold deficit)")
+
+            # F. High Blame / Weak Link (Nuanced)
+            # Conditions:
+            # 1. Feeding: High deaths AND low KDA
+            # 2. Invisible: Low KP AND Low Damage (Role adjusted)
+            
+            is_support = self_p.get("teamPosition") == "UTILITY"
+            
+            # Feeding Check
+            if deaths >= 11 and kda < 1.5:
+                tags.append("Feeding")
+                reasons.append(f"High Deaths ({int(deaths)}) with low impact")
+            
+            # Invisible Check
+            # Supports allowed lower damage, but need decent KP
+            kp_thresh = 0.35 if is_support else 0.25
+            dmg_thresh = 0.05 if is_support else 0.15
+            
+            if kp < kp_thresh and dmg_share < dmg_thresh:
+                tags.append("Invisible")
+                reasons.append("Low Participation & Impact")
+            
+            # If no specific tag yet, but still a loss
+            if not tags:
+                if kda > 1.5 and kp > 0.30:
+                    tags.append("Team Gap") # You did okay
+                else:
+                    tags.append("Tough Loss") # Generic bad game
 
         # Store tags
         match_tags[mid] = tags
@@ -566,7 +651,7 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
                 "match_id": mid,
                 "champion": self_p.get("champion_name"),
                 "reasons": reasons,
-                "score": len(reasons) + (1 if "Ace in Defeat" in tags else 0)
+                "score": len(reasons) + (2 if "Lane Gap" in tags or "Feeding" in tags or "Bad Death" in tags else 0)
             })
             
     # Sort by score (most interesting first)
@@ -768,7 +853,7 @@ Return a **valid JSON object** with the following keys. Each value must be a Mar
 
 def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dict[str, str]:
     """
-    Run a deep-dive analysis on a single game using Gemini.
+    Run a deep-dive analysis on a single game using OpenAI.
     Returns a structured dict with keys: story, mistakes, build_vision, verdict.
     """
     if not full_match_data:
@@ -776,36 +861,36 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dic
         
     prompt = _build_single_game_prompt(full_match_data)
     
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
-        return {"story": "Error: GEMINI_API_KEY not set.", "mistakes": "", "build_vision": "", "verdict": ""}
+        return {"story": "Error: OPENAI_API_KEY not set.", "mistakes": "", "build_vision": "", "verdict": ""}
         
-    genai.configure(api_key=api_key)
-    model_name = _get_gemini_model_name()
-    model = genai.GenerativeModel(model_name)
+    client = OpenAI(api_key=api_key)
+    model_name = _get_openai_model_name()
     
     try:
-        response = model.generate_content(prompt)
-        text = getattr(response, "text", "") or ""
+        response = client.chat.completions.create(
+            model=model_name,
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            response_format={"type": "json_object"}
+        )
+        text = response.choices[0].message.content or ""
         text = text.strip()
         
-        # Attempt to parse JSON
-        import re
-        json_match = re.search(r'\{.*\}', text, re.DOTALL)
+        # Attempt to parse JSON using helper
+        data = _extract_json_from_text(text)
         
-        if json_match:
-            try:
-                data = json.loads(json_match.group(0))
-                return {
-                    "story": data.get("story", text),
-                    "mistakes": data.get("mistakes", ""),
-                    "build_vision": data.get("build_vision", ""),
-                    "verdict": data.get("verdict", "")
-                }
-            except json.JSONDecodeError:
-                pass
+        if data:
+            return {
+                "story": data.get("story", text),
+                "mistakes": data.get("mistakes", ""),
+                "build_vision": data.get("build_vision", ""),
+                "verdict": data.get("verdict", "")
+            }
 
-        # Fallback if no JSON found or parse failed
+        # Fallback if no JSON found
         return {
             "story": text,
             "mistakes": "",
