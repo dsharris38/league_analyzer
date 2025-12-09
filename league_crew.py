@@ -444,19 +444,25 @@ def call_league_crew(agent_payload: Dict[str, Any]) -> Dict[str, str]:
 
     model_name = _get_openai_model_name()
     prompt = _build_crew_prompt(agent_payload)
+    if not isinstance(prompt, str):
+        prompt = str(prompt)
 
     # --- Caching Strategy ---
     # We hash the full prompt. If we've seen this exact context before, reuse the result.
-    prompt_hash = hashlib.md5(prompt.encode("utf-8")).hexdigest()
-    cache_file = CACHE_DIR / f"crew_{prompt_hash}.json"
+    try:
+        prompt_hash = hashlib.md5(prompt.encode("utf-8")).hexdigest()
+        cache_file = CACHE_DIR / f"crew_{prompt_hash}.json"
 
-    if cache_file.exists():
-        try:
-            with open(cache_file, "r", encoding="utf-8") as f:
-                print(f"   [AI] Cache Hit! Loading {cache_file.name}")
-                return json.load(f)
-        except Exception:
-            print("   [AI] Cache Corrupted, re-running...")
+        if cache_file.exists():
+            try:
+                with open(cache_file, "r", encoding="utf-8") as f:
+                    print(f"   [AI] Cache Hit! Loading {cache_file.name}")
+                    return json.load(f)
+            except Exception:
+                print("   [AI] Cache Corrupted, re-running...")
+    except Exception as e:
+        print(f"   [AI] Caching Error (skipping cache): {e}")
+        # Continue without caching if hashing or path fails
 
     client = OpenAI(api_key=api_key)
 

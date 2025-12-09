@@ -415,12 +415,12 @@ def analyze_matches(
         "games": total_games,
         "wins": wins,
         "losses": losses,
-        "winrate": round(winrate, 2),
-        "avg_kda": round(_safe_mean(kdas), 2),
-        "avg_damage_share": round(_safe_mean(dmg_shares), 3),
-        "avg_gold_share": round(_safe_mean(gold_shares), 3),
-        "avg_cs_per_min": round(_safe_mean(cs_per_min_list), 2),
-        "avg_kp": round(_safe_mean(kp_list), 3),
+        "winrate": round(float(winrate), 2),
+        "avg_kda": round(float(_safe_mean(kdas) or 0.0), 2),
+        "avg_damage_share": round(float(_safe_mean(dmg_shares) or 0.0), 3),
+        "avg_gold_share": round(float(_safe_mean(gold_shares) or 0.0), 3),
+        "avg_cs_per_min": round(float(_safe_mean(cs_per_min_list) or 0.0), 2),
+        "avg_kp": round(float(_safe_mean(kp_list) or 0.0), 3),
     }
 
     # --- Detect primary role across games ------------------------------------
