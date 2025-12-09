@@ -43,7 +43,7 @@ export default function Tooltip({ content, children, className = '' }) {
                         zIndex: 99999
                     }}
                 >
-                    <div className="bg-[#010a13] border border-[#785a28] rounded-sm shadow-[0_0_10px_rgba(0,0,0,0.8)] p-0 min-w-[300px] max-w-[350px] text-[#c8aa6e]">
+                    <div className="bg-dark-bg border border-rose-vale/30 rounded-sm shadow-[0_0_10px_rgba(0,0,0,0.8)] p-0 min-w-[300px] max-w-[350px] text-cornsilk">
                         {/* Header Border Line */}
                         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#c8aa6e] to-transparent opacity-50 mb-1"></div>
 
@@ -73,7 +73,7 @@ export function TooltipContent({ title, description, stats }) {
 
     return (
         <div className="space-y-2">
-            {title && <div className="font-bold text-[#f0e6d2]">{title}</div>}
+            {title && <div className="font-bold text-cornsilk">{title}</div>}
             {cleanDescription && (
                 <div className="text-[#a09b8c] text-xs leading-relaxed">
                     {cleanDescription}
@@ -231,7 +231,7 @@ export function StatModTooltip({ statData }) {
     return (
         <div className="space-y-3 font-sans">
             {/* Header */}
-            <div className="text-[#f0e6d2] font-bold text-lg tracking-wide">{statData.name}</div>
+            <div className="text-cornsilk font-bold text-lg tracking-wide">{statData.name}</div>
 
             {/* Description */}
             <div className="text-sm leading-relaxed text-[#a09b8c] border-t border-[#1e2328] pt-2">

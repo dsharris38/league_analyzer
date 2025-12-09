@@ -16,29 +16,29 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
 
     return (
         <div className={clsx(
-            "flex flex-col md:flex-row items-stretch rounded-lg border-l-4 mb-2 shadow-sm transition-all hover:shadow-md h-auto md:h-28 relative group",
-            win ? "bg-blue-900/20 border-blue-500" : "bg-red-900/20 border-red-500",
-            isReviewCandidate && "ring-1 ring-purple-500/50",
-            match.tags?.includes("Weak Link") && "ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+            "flex flex-col md:flex-row items-stretch rounded-lg border-l-4 mb-2 shadow-sm transition-all hover:shadow-md h-auto md:h-28 relative group backdrop-blur-sm",
+            win ? "bg-sage/10 border-sage" : "bg-rose-vale/10 border-rose-vale",
+            isReviewCandidate && "ring-1 ring-cornsilk/50",
+            match.tags?.includes("Weak Link") && "ring-2 ring-rose-vale shadow-[0_0_15px_rgba(169,74,74,0.4)]"
         )}>
             {/* Review Candidate Badge */}
             {isReviewCandidate && (
-                <div className="absolute -top-2.5 left-4 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1">
+                <div className="absolute -top-2.5 left-4 bg-cornsilk text-dark-bg text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-rose-vale/20">
                     <Trophy size={10} />
                     {reviewReason || "Review Recommended"}
                 </div>
             )}
 
             {/* Game Info */}
-            <div className="w-full md:w-28 p-2 flex flex-col justify-center text-xs text-slate-400 shrink-0 border-b md:border-b-0 md:border-r border-white/5">
-                <div className={clsx("font-bold mb-0.5", win ? "text-blue-400" : "text-red-400")}>
+            <div className="w-full md:w-28 p-2 flex flex-col justify-center text-xs text-cornsilk/60 shrink-0 border-b md:border-b-0 md:border-r border-rose-vale/10">
+                <div className={clsx("font-bold mb-0.5", win ? "text-sage" : "text-rose-vale")}>
                     {match.game_mode}
                 </div>
                 <div className="mb-0.5">{new Date(match.game_creation).toLocaleDateString()}</div>
                 <div className="flex items-center gap-1 mb-1">
-                    <div className={clsx("w-8 h-0.5 rounded", win ? "bg-blue-500" : "bg-red-500")}></div>
+                    <div className={clsx("w-8 h-0.5 rounded", win ? "bg-sage" : "bg-rose-vale")}></div>
                 </div>
-                <div className="font-bold text-slate-300">{win ? "Victory" : "Defeat"}</div>
+                <div className="font-bold text-cornsilk/80">{win ? "Victory" : "Defeat"}</div>
                 <div>{durationMin}m {durationSec}s</div>
 
                 {/* Performance Tags */}
@@ -47,12 +47,12 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                         {match.tags.map(tag => (
                             <span key={tag} className={clsx(
                                 "text-[9px] px-1 rounded font-bold",
-                                tag === "Hyper Carry" ? "bg-yellow-500/20 text-yellow-400" :
-                                    tag === "Ace in Defeat" ? "bg-orange-500/20 text-orange-400" :
-                                        tag === "Weak Link" ? "bg-red-500/20 text-red-400" :
-                                            tag === "Stomp" ? "bg-green-500/20 text-green-400" :
-                                                tag === "Passenger" ? "bg-slate-500/20 text-slate-400" :
-                                                    "bg-slate-700/40 text-slate-400"
+                                tag === "Hyper Carry" ? "bg-cornsilk/20 text-cornsilk" :
+                                    tag === "Ace in Defeat" ? "bg-rose-vale/20 text-cornsilk" :
+                                        tag === "Weak Link" ? "bg-rose-vale/20 text-rose-vale" :
+                                            tag === "Stomp" ? "bg-sage/20 text-sage" :
+                                                tag === "Passenger" ? "bg-dark-bg/40 text-cornsilk/40" :
+                                                    "bg-dark-bg/40 text-cornsilk/60"
                             )}>
                                 {tag}
                             </span>
@@ -70,9 +70,9 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                         <img
                             src={getChampionIconUrl(self.champion_name)}
                             alt={self.champion_name}
-                            className="w-12 h-12 md:w-14 md:h-14 rounded border-2 border-slate-700"
+                            className="w-12 h-12 md:w-14 md:h-14 rounded border-2 border-rose-vale/30"
                         />
-                        <div className="absolute -bottom-1 -right-1 bg-slate-800 text-[10px] rounded-full w-5 h-5 flex items-center justify-center border border-slate-600">
+                        <div className="absolute -bottom-1 -right-1 bg-dark-bg text-[10px] rounded-full w-5 h-5 flex items-center justify-center border border-rose-vale/20 text-cornsilk">
                             {self.champ_level || 18}
                         </div>
                     </div>
@@ -98,22 +98,22 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
 
                 {/* KDA - Fixed Width */}
                 <div className="flex flex-col items-center md:items-start w-full md:w-32 shrink-0">
-                    <div className="text-base font-bold text-white">
+                    <div className="text-base font-bold text-cornsilk font-serif">
                         <span>{self.kills}</span>
-                        <span className="text-slate-500 mx-1">/</span>
-                        <span className="text-red-400">{self.deaths}</span>
-                        <span className="text-slate-500 mx-1">/</span>
+                        <span className="text-rose-vale mx-1">/</span>
+                        <span className="text-rose-vale">{self.deaths}</span>
+                        <span className="text-rose-vale mx-1">/</span>
                         <span>{self.assists}</span>
                     </div>
-                    <div className="text-xs text-slate-400">
+                    <div className="text-xs text-cornsilk/60">
                         {self.kda}:1 KDA
                     </div>
                 </div>
 
                 {/* CS & Vision - Fixed Width */}
-                <div className="text-xs text-slate-400 text-center md:text-left w-full md:w-32 shrink-0">
-                    <div className="text-slate-300">CS {self.cs} ({self.cs_per_min})</div>
-                    <div className="text-red-400">P/Kill {Math.round(((self.kills + self.assists) / Math.max(1, team100.includes(self) ? team100.reduce((a, b) => a + b.kills, 0) : team200.reduce((a, b) => a + b.kills, 0))) * 100)}%</div>
+                <div className="text-xs text-cornsilk/60 text-center md:text-left w-full md:w-32 shrink-0">
+                    <div className="text-cornsilk/80">CS {self.cs} ({self.cs_per_min})</div>
+                    <div className="text-rose-vale">P/Kill {Math.round(((self.kills + self.assists) / Math.max(1, team100.includes(self) ? team100.reduce((a, b) => a + b.kills, 0) : team200.reduce((a, b) => a + b.kills, 0))) * 100)}%</div>
                     <div>Vis {self.vision_score}</div>
                 </div>
 
@@ -123,14 +123,14 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                         const itemData = getItemData(item);
                         return (
                             <Tooltip key={i} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
-                                <div className="w-7 h-7 bg-slate-800 rounded overflow-hidden border border-slate-700 shrink-0 cursor-help">
+                                <div className="w-7 h-7 bg-dark-bg/80 rounded overflow-hidden border border-rose-vale/20 shrink-0 cursor-help">
                                     {item > 0 && <img src={getItemIconUrl(item)} alt={itemData?.name || 'Item'} className="w-full h-full" />}
                                 </div>
                             </Tooltip>
                         );
                     })}
                     <Tooltip content={getItemData(self.item6) ? <ItemTooltip itemData={getItemData(self.item6)} /> : null}>
-                        <div className="w-7 h-7 bg-slate-800 rounded-full overflow-hidden border border-slate-700 ml-1 shrink-0 cursor-help">
+                        <div className="w-7 h-7 bg-dark-bg/80 rounded-full overflow-hidden border border-rose-vale/20 ml-1 shrink-0 cursor-help">
                             {self.item6 > 0 && <img src={getItemIconUrl(self.item6)} alt="Trinket" className="w-full h-full" />}
                         </div>
                     </Tooltip>
@@ -138,12 +138,12 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
             </div>
 
             {/* Participants List */}
-            <div className="hidden lg:flex w-56 py-1 px-2 flex-row gap-1 text-[10px] border-l border-white/5 bg-black/10 items-center">
+            <div className="hidden lg:flex w-56 py-1 px-2 flex-row gap-1 text-[10px] border-l border-rose-vale/10 bg-black/10 items-center">
                 <div className="flex-1 flex flex-col justify-center gap-0.5 h-full">
                     {team100.map(p => (
                         <div key={p.puuid} className="flex items-center gap-1 w-full">
                             <img src={getChampionIconUrl(p.champion_name)} className="w-3 h-3 rounded-sm shrink-0" />
-                            <span className={clsx("truncate block w-20", p.is_self ? "font-bold text-white" : "text-slate-400")}>
+                            <span className={clsx("truncate block w-20", p.is_self ? "font-bold text-cornsilk" : "text-cornsilk/50")}>
                                 {p.riot_id.split('#')[0]}
                             </span>
                         </div>
@@ -153,7 +153,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                     {team200.map(p => (
                         <div key={p.puuid} className="flex items-center gap-1 w-full">
                             <img src={getChampionIconUrl(p.champion_name)} className="w-3 h-3 rounded-sm shrink-0" />
-                            <span className={clsx("truncate block w-20", p.is_self ? "font-bold text-white" : "text-slate-400")}>
+                            <span className={clsx("truncate block w-20", p.is_self ? "font-bold text-cornsilk" : "text-cornsilk/50")}>
                                 {p.riot_id.split('#')[0]}
                             </span>
                         </div>
@@ -162,7 +162,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col border-l border-white/5">
+            <div className="flex flex-col border-l border-rose-vale/10">
                 {/* Deep Dive Button */}
                 <button
                     onClick={(e) => {
@@ -170,8 +170,8 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                         onDeepDive(match.match_id);
                     }}
                     className={clsx(
-                        "flex-1 w-8 flex items-center justify-center transition-colors border-b border-white/5",
-                        isReviewCandidate ? "bg-purple-900/30 hover:bg-purple-800/50 text-purple-400" : "bg-slate-900/30 hover:bg-slate-800/50 text-slate-500"
+                        "flex-1 w-8 flex items-center justify-center transition-colors border-b border-rose-vale/10",
+                        isReviewCandidate ? "bg-cornsilk/20 hover:bg-cornsilk/30 text-cornsilk" : "bg-dark-bg/30 hover:bg-dark-bg/50 text-cornsilk/30"
                     )}
                     title="Deep Dive Analysis"
                 >
@@ -183,10 +183,10 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                     onClick={onExpand}
                     className={clsx(
                         "flex-1 w-8 flex items-center justify-center transition-colors",
-                        win ? "bg-blue-900/30 hover:bg-blue-800/50" : "bg-red-900/30 hover:bg-red-800/50"
+                        win ? "bg-sage/10 hover:bg-sage/30 text-sage" : "bg-rose-vale/10 hover:bg-rose-vale/30 text-rose-vale"
                     )}
                 >
-                    <div className="rotate-90 text-lg font-bold text-slate-500">›</div>
+                    <div className="rotate-90 text-lg font-bold">›</div>
                 </button>
             </div>
         </div>

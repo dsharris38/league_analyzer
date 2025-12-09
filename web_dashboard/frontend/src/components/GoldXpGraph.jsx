@@ -37,31 +37,32 @@ export default function GoldXpGraph({ goldXpSeries, teamGoldDiff }) {
     return (
         <div className="space-y-8">
             {/* Player Gold & XP Growth */}
-            <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                <h3 className="text-white font-bold mb-4">Player Growth (Gold & XP)</h3>
+            <div className="bg-dark-bg/40 p-4 rounded-xl border border-rose-vale/20 backdrop-blur-sm">
+                <h3 className="text-cornsilk font-bold mb-4 font-serif">Player Growth (Gold & XP)</h3>
                 <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart data={data}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#A94A4A" strokeOpacity={0.2} />
                             <XAxis
                                 dataKey="time_min"
-                                stroke="#94a3b8"
+                                stroke="#FFF6DA"
+                                strokeOpacity={0.5}
                                 tickFormatter={(val) => `${Math.round(val)}m`}
                             />
                             <YAxis
                                 yAxisId="left"
-                                stroke="#fbbf24"
+                                stroke="#FFF6DA"
                                 tickFormatter={formatGold}
-                                label={{ value: 'Gold', angle: -90, position: 'insideLeft', fill: '#fbbf24' }}
+                                label={{ value: 'Gold', angle: -90, position: 'insideLeft', fill: '#FFF6DA' }}
                             />
                             <YAxis
                                 yAxisId="right"
                                 orientation="right"
-                                stroke="#60a5fa"
-                                label={{ value: 'XP', angle: 90, position: 'insideRight', fill: '#60a5fa' }}
+                                stroke="#8DA399"
+                                label={{ value: 'XP', angle: 90, position: 'insideRight', fill: '#8DA399' }}
                             />
                             <Tooltip
-                                contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#f8fafc' }}
+                                contentStyle={{ backgroundColor: '#1a1616', borderColor: '#A94A4A', color: '#FFF6DA' }}
                                 formatter={(value, name) => [
                                     name === 'total_gold' ? formatGold(value) : value,
                                     name === 'total_gold' ? 'Total Gold' : 'XP'
@@ -73,8 +74,8 @@ export default function GoldXpGraph({ goldXpSeries, teamGoldDiff }) {
                                 yAxisId="left"
                                 type="monotone"
                                 dataKey="total_gold"
-                                fill="#fbbf24"
-                                stroke="#fbbf24"
+                                fill="#FFF6DA"
+                                stroke="#FFF6DA"
                                 fillOpacity={0.1}
                                 name="Total Gold"
                             />
@@ -82,7 +83,7 @@ export default function GoldXpGraph({ goldXpSeries, teamGoldDiff }) {
                                 yAxisId="right"
                                 type="monotone"
                                 dataKey="xp"
-                                stroke="#60a5fa"
+                                stroke="#8DA399"
                                 strokeWidth={2}
                                 dot={false}
                                 name="XP"
@@ -93,15 +94,16 @@ export default function GoldXpGraph({ goldXpSeries, teamGoldDiff }) {
             </div>
 
             {/* Team Gold Difference */}
-            <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                <h3 className="text-white font-bold mb-4">Team Gold Difference</h3>
+            <div className="bg-dark-bg/40 p-4 rounded-xl border border-rose-vale/20 backdrop-blur-sm">
+                <h3 className="text-cornsilk font-bold mb-4 font-serif">Team Gold Difference</h3>
                 <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart data={data}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#A94A4A" strokeOpacity={0.2} />
                             <XAxis
                                 dataKey="time_min"
-                                stroke="#94a3b8"
+                                stroke="#FFF6DA"
+                                strokeOpacity={0.5}
                                 tickFormatter={(val) => `${Math.round(val)}m`}
                             />
                             <YAxis
@@ -109,23 +111,23 @@ export default function GoldXpGraph({ goldXpSeries, teamGoldDiff }) {
                                 tickFormatter={formatGold}
                             />
                             <Tooltip
-                                contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#f8fafc' }}
+                                contentStyle={{ backgroundColor: '#1a1616', borderColor: '#A94A4A', color: '#FFF6DA' }}
                                 formatter={(value) => [formatGold(value), 'Gold Diff']}
                                 labelFormatter={(label) => `${Math.round(label)} min`}
                             />
-                            <ReferenceLine y={0} stroke="#94a3b8" />
+                            <ReferenceLine y={0} stroke="#FFF6DA" strokeOpacity={0.3} />
                             <Area
                                 type="monotone"
                                 dataKey="gold_diff"
-                                stroke="#f87171"
-                                fill="#f87171"
+                                stroke="#A94A4A"
+                                fill="#A94A4A"
                                 fillOpacity={0.2}
                                 name="Gold Diff"
                             />
                             <defs>
                                 <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset={0.5} stopColor="#4ade80" stopOpacity={0.3} />
-                                    <stop offset={0.5} stopColor="#f87171" stopOpacity={0.3} />
+                                    <stop offset={0.5} stopColor="#A94A4A" stopOpacity={0.3} />
+                                    <stop offset={0.5} stopColor="#A94A4A" stopOpacity={0.3} />
                                 </linearGradient>
                             </defs>
                         </ComposedChart>

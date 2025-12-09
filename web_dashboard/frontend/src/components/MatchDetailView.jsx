@@ -15,21 +15,21 @@ export default function MatchDetailView({ match, puuid }) {
     ];
 
     return (
-        <div className="bg-slate-800 border-x border-b border-slate-700 rounded-b-xl -mt-2 mx-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 shadow-xl relative z-0">
+        <div className="bg-dark-bg/40 border-x border-b border-rose-vale/20 rounded-b-xl -mt-2 mx-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 shadow-xl relative z-0 backdrop-blur-sm">
             {/* Tabs */}
-            <div className="flex border-b border-slate-700 bg-slate-900/50">
+            <div className="flex border-b border-rose-vale/20 bg-dark-bg/60">
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={clsx(
-                            "px-6 py-3 text-sm font-medium transition-colors relative",
-                            activeTab === tab.id ? "text-white" : "text-slate-400 hover:text-slate-200"
+                            "px-6 py-3 text-sm font-medium transition-colors relative font-serif",
+                            activeTab === tab.id ? "text-cornsilk" : "text-cornsilk/60 hover:text-cornsilk/80"
                         )}
                     >
                         {tab.label}
                         {activeTab === tab.id && (
-                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500"></div>
+                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-vale"></div>
                         )}
                     </button>
                 ))}

@@ -109,14 +109,14 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                 const ratio = Math.abs(prev.diff) / (Math.abs(prev.diff) + Math.abs(d.diff));
                 const crossingT = prev.t + (d.t - prev.t) * ratio;
                 const offset = (crossingT / duration) * 100;
-                stops.push({ offset, color: prev.diff > 0 ? '#3b82f6' : '#ef4444' }); // End previous color
-                stops.push({ offset, color: d.diff > 0 ? '#3b82f6' : '#ef4444' }); // Start new color
+                stops.push({ offset, color: prev.diff > 0 ? '#8DA399' : '#A94A4A' }); // End previous color (Sage/RoseVale)
+                stops.push({ offset, color: d.diff > 0 ? '#8DA399' : '#A94A4A' }); // Start new color
             }
         });
         // Add start/end
         if (goldGraphData.length > 0) {
-            const startColor = goldGraphData[0].diff >= 0 ? '#3b82f6' : '#ef4444';
-            const endColor = goldGraphData[goldGraphData.length - 1].diff >= 0 ? '#3b82f6' : '#ef4444';
+            const startColor = goldGraphData[0].diff >= 0 ? '#8DA399' : '#A94A4A';
+            const endColor = goldGraphData[goldGraphData.length - 1].diff >= 0 ? '#8DA399' : '#A94A4A';
             return [
                 { offset: 0, color: startColor },
                 ...stops,
@@ -480,10 +480,10 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
     };
 
     return (
-        <div className="flex flex-col gap-6 font-sans text-slate-200">
+        <div className="flex flex-col gap-6 font-sans text-cornsilk">
             {/* Header with Recorder Toggle */}
-            <div className="flex items-center justify-between p-4 bg-slate-900/50 border-b border-white/10 rounded-t-lg">
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <div className="flex items-center justify-between p-4 bg-dark-bg/60 border-b border-rose-vale/20 rounded-t-lg backdrop-blur-sm">
+                <h2 className="text-lg font-bold text-cornsilk flex items-center gap-2 font-serif">
                     <span className="text-xl">🗺️</span>
                     Timeline Map
                 </h2>
@@ -537,7 +537,7 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                                                 y1={`${100 - (state.y / mapSize) * 100}%`}
                                                 x2={`${(state.targetPos.x / mapSize) * 100}%`}
                                                 y2={`${100 - (state.targetPos.y / mapSize) * 100}%`}
-                                                stroke={state.isBlue ? "rgba(59, 130, 246, 0.4)" : "rgba(239, 68, 68, 0.4)"}
+                                                stroke={state.isBlue ? "rgba(141, 163, 153, 0.4)" : "rgba(169, 74, 74, 0.4)"}
                                                 strokeWidth="1"
                                                 strokeDasharray="4 2"
                                             />
@@ -705,7 +705,7 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                             <span>0:00</span>
                             <div className="flex flex-col items-center">
                                 <span className="text-white font-bold text-lg">{Math.floor(currentTime)}:{(Math.floor((currentTime % 1) * 60)).toString().padStart(2, '0')}</span>
-                                <span className={clsx("text-xs font-bold", goldAdvantage > 0 ? "text-blue-400" : "text-red-400")}>
+                                <span className={clsx("text-xs font-bold", goldAdvantage > 0 ? "text-sage" : "text-rose-vale")}>
                                     {goldAdvantage > 0 ? "Blue" : "Red"} +{(Math.abs(goldAdvantage) / 1000).toFixed(1)}k
                                 </span>
                             </div>
@@ -743,9 +743,9 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                                 step="0.25"
                                 value={currentTime}
                                 onChange={(e) => setCurrentTime(parseFloat(e.target.value))}
-                                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer relative z-10"
+                                className="w-full h-2 bg-dark-bg/50 rounded-lg appearance-none cursor-pointer relative z-10"
                                 style={{
-                                    backgroundImage: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, #334155 ${(currentTime / duration) * 100}%, #334155 100%)`
+                                    backgroundImage: `linear-gradient(to right, #8DA399 0%, #8DA399 ${(currentTime / duration) * 100}%, #1a1616 ${(currentTime / duration) * 100}%, #1a1616 100%)`
                                 }}
                             />
                         </div>

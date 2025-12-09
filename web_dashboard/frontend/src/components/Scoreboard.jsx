@@ -11,44 +11,44 @@ function TeamTable({ teamId, participants, isWin, maxDamage }) {
         <div className="mb-4">
             {/* Header */}
             <div className={clsx(
-                "flex justify-between items-center px-4 py-2 text-sm font-bold rounded-t-lg",
-                isWin ? "bg-blue-900/40 text-blue-400" : "bg-red-900/40 text-red-400"
+                "flex justify-between items-center px-4 py-2 text-sm font-bold rounded-t-lg font-serif",
+                isWin ? "bg-sage/20 text-sage border-b border-sage/20" : "bg-rose-vale/20 text-rose-vale border-b border-rose-vale/20"
             )}>
                 <div className="flex gap-4">
                     <span>{isWin ? "Victory" : "Defeat"}</span>
-                    <span className="text-slate-400 font-normal">Team {teamId === 100 ? "Blue" : "Red"}</span>
+                    <span className="text-cornsilk/60 font-normal font-sans">Team {teamId === 100 ? "Blue" : "Red"}</span>
                 </div>
-                <div className="flex gap-4 text-slate-300">
+                <div className="flex gap-4 text-cornsilk/80 font-sans">
                     <span>{totalKills} Kills</span>
                     <span>{(totalGold / 1000).toFixed(1)}k Gold</span>
                 </div>
             </div>
 
             {/* Table */}
-            <div className="bg-slate-800/50 border-x border-b border-slate-700 rounded-b-lg overflow-x-auto">
+            <div className="bg-dark-bg/40 border-x border-b border-rose-vale/20 rounded-b-lg overflow-x-auto backdrop-blur-sm">
                 <table className="w-full text-left text-xs">
-                    <thead className="text-slate-500 border-b border-slate-700/50">
+                    <thead className="text-cornsilk/50 border-b border-rose-vale/20">
                         <tr>
-                            <th className="px-3 py-2 font-medium w-48">Champion</th>
-                            <th className="px-3 py-2 font-medium w-24 text-center">Score</th>
-                            <th className="px-3 py-2 font-medium w-32">Damage</th>
-                            <th className="px-3 py-2 font-medium w-20 text-center">Wards</th>
-                            <th className="px-3 py-2 font-medium w-20 text-center">CS</th>
-                            <th className="px-3 py-2 font-medium w-52">Items</th>
+                            <th className="px-3 py-2 font-medium w-48 font-serif">Champion</th>
+                            <th className="px-3 py-2 font-medium w-24 text-center font-serif">Score</th>
+                            <th className="px-3 py-2 font-medium w-32 font-serif">Damage</th>
+                            <th className="px-3 py-2 font-medium w-20 text-center font-serif">Wards</th>
+                            <th className="px-3 py-2 font-medium w-20 text-center font-serif">CS</th>
+                            <th className="px-3 py-2 font-medium w-52 font-serif">Items</th>
                         </tr>
                     </thead>
                     <tbody>
                         {participants.map(p => (
                             <tr key={p.puuid} className={clsx(
-                                "border-b border-slate-700/30 last:border-0 hover:bg-white/5 transition-colors",
-                                p.is_self && "bg-white/5"
+                                "border-b border-rose-vale/10 last:border-0 hover:bg-cornsilk/5 transition-colors",
+                                p.is_self && "bg-rose-vale/10"
                             )}>
                                 {/* Champion & Name */}
                                 <td className="px-3 py-2 w-48">
                                     <div className="flex items-center gap-2">
                                         <div className="relative shrink-0">
-                                            <img src={getChampionIconUrl(p.champion_name)} className="w-8 h-8 rounded" alt={p.champion_name} />
-                                            <div className="absolute -bottom-1 -right-1 bg-slate-900 text-[10px] w-4 h-4 flex items-center justify-center rounded-full border border-slate-700">
+                                            <img src={getChampionIconUrl(p.champion_name)} className="w-8 h-8 rounded border border-rose-vale/30" alt={p.champion_name} />
+                                            <div className="absolute -bottom-1 -right-1 bg-dark-bg text-[10px] w-4 h-4 flex items-center justify-center rounded-full border border-rose-vale/30 text-cornsilk">
                                                 18
                                             </div>
                                         </div>
@@ -64,7 +64,7 @@ function TeamTable({ teamId, participants, isWin, maxDamage }) {
                                                     <img src={getRuneIconUrl(p.perks.keystone)} className="w-3 h-3 rounded-full bg-black cursor-help" alt="Keystone" />
                                                 </Tooltip>
                                             </div>
-                                            <span className={clsx("truncate max-w-[100px]", p.is_self ? "text-white font-bold" : "text-slate-400")}>
+                                            <span className={clsx("truncate max-w-[100px]", p.is_self ? "text-cornsilk font-bold" : "text-cornsilk/60")}>
                                                 {p.riot_id.split('#')[0]}
                                             </span>
                                         </div>
@@ -74,30 +74,30 @@ function TeamTable({ teamId, participants, isWin, maxDamage }) {
                                 {/* KDA */}
                                 <td className="px-3 py-2 w-24">
                                     <div className="flex flex-col text-center w-16">
-                                        <div className="text-slate-300 font-medium">
+                                        <div className="text-cornsilk/90 font-medium">
                                             {p.kills}/{p.deaths}/{p.assists}
                                         </div>
-                                        <div className="text-slate-500">{p.kda}:1</div>
+                                        <div className="text-cornsilk/50">{p.kda}:1</div>
                                     </div>
                                 </td>
 
                                 {/* Damage */}
                                 <td className="px-3 py-2 w-32">
                                     <div className="flex flex-col justify-center w-24 gap-1">
-                                        <div className="flex items-center gap-1 text-slate-400">
+                                        <div className="flex items-center gap-1 text-cornsilk/60">
                                             <span className="w-8 text-right">{p.total_damage_dealt_to_champions.toLocaleString()}</span>
-                                            <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                            <div className="flex-1 h-1.5 bg-dark-bg rounded-full overflow-hidden border border-rose-vale/20">
                                                 <div
-                                                    className="h-full bg-red-500 rounded-full"
+                                                    className="h-full bg-rose-vale rounded-full"
                                                     style={{ width: `${(p.total_damage_dealt_to_champions / maxDamage) * 100}%` }}
                                                 ></div>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-1 text-slate-500">
+                                        <div className="flex items-center gap-1 text-cornsilk/40">
                                             <span className="w-8 text-right">{p.total_damage_taken.toLocaleString()}</span>
-                                            <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                            <div className="flex-1 h-1.5 bg-dark-bg rounded-full overflow-hidden border border-rose-vale/10">
                                                 <div
-                                                    className="h-full bg-slate-500 rounded-full"
+                                                    className="h-full bg-cornsilk/30 rounded-full"
                                                     style={{ width: `${(p.total_damage_taken / 50000) * 100}%` }}
                                                 ></div>
                                             </div>
@@ -106,14 +106,14 @@ function TeamTable({ teamId, participants, isWin, maxDamage }) {
                                 </td>
 
                                 {/* Wards */}
-                                <td className="px-3 py-2 w-20 text-center text-slate-400">
+                                <td className="px-3 py-2 w-20 text-center text-cornsilk/60">
                                     <div>{p.vision_score}</div>
                                     <div className="text-[10px]">{p.wards_placed} / {p.wards_killed}</div>
                                 </td>
 
                                 {/* CS */}
-                                <td className="px-3 py-2 w-20 text-center text-slate-400">
-                                    <div className="text-slate-300">{p.cs}</div>
+                                <td className="px-3 py-2 w-20 text-center text-cornsilk/60">
+                                    <div className="text-cornsilk/90">{p.cs}</div>
                                     <div className="text-[10px]">({p.cs_per_min})</div>
                                 </td>
 
@@ -124,14 +124,14 @@ function TeamTable({ teamId, participants, isWin, maxDamage }) {
                                             const itemData = getItemData(item);
                                             return (
                                                 <Tooltip key={i} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
-                                                    <div className="w-6 h-6 bg-slate-900 rounded border border-slate-700 overflow-hidden cursor-help">
+                                                    <div className="w-6 h-6 bg-dark-bg rounded border border-rose-vale/30 overflow-hidden cursor-help">
                                                         {item > 0 && <img src={getItemIconUrl(item)} className="w-full h-full" alt={itemData?.name || 'Item'} />}
                                                     </div>
                                                 </Tooltip>
                                             );
                                         })}
                                         <Tooltip content={getItemData(p.item6) ? <ItemTooltip itemData={getItemData(p.item6)} /> : null}>
-                                            <div className="w-6 h-6 bg-slate-900 rounded-full border border-slate-700 overflow-hidden ml-1 cursor-help">
+                                            <div className="w-6 h-6 bg-dark-bg rounded-full border border-rose-vale/30 overflow-hidden ml-1 cursor-help">
                                                 {p.item6 > 0 && <img src={getItemIconUrl(p.item6)} className="w-full h-full" alt="Trinket" />}
                                             </div>
                                         </Tooltip>
