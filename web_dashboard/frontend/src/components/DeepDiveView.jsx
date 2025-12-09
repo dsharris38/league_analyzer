@@ -17,7 +17,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                 {/* Header */}
                 <div className="p-6 border-b border-white/10 flex justify-between items-center bg-slate-800/50 rounded-t-2xl">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400">
+                        <div className="p-2 bg-violet-500/20 rounded-lg text-violet-400">
                             <Microscope size={24} />
                         </div>
                         <div>
@@ -33,7 +33,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                 onClick={() => setActiveTab('report')}
                                 className={clsx(
                                     "px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors",
-                                    activeTab === 'report' ? "bg-blue-600/20 text-blue-300 shadow-sm" : "text-slate-400 hover:text-white"
+                                    activeTab === 'report' ? "bg-violet-600/20 text-violet-300 shadow-sm" : "text-slate-400 hover:text-white"
                                 )}
                             >
                                 <FileText size={16} />
@@ -43,7 +43,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                 onClick={() => setActiveTab('map')}
                                 className={clsx(
                                     "px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors",
-                                    activeTab === 'map' ? "bg-blue-600/20 text-blue-300 shadow-sm" : "text-slate-400 hover:text-white"
+                                    activeTab === 'map' ? "bg-violet-600/20 text-violet-300 shadow-sm" : "text-slate-400 hover:text-white"
                                 )}
                             >
                                 <MapIcon size={16} />
@@ -64,7 +64,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                 <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-slate-900/95">
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center h-64 gap-4">
-                            <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+                            <div className="w-12 h-12 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin"></div>
                             <p className="text-slate-400 animate-pulse">Analyzing match timeline...</p>
                         </div>
                     ) : (
@@ -75,8 +75,8 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                     {typeof report === 'object' && report.story ? (
                                         <>
                                             <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                <div className="p-4 border-b border-slate-700/50 bg-blue-500/10 flex items-center gap-2">
-                                                    <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                                                <div className="p-4 border-b border-slate-700/50 bg-violet-500/10 flex items-center gap-2">
+                                                    <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
                                                     <h3 className="text-lg font-bold text-white">The Story of the Game</h3>
                                                 </div>
                                                 <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">

@@ -113,11 +113,11 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                 Back to List
             </button>
 
-            <div className="flex items-center justify-between mb-6 bg-slate-800/80 p-4 rounded-xl border border-white/10 backdrop-blur-md shadow-lg shadow-blue-500/5">
+            <div className="flex items-center justify-between mb-6 bg-slate-800/80 p-4 rounded-xl border border-white/10 backdrop-blur-md shadow-lg shadow-violet-500/5">
                 <div className="flex items-center gap-4">
                     {/* Profile Icon & Level */}
                     <div className="relative group">
-                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-slate-600 shadow-md group-hover:border-blue-400 transition-colors duration-300">
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-slate-600 shadow-md group-hover:border-violet-400 transition-colors duration-300">
                             <img
                                 src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${data.summoner_info?.profile_icon_id || 29}.png`}
                                 alt="Profile"
@@ -142,7 +142,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                 if (solo) {
                                     return (
                                         <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md border border-white/10 text-xs">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></div>
+                                            <div className="w-1.5 h-1.5 rounded-full bg-violet-500 shadow-[0_0_6px_rgba(139,92,246,0.8)]"></div>
                                             <span className="text-slate-400 font-medium">Solo</span>
                                             <span className="text-white font-bold">{solo.tier} {solo.rank}</span>
                                             <span className="text-slate-500">{solo.leaguePoints} LP</span>
@@ -167,7 +167,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                 <div className="flex flex-col items-end gap-2">
                     <button
                         onClick={onUpdate}
-                        className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-blue-500/20 flex items-center gap-2 border border-white/10"
+                        className="bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-violet-500/20 flex items-center gap-2 border border-white/10"
                     >
                         Update
                     </button>
@@ -180,10 +180,10 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
 
                 {/* Champion Performance Cards - Compact Grid */}
                 <div>
-                    <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider mb-3">Champion Performance</h3>
+                    <h3 className="text-sm font-bold text-violet-400 uppercase tracking-wider mb-3">Champion Performance</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                         {per_champion && per_champion.map((champ) => (
-                            <div key={champ.champion} className="bg-slate-800/60 border border-slate-700/50 rounded-lg p-3 hover:bg-slate-800 hover:border-blue-500/30 transition-all group relative overflow-hidden backdrop-blur-sm">
+                            <div key={champ.champion} className="bg-slate-800/60 border border-slate-700/50 rounded-lg p-3 hover:bg-slate-800 hover:border-violet-500/30 transition-all group relative overflow-hidden backdrop-blur-sm">
                                 {/* Subtle background gradient based on winrate */}
                                 <div className={`absolute inset-0 opacity-10 ${champ.winrate >= 0.5 ? 'bg-gradient-to-br from-green-500 to-transparent' : 'bg-gradient-to-br from-red-500 to-transparent'}`}></div>
 
@@ -235,7 +235,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                     <div className="flex items-center justify-between mb-4">
                         <button
                             onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                            className="flex items-center gap-2 text-xl font-bold text-white hover:text-blue-400 transition-colors"
+                            className="flex items-center gap-2 text-xl font-bold text-white hover:text-violet-400 transition-colors"
                         >
                             Match History
                             {isHistoryOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
@@ -267,7 +267,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                 <select
                                     value={filters.role}
                                     onChange={(e) => setFilters({ ...filters, role: e.target.value })}
-                                    className="bg-slate-900 border border-slate-700 rounded-md px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                                    className="bg-slate-900 border border-slate-700 rounded-md px-3 py-1.5 text-sm text-white focus:outline-none focus:border-violet-500"
                                 >
                                     <option value="ALL">All Roles</option>
                                     <option value="TOP">Top</option>
@@ -347,7 +347,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                             {report.overview && (
                                 <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg">
                                     <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
-                                        <div className="w-1.5 h-6 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                                        <div className="w-1.5 h-6 bg-violet-500 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]"></div>
                                         <h3 className="text-xl font-bold text-white">Strategic Overview</h3>
                                     </div>
                                     <div className="p-8 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white prose-li:text-slate-300">

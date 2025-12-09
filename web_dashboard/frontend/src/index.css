@@ -1,18 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-dark-bg: #0f172a;
-  /* Slate 900 */
-  --color-rose-vale: #3b82f6;
-  /* Temp mapping to Blue 500 */
+  --color-dark-bg: #0b0c2a;
+  /* Deep Midnight */
+  --color-rose-vale: #8b5cf6;
+  /* Violet 500 */
   --color-cornsilk: #e2e8f0;
   /* Slate 200 */
   --color-sage: #10b981;
   /* Emerald 500 */
 
-  --color-deep-blue: #3b82f6;
+  --color-deep-blue: #8b5cf6;
+  /* Re-mapped to Violet for Theme */
   --color-deep-red: #ef4444;
-  --color-deep-slate: #1e293b;
+  --color-deep-slate: #1e1b4b;
+  /* Indigo 950 */
 
   /* Legacy/Semantic Mappings */
   --color-primary: var(--color-deep-blue);

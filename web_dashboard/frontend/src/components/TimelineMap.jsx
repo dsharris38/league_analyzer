@@ -745,7 +745,7 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                                 onChange={(e) => setCurrentTime(parseFloat(e.target.value))}
                                 className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer relative z-10"
                                 style={{
-                                    backgroundImage: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, #1e293b ${(currentTime / duration) * 100}%, #1e293b 100%)`
+                                    backgroundImage: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${(currentTime / duration) * 100}%, #1e293b ${(currentTime / duration) * 100}%, #1e293b 100%)`
                                 }}
                             />
                         </div>
