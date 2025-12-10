@@ -25,7 +25,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
             {isReviewCandidate && (
                 <div className="absolute -top-2.5 left-4 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-purple-400/50 shadow-purple-500/20">
                     <Trophy size={10} />
-                    {reviewReason || "Review Recommended"}
+                    High Blame Loss
                 </div>
             )}
 
@@ -171,7 +171,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                     }}
                     className={clsx(
                         "flex-1 w-8 flex items-center justify-center transition-colors border-b border-white/10",
-                        isReviewCandidate ? "bg-purple-500/20 hover:bg-purple-500/40 text-purple-300" : "bg-slate-800/50 hover:bg-purple-500/20 text-slate-500 hover:text-purple-300"
+                        isReviewCandidate ? "bg-purple-600 hover:bg-purple-500 text-white shadow-purple-500/20 shadow-inner" : "bg-slate-800/50 hover:bg-purple-500/20 text-slate-500 hover:text-purple-300"
                     )}
                     title="Deep Dive Analysis"
                 >
