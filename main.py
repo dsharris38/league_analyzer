@@ -232,7 +232,9 @@ def run_analysis_pipeline(
         except Exception as e:
             return idx, None
 
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    # Use ThreadPoolExecutor for parallel fetching
+    # Reduced to 3 workers to prevent OOM on small instances (Render free tier)
+    with ThreadPoolExecutor(max_workers=3) as executor:
         futures = {executor.submit(fetch_match_safe, i, mid): mid for i, mid in enumerate(match_ids)}
         for future in as_completed(futures):
             idx, match_data = future.result()
