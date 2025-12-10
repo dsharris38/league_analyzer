@@ -74,6 +74,30 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                     {/* Story Card */}
                                     {typeof report === 'object' && report.story ? (
                                         <>
+                                            {/* Draft & Pick Analysis (New) */}
+                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
+                                                    <div className="p-4 border-b border-slate-700/50 bg-blue-500/10 flex items-center gap-2">
+                                                        <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                                                        <h3 className="text-lg font-bold text-white">Draft & Win Condition</h3>
+                                                    </div>
+                                                    <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                        <ReactMarkdown>{report.draft_analysis || "No draft analysis available."}</ReactMarkdown>
+                                                    </div>
+                                                </div>
+
+                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
+                                                    <div className="p-4 border-b border-slate-700/50 bg-purple-500/10 flex items-center gap-2">
+                                                        <div className="w-1 h-6 bg-purple-500 rounded-full"></div>
+                                                        <h3 className="text-lg font-bold text-white">Pick & Identity</h3>
+                                                    </div>
+                                                    <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                        <ReactMarkdown>{report.pick_quality || "No pick critique available."}</ReactMarkdown>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Story Card */}
                                             <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
                                                 <div className="p-4 border-b border-slate-700/50 bg-violet-500/10 flex items-center gap-2">
                                                     <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
@@ -84,27 +108,37 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                 </div>
                                             </div>
 
+                                            {/* Smart Itemization (New) */}
                                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                                {/* Mistakes Card */}
                                                 <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                    <div className="p-4 border-b border-slate-700/50 bg-red-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-6 bg-red-500 rounded-full"></div>
-                                                        <h3 className="text-lg font-bold text-white">Critical Mistakes</h3>
+                                                    <div className="p-4 border-b border-slate-700/50 bg-emerald-500/10 flex items-center gap-2">
+                                                        <div className="w-1 h-6 bg-emerald-500 rounded-full"></div>
+                                                        <h3 className="text-lg font-bold text-white">Objective Best Build</h3>
                                                     </div>
                                                     <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
-                                                        <ReactMarkdown>{report.mistakes}</ReactMarkdown>
+                                                        <ReactMarkdown>{report.ideal_build || "No ideal build generated."}</ReactMarkdown>
                                                     </div>
                                                 </div>
 
-                                                {/* Build & Vision Card */}
                                                 <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
                                                     <div className="p-4 border-b border-slate-700/50 bg-yellow-500/10 flex items-center gap-2">
                                                         <div className="w-1 h-6 bg-yellow-500 rounded-full"></div>
-                                                        <h3 className="text-lg font-bold text-white">Build & Vision</h3>
+                                                        <h3 className="text-lg font-bold text-white">Your Build Critique</h3>
                                                     </div>
                                                     <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
                                                         <ReactMarkdown>{report.build_vision}</ReactMarkdown>
                                                     </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Critical Mistakes (Full Width) */}
+                                            <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
+                                                <div className="p-4 border-b border-slate-700/50 bg-red-500/10 flex items-center gap-2">
+                                                    <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                                                    <h3 className="text-lg font-bold text-white">Critical Mistakes</h3>
+                                                </div>
+                                                <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                    <ReactMarkdown>{report.mistakes}</ReactMarkdown>
                                                 </div>
                                             </div>
 

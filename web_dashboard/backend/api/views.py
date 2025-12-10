@@ -133,8 +133,23 @@ class DeepDiveAnalysisView(APIView):
             sys.path.append(str(settings.BASE_DIR.parent.parent))
             from league_crew import analyze_specific_game
 
-            print(f"Running deep dive for {match_id}...")
-            report_markdown = analyze_specific_game(match_id, target_match)
+            # Extract Champion Pool (Top 7 by games played)
+            per_champion = analysis.get("per_champion", [])
+            # Sort by games played (assuming 'games' or 'count' key, fallback to sorting provided by backend)
+            # Backend usually provides it sorted or we assume the list is useful.
+            # Let's just pass the names and game counts.
+            champion_pool = []
+            for pc in per_champion: # per_champion is list of {champion_name: ..., games: ...}
+                cname = pc.get("champion_name")
+                cgames = pc.get("games", 0)
+                if cname:
+                    champion_pool.append(f"{cname} ({cgames} games)")
+            
+            # Take top 10 to be safe
+            champion_pool = champion_pool[:10]
+
+            print(f"Running deep dive for {match_id} (Pool: {len(champion_pool)} champs)...")
+            report_markdown = analyze_specific_game(match_id, target_match, champion_pool=champion_pool)
             print(f"Deep dive complete. Report length: {len(report_markdown)}")
             
             if not report_markdown:

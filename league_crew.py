@@ -597,7 +597,7 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
     return candidates, match_tags
 
 
-def _build_single_game_prompt(match_data: Dict[str, Any]) -> str:
+def _build_single_game_prompt(match_data: Dict[str, Any], champion_pool: List[str] = []) -> str:
     """Build a prompt for a deep-dive analysis of a single game."""
     
     participants = match_data.get("participants", [])
@@ -761,15 +761,31 @@ Instead, explain the interaction between items, champions, and game state.
 {meta_context}
 
 **Your Goal**:
-Analyze this game and identify the root cause of the result. Use the Meta Data to critique their build/runes if they deviated significantly from high-winrate options *without a good reason*.
+Analyze this game holistically. We are not just analyzing the gameplay, but the **Draft**, the **Pick**, and the **Build**.
 
-Focus on:
-1. **Build Adaptation**: Did they build correctly for *this specific enemy comp*?
-   - Compare their build to the Meta recommendations.
-   - If they built an item with < 48% winrate on this champ, ask why.
-   - **Lifeline/Penetration**: standard checks apply.
-2. **Macro & Rotation**: Look at location snapshots.
-3. **Vision**: Ward usage.
+**Champion Pool Context (Top Champs)**:
+{chr(10).join([f"- {x}" for x in champion_pool])}
+
+**Deep Dive Analysis Required**:
+
+1. **Draft Warfare (Team Comps)**:
+   - Categorize both teams (e.g. "Poke Heavy", "Dive Comp", "Scaling").
+   - **Win Condition**: Who *should* win on paper? Why?
+
+2. **Smart Pick Critique (Identity)**:
+   - Given the Enemy Team and the available **Champion Pool**, was {champion} the best pick?
+   - If NO, which champion from their pool would have been better?
+   - If their pool has a hole, **Recommend ONE new champion** to learn that covers this specific weakness.
+
+3. **Smart Itemization Engine**:
+   - Synthesize the **Objective Best Build** for this specific game state.
+   - Combine the **Lolalytics Meta Trio** (Baseline) with **Necessary Adaptations** (e.g. anti-heal vs Soraka, Serpent's Fang vs multiple shields).
+   - List the 5-6 item final build.
+
+4. **Gameplay Root Cause**:
+   - Identify the primary in-game reason for the result (Macro, Vision, Mechanics).
+
+
 
 **Data**:
 
@@ -786,10 +802,13 @@ Focus on:
 Return a **valid JSON object** with the following keys. Each value must be a Markdown string.
 
 {{{{
-  "story": "Markdown string. **Story of the Game**. Focus on the turning points. Do NOT start with 'The game began...' or generic summaries. Start with the **deciding moment**.",
-  "mistakes": "Markdown string. **Critical Mistakes**. List specific timestamps where they threw. Use **bold** for timestamps.",
-  "build_vision": "Markdown string. **Build & Vision**. Critique items heavily. If build was perfect, say 'Build was optimal'. If bad, explain why strictly vs enemy comp.",
-  "verdict": "Markdown string. **Final Verdict**. One sentence: usage of resources vs impact. Then one sentence: The #1 thing to fix next game."
+  "draft_analysis": "Markdown. **Draft & Win Condition**. Analyze team comps. Who has the edge?",
+  "pick_quality": "Markdown. **Pick Critique**. Was {champion} the best choice from their pool? If not, who? If pool is lacking, suggest a **New Champion** to learn.",
+  "story": "Markdown string. **The Turning Point**. What decided the game?",
+  "ideal_build": "Markdown. **Objective Best Build**. List the specific items that SHOULD have been built this game.",
+  "build_vision": "Markdown string. **Build & Vision Critique**. Compare their actual build to the Ideal Build. Be constructive.",
+  "mistakes": "Markdown string. **Critical Mistakes**. Specific execution errors.",
+  "verdict": "Markdown string. **Final Verdict**. One sentence summary."
 }}}}
 
 **Formatting Guidelines**:
@@ -799,7 +818,7 @@ Return a **valid JSON object** with the following keys. Each value must be a Mar
     return prompt.strip()
 
 
-def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dict[str, str]:
+def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any], champion_pool: List[str] = []) -> Dict[str, str]:
     """
     Run a deep-dive analysis on a single game using OpenAI.
     Returns a structured dict with keys: story, mistakes, build_vision, verdict.
@@ -807,7 +826,7 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dic
     if not full_match_data:
         return {"story": "Error: No match data provided.", "mistakes": "", "build_vision": "", "verdict": ""}
         
-    prompt = _build_single_game_prompt(full_match_data)
+    prompt = _build_single_game_prompt(full_match_data, champion_pool=champion_pool)
     
     # --- Caching Strategy ---
     prompt_hash = hashlib.md5(prompt.encode("utf-8")).hexdigest()
@@ -854,10 +873,13 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dic
             }
         else:
             # Fallback if no JSON found
-            result = {
-                "story": text,
-                "mistakes": "",
-                "build_vision": "",
+            return {
+                "draft_analysis": "",
+                "pick_quality": "",
+                "story": "", 
+                "mistakes": "", 
+                "ideal_build": "",
+                "build_vision": "", 
                 "verdict": ""
             }
 
@@ -872,7 +894,21 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dic
             
     except Exception as e:
         return {
-            "story": f"Analysis failed: {str(e)}",
+            "draft_analysis": f"Error calling OpenAI: {e}",
+            "pick_quality": "",
+            "story": "",
+            "ideal_build": "",
+            "mistakes": "",
+            "build_vision": "",
+            "verdict": ""
+        }
+
+    if not coaching_text:
+        return {
+            "draft_analysis": "Error: Empty response",
+            "pick_quality": "",
+            "story": "",
+            "ideal_build": "",
             "mistakes": "",
             "build_vision": "",
             "verdict": ""
