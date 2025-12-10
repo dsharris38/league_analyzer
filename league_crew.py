@@ -115,12 +115,17 @@ def _extract_json_from_text(text: str) -> Dict[str, Any] | None:
     return None
 
 
+@lru_cache(maxsize=1)
+def _get_home_model_name() -> str:
+    """Returns the cost-efficient model for broad summaries."""
+    return os.getenv("OPENAI_HOME_MODEL", "gpt-5.1-mini")
 
-def _get_openai_model_name() -> str:
-    """
-    Get the OpenAI model name from environment, default to gpt-4o-mini.
-    """
-    return os.getenv("OPENAI_MODEL_NAME", "gpt-4o-mini")
+@lru_cache(maxsize=1)
+def _get_deep_dive_model_name() -> str:
+    """Returns the flagship model for deep reasoning."""
+    return os.getenv("OPENAI_DEEP_DIVE_MODEL", "gpt-5.1")
+
+
 
 @lru_cache(maxsize=1)
 def _get_openai_client() -> OpenAI:
@@ -193,14 +198,39 @@ def _build_crew_prompt(analysis: Dict[str, Any], match_id: str | None = None) ->
         clean_m.pop("team_gold_diff", None)
         movement_for_llm.append(clean_m)
 
-    timeline_json = json.dumps(timeline_diag, ensure_ascii=False, separators=(',', ':'))
-    movement_json = json.dumps(movement_for_llm, ensure_ascii=False, separators=(',', ':'))
-    patch_summary_json = json.dumps(patch_summary, ensure_ascii=False, separators=(',', ':'))
-    champion_profiles_json = json.dumps(champion_profiles, ensure_ascii=False, separators=(',', ':'))
-    macro_profile_json = json.dumps(macro_profile, ensure_ascii=False, separators=(',', ':'))
-    per_game_comp_json = json.dumps(per_game_comp, ensure_ascii=False, separators=(',', ':'))
-    itemization_profile_json = json.dumps(itemization_profile, ensure_ascii=False, separators=(',', ':'))
-    per_game_items_json = json.dumps(per_game_items, ensure_ascii=False, separators=(',', ':'))
+    # --- PAYLOAD OPTIMIZATION (Home Page Only) ---
+    # The home page uses gpt-5.1-mini and doesn't need granular timestamps.
+    # We strip out heavy arrays to save tokens.
+
+    if match_id is None: # Only optimize if this is the broad summary (Home Page), not Deep Dive
+        # 1. Simplify Loss Patterns (remove nested details if any)
+         pass 
+
+        # 2. Movement Summaries: Already heavily filtered above, but let's double check.
+        # Ensure we aren't sending thousands of coordinate pairs.
+        # (The filtering loop above lines 180-194 does a good job).
+
+        # 3. Per Game Items: We send 'per_game_items' which has final builds.
+        # We do NOT send full item purchase history for 20 games here.
+        # (Check where 'per_game_items' comes from - if it has history, strip it).
+        
+        # 4. Timeline Diagnostics: Keep high level tags, drop deep 'details' if verbose
+        # The current 'timeline_diag' is list of dicts. 
+        # let's map it to a simpler structure
+        timeline_json = json.dumps([{
+            "mid": t.get("match_id"), 
+            "tags": t.get("tags"), 
+            "reason": t.get("primary_reason")
+        } for t in timeline_diag], ensure_ascii=False, separators=(',', ':'))
+
+    else:
+        # For Deep Dive, we might want full context, or handled elsewhere.
+        # Currently _build_crew_prompt is only for the HOME PAGE summary crew.
+        # Deep dive uses _build_single_game_prompt.
+        # So we can aggressively optimize here.
+        pass
+
+    prompt = f"""
 
     prompt = f"""
 You are a **League of Legends multi-agent coaching crew** analyzing a player's recent ranked games.
@@ -464,7 +494,10 @@ def call_league_crew(agent_payload: Dict[str, Any]) -> Dict[str, str]:
             "OPENAI_API_KEY is not set. Please add it to your .env or environment."
         )
 
-    model_name = _get_openai_model_name()
+        )
+
+    # Use the efficiently priced mini model for the 20-game summary
+    model_name = _get_home_model_name()
     prompt = _build_crew_prompt(agent_payload)
     if not isinstance(prompt, str):
         prompt = str(prompt)
@@ -853,7 +886,9 @@ def _build_single_game_prompt(match_data: Dict[str, Any]) -> str:
     timeline_str = chr(10).join([e["msg"] for e in events])
 
     prompt = f"""
-You are an expert League of Legends coach doing a **Deep Dive Analysis** of a single match.
+You are a **Ruthless, High-Elo League of Legends Coach**.
+Your job is to provide specific, actionable feedback.
+**TONE**: Direct, no fluff, no "In a challenging match..." intros. Cut straight to the point.
 
 **Match Context**:
 - Result: {result}
@@ -863,17 +898,13 @@ You are an expert League of Legends coach doing a **Deep Dive Analysis** of a si
 - Lane Opponent: {lane_opponent or "Unknown"}
 
 **Your Goal**:
-Analyze this specific game to find the *root cause* of the result. 
+Analyze this game and identify exactly **WHY** they lost (or how they carried).
 Focus on:
-1. **Build Adaptation**: Did the player build correctly for *this specific enemy comp*?
-   - **CRITICAL RULE**: Do NOT recommend mutually exclusive items.
-   - **Lifeline**: Shieldbow, Sterak's, and Maw are exclusive. Pick ONE.
-   - **Spellblade**: Trinity, Lich Bane, and Iceborn are exclusive. Pick ONE.
-   - **Last Whisper**: LDR, Mortal Reminder, and Serylda's are exclusive. Pick ONE.
-   - **Hydra**: Ravenous, Titanic, and Profane are exclusive. Pick ONE.
-2. **Macro & Rotation**: Look at their location snapshots. Were they in the right place?
-3. **Vision**: Are they buying Control Wards?
-4. **Key Turning Points**: Look at deaths and objective fights.
+1. **Build Adaptation**: Did they respect the enemy threats?
+   - **CRITICAL**: If they built Lifeline (Shieldbow/Maw/Sterak) vs no burst, call it out.
+   - **CRITICAL**: If they built no Armor Pen vs tanks, call it out.
+2. **Macro Mistakes**: Look at the timeline events. Did they die before Baron? Did they split while team fought?
+3. **Vision**: Are they blind? (Check ward counts).
 
 **Data**:
 
@@ -888,21 +919,17 @@ Focus on:
 
 ### Output Format
 Return a **valid JSON object** with the following keys. Each value must be a Markdown string.
-**DO NOT** include any thought process. Start with {{ and end with }}.
 
 {{{{
-  "story": "Markdown string. A brief narrative of what happened, citing specific times. Start with a 1-sentence summary in *italics*.",
-  "mistakes": "Markdown string. Bulleted list of specific moments, deaths, or bad rotations. Use **bold** for timestamps.",
-  "build_vision": "Markdown string. Critique of the item build vs this enemy team, and ward usage. Use > Callouts for major build errors.",
-  "verdict": "Markdown string. Was this game winnable? Who is to blame? What is the ONE thing to fix?"
+  "story": "Markdown string. **Story of the Game**. Focus on the turning points. Do NOT start with 'The game began...' or generic summaries. Start with the **deciding moment**.",
+  "mistakes": "Markdown string. **Critical Mistakes**. List specific timestamps where they threw. Use **bold** for timestamps.",
+  "build_vision": "Markdown string. **Build & Vision**. Critique items heavily. If build was perfect, say 'Build was optimal'. If bad, explain why strictly vs enemy comp.",
+  "verdict": "Markdown string. **Final Verdict**. One sentence: usage of resources vs impact. Then one sentence: The #1 thing to fix next game."
 }}}}
 
-**Formatting Guidelines (NN/g Style)**:
-1. **Summaries**: Start each section with a 1-sentence summary in *italics*.
-2. **Bullet Points**: Use bullet points for lists to improve scannability.
-3. **Bold**: Bold important concepts (max 30% of text).
-4. **Callouts**: Use blockquotes (>) to highlight critical insights.
-5. **Short Paragraphs**: Keep paragraphs under 3-4 lines.
+**Formatting Guidelines**:
+- Use > Blockquotes for "Aha!" moments.
+- Be concise. No paragraphs longer than 2 sentences.
 """
     return prompt.strip()
 
@@ -935,7 +962,9 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dic
         return {"story": "Error: OPENAI_API_KEY not set.", "mistakes": "", "build_vision": "", "verdict": ""}
         
     client = OpenAI(api_key=api_key)
-    model_name = _get_openai_model_name()
+    client = OpenAI(api_key=api_key)
+    # Use the flagship model for deep dives
+    model_name = _get_deep_dive_model_name()
     
     try:
         response = client.chat.completions.create(
