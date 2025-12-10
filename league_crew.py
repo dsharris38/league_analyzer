@@ -167,8 +167,15 @@ def _get_home_model_name() -> str:
 @lru_cache(maxsize=1)
 def _get_deep_dive_model_name() -> str:
     """Returns the flagship model for deep reasoning."""
-    return os.getenv("OPENAI_DEEP_DIVE_MODEL", "gpt-4o")
+    return os.getenv("OPENAI_DEEP_DIVE_MODEL", "gpt-5.1")
 
+
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+# Using gpt-5.1-mini for home page coaching (fast/cheap)
+OPENAI_HOME_MODEL = "gpt-5.1-mini"
+# Using gpt-5.1-mini for routine match classification (fast/cheap)
+OPENAI_TAGGING_MODEL = "gpt-5.1-mini"
+OPENAI_DEEP_DIVE_MODEL = "gpt-5.1"
 
 @lru_cache(maxsize=1)
 def _get_openai_client() -> OpenAI:
