@@ -92,9 +92,15 @@ def _fetch_meta_context(champion: str, role: str) -> str:
              return f"No stats found for {champion} in {lane}."
 
         # Extract key insights (Safely)
-        summary = f"**Current Meta for {champion} ({lane})**:\\n"
-        summary += f"- Tier: {getattr(data, 'tier', 'Unknown')}\\n"
-        summary += f"- Win Rate: {getattr(data, 'win_rate', 'N/A')}%\\n"
+        summary = f"**Current Meta for {champion} ({lane})**:\n"
+        summary += f"- Tier: {getattr(data, 'tier', 'Unknown')}\n"
+        summary += f"- Win Rate: {getattr(data, 'win_rate', 'N/A')}%\n"
+        
+        # Resolve Items
+        build_ids = getattr(data, 'popular_build', [])
+        if build_ids:
+            item_names = [_get_item_name(iid) for iid in build_ids]
+            summary += f"- Core Build: {', '.join(item_names)}\n"
         
         return summary
     except Exception as e:
