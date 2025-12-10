@@ -199,7 +199,6 @@ def _build_crew_prompt(analysis: Dict[str, Any], match_id: str | None = None) ->
         movement_for_llm.append(clean_m)
 
     prompt = f"""
-    prompt = f"""
 You are a **League of Legends multi-agent coaching crew** analyzing a player's recent ranked games.
 You receive structured JSON exported from a local Python analyzer that already computed
 advanced stats, loss reasons, and timeline-based movement summaries.
