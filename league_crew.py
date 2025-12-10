@@ -162,7 +162,7 @@ def _extract_json_from_text(text: str) -> Dict[str, Any] | None:
 @lru_cache(maxsize=1)
 def _get_home_model_name() -> str:
     """Returns the cost-efficient model for broad summaries."""
-    return os.getenv("OPENAI_HOME_MODEL", "gpt-5.1-mini")
+    return os.getenv("OPENAI_HOME_MODEL", "gpt-5-mini")
 
 @lru_cache(maxsize=1)
 def _get_deep_dive_model_name() -> str:
