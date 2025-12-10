@@ -96,22 +96,21 @@ function App() {
       </div>
     </div>
   );
-}
 
-return (
-  <div className="min-h-screen bg-[#0b0c2a] text-slate-100 font-sans">
-    {!analysisData ? (
-      <Home onSelect={handleSelect} onAnalyze={handleAnalyze} />
-    ) : (
-      <DashboardView
-        data={analysisData}
-        filename={selectedFile}
-        onBack={handleBack}
-        onUpdate={handleUpdate}
-      />
-    )}
-  </div>
-);
+  return (
+    <div className="min-h-screen bg-[#0b0c2a] text-slate-100 font-sans">
+      {!analysisData ? (
+        <Home onSelect={handleSelect} onAnalyze={handleAnalyze} />
+      ) : (
+        <DashboardView
+          data={analysisData}
+          filename={selectedFile}
+          onBack={handleBack}
+          onUpdate={handleUpdate}
+        />
+      )}
+    </div>
+  );
 }
 
 export default App;
