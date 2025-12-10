@@ -98,6 +98,8 @@ class RunAnalysisView(APIView):
             return Response({'status': 'success', 'riot_id': riot_id})
             
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class DeepDiveAnalysisView(APIView):
