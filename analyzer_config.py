@@ -9,4 +9,5 @@ REGION = os.getenv("REGION", "americas")    # for match-v5
 PLATFORM = os.getenv("PLATFORM", "na1")     # for summoner/league endpoints
 
 if not RIOT_API_KEY:
-    raise RuntimeError("RIOT_API_KEY not found. Set it in your .env file.")
+    print("WARNING: RIOT_API_KEY not found in environment. backend may fail.")
+    # raise RuntimeError("RIOT_API_KEY not found. Set it in your .env file.")
