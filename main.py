@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any, Dict, List
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from rich.console import Console
 from rich.table import Table
@@ -222,13 +223,24 @@ def run_analysis_pipeline(
     console.print(f"Retrieved {len(match_ids)} match IDs.")
 
     matches: List[Dict[str, Any]] = []
-    for i, match_id in enumerate(match_ids, start=1):
-        console.print(f"Fetching match {i}/{len(match_ids)}: {match_id}")
+    # Parallel Fetching of Matches
+    matches: List[Dict[str, Any]] = [None] * len(match_ids)
+    
+    def fetch_match_safe(idx, m_id):
         try:
-            matches.append(client.get_match(match_id))
+            return idx, client.get_match(m_id)
         except Exception as e:
-            console.print(f"[yellow]Failed to fetch match {match_id}: {e}[/yellow]")
-            continue
+            return idx, None
+
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {executor.submit(fetch_match_safe, i, mid): mid for i, mid in enumerate(match_ids)}
+        for future in as_completed(futures):
+            idx, match_data = future.result()
+            matches[idx] = match_data
+            console.print(f"Fetched match {idx+1}/{len(match_ids)}")
+
+    # Filter out failed fetches
+    matches = [m for m in matches if m is not None]
 
     if not matches:
         return {"error": "No matches found or all match fetches failed."}
@@ -249,31 +261,61 @@ def run_analysis_pipeline(
     movement_summaries: List[Dict[str, Any]] = []
 
     if use_timeline:
-        console.print("[bold]Fetching timelines and analyzing movement...[/bold]")
-        for i, (match_id, match) in enumerate(zip(match_ids, matches), start=1):
-            console.print(f"Timeline {i}/{len(match_ids)}: {match_id}")
-            timeline = client.get_match_timeline(match_id)
-
-            # Per-game loss reason (for losses only)
+    if use_timeline:
+        console.print("[bold]Fetching timelines and analyzing movement... (Parallel)[/bold]")
+        
+        def process_timeline(idx, m_id, m_data):
+            # Fetch timeline
             try:
-                loss_diag = classify_loss_reason(match, timeline, puuid)
-                if loss_diag is not None:
-                    timeline_loss_diagnostics.append(
-                        {"match_id": match_id, **loss_diag}
-                    )
-            except Exception as e:  # noqa: BLE001
-                console.print(
-                    f"[yellow]Timeline loss classification failed for {match_id}: {e}[/yellow]"
-                )
+                tl = client.get_match_timeline(m_id)
+            except Exception as e:
+                console.print(f"[yellow]Failed to fetch timeline for {m_id}: {e}[/yellow]")
+                return None, None
 
-            # Per-game movement / roams / fights / positioning
+            # Loss Analysis
+            l_diag = None
             try:
-                movement = analyze_timeline_movement(match, timeline, puuid)
-                movement_summaries.append({"match_id": match_id, **movement})
-            except Exception as e:  # noqa: BLE001
-                console.print(
-                    f"[yellow]Movement analysis failed for {match_id}: {e}[/yellow]"
-                )
+                l_diag = classify_loss_reason(m_data, tl, puuid)
+                if l_diag:
+                    l_diag = {"match_id": m_id, **l_diag}
+            except Exception:
+                pass
+
+            # Movement Analysis
+            mov = None
+            try:
+                mov = analyze_timeline_movement(m_data, tl, puuid)
+                if mov:
+                    mov = {"match_id": m_id, **mov}
+            except Exception:
+                pass
+                
+            return l_diag, mov
+
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            # zip matches with ids carefully (matches list aligns if we didn't filter? 
+            # Wait, we filtered matches. We need to realign with match_ids.
+            # Actually, `matches` objects contain metadata including matchId usually, 
+            # but let's rely on the metadata inside specific match object or just be careful.)
+            
+            # Re-map matches to IDs.
+            # matches is a list of dicts. matches[i]['metadata']['matchId'] usually exists.
+            
+            valid_tasks = []
+            for m in matches:
+                mid = m['metadata']['matchId']
+                valid_tasks.append((mid, m))
+            
+            futures = [executor.submit(process_timeline, i, mid, m) for i, (mid, m) in enumerate(valid_tasks)]
+            
+            for future in as_completed(futures):
+                l_diag, mov = future.result()
+                if l_diag:
+                    timeline_loss_diagnostics.append(l_diag)
+                if mov:
+                    movement_summaries.append(mov)
+                    
+        console.print(f"Processed {len(movement_summaries)} timelines.")
 
     # Enrich analysis with macro, comp, and itemization data
     analysis = enrich_coaching_data(

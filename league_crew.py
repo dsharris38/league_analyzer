@@ -167,8 +167,7 @@ def _get_home_model_name() -> str:
 @lru_cache(maxsize=1)
 def _get_deep_dive_model_name() -> str:
     """Returns the flagship model for deep reasoning."""
-    return os.getenv("OPENAI_DEEP_DIVE_MODEL", "gpt-5.1")
-
+    return os.getenv("OPENAI_DEEP_DIVE_MODEL", "gpt-4o")
 
 
 @lru_cache(maxsize=1)
