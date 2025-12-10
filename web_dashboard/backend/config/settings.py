@@ -22,6 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_path = BASE_DIR.parent.parent / '.env'
 if dotenv_path.exists():
     load_dotenv(dotenv_path)
+    if os.environ.get("OPENAI_API_KEY"):
+         print(f"DEBUG (settings.py): Loaded .env from {dotenv_path}. Key found: {os.environ.get('OPENAI_API_KEY')[:5]}...")
+    else:
+         print(f"DEBUG (settings.py): Loaded .env from {dotenv_path} but OPENAI_API_KEY is missing.")
+else:
+    print(f"DEBUG (settings.py): .env not found at {dotenv_path}")
 
 
 

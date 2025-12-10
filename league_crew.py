@@ -15,6 +15,18 @@ from dotenv import load_dotenv
 SCRIPT_DIR = Path(__file__).resolve().parent
 load_dotenv(SCRIPT_DIR / ".env")
 
+api_key = os.environ.get("OPENAI_API_KEY")
+if api_key:
+    # Print first 5 chars to verify key is definitely loaded
+    print(f"DEBUG: Found OPENAI_API_KEY starting with: {api_key[:5]}...")
+else:
+    print(f"DEBUG: ERROR - OPENAI_API_KEY not found in environment. Checked {SCRIPT_DIR / '.env'}")
+    # Try one level up just in case
+    parent_env = SCRIPT_DIR.parent / ".env"
+    if parent_env.exists():
+        print(f"DEBUG: Found .env in parent: {parent_env}, loading...")
+        load_dotenv(parent_env)
+
 CACHE_DIR = SCRIPT_DIR / "saves" / "cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -110,8 +122,15 @@ def _get_openai_model_name() -> str:
     """
     return os.getenv("OPENAI_MODEL_NAME", "gpt-4o-mini")
 
+@lru_cache(maxsize=1)
+def _get_openai_client() -> OpenAI:
+    key = os.environ.get("OPENAI_API_KEY")
+    if not key:
+         print("CRITICAL: OPENAI_API_KEY missing when initializing client.")
+    return OpenAI(api_key=key)
 
-def _build_crew_prompt(agent_payload: Dict[str, Any]) -> str:
+
+def _build_crew_prompt(analysis: Dict[str, Any], match_id: str | None = None) -> str:
     """
     Build a single prompt that simulates a multi-agent coaching crew using
     the rich JSON output from the league_analyzer.
