@@ -171,7 +171,8 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                     }}
                     className={clsx(
                         "flex-1 w-8 flex items-center justify-center transition-colors border-b border-white/10",
-                        isReviewCandidate ? "bg-purple-600 hover:bg-purple-500 text-white shadow-purple-500/20 shadow-inner" : "bg-slate-800/50 hover:bg-purple-500/20 text-slate-500 hover:text-purple-300"
+                        // Always vibrant purple for Deep Dive to stand out
+                        "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/20"
                     )}
                     title="Deep Dive Analysis"
                 >
@@ -182,11 +183,11 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                 <button
                     onClick={onExpand}
                     className={clsx(
-                        "flex-1 w-8 flex items-center justify-center transition-colors",
-                        win ? "bg-sage/10 hover:bg-sage/30 text-sage" : "bg-rose-vale/10 hover:bg-rose-vale/30 text-rose-vale"
+                        "flex-1 w-8 flex items-center justify-center transition-colors font-bold text-lg text-white",
+                        win ? "bg-blue-600 hover:bg-blue-500" : "bg-red-600 hover:bg-red-500"
                     )}
                 >
-                    <div className="rotate-90 text-lg font-bold">›</div>
+                    <div className="rotate-90">›</div>
                 </button>
             </div>
         </div>

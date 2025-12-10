@@ -88,31 +88,30 @@ function App() {
   };
 
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0b0c2a] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500"></div>
-          <p className="text-blue-400 font-medium animate-pulse">Running Analysis...</p>
-        </div>
+  if (loading) return (
+    <div className="min-h-screen bg-[#0b0c2a] flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-violet-500"></div>
+        <p className="text-violet-400 font-medium animate-pulse">Running Analysis...</p>
       </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-[#0b0c2a] text-slate-100 font-sans">
-      {!analysisData ? (
-        <Home onSelect={handleSelect} onAnalyze={handleAnalyze} />
-      ) : (
-        <DashboardView
-          data={analysisData}
-          filename={selectedFile}
-          onBack={handleBack}
-          onUpdate={handleUpdate}
-        />
-      )}
     </div>
   );
+}
+
+return (
+  <div className="min-h-screen bg-[#0b0c2a] text-slate-100 font-sans">
+    {!analysisData ? (
+      <Home onSelect={handleSelect} onAnalyze={handleAnalyze} />
+    ) : (
+      <DashboardView
+        data={analysisData}
+        filename={selectedFile}
+        onBack={handleBack}
+        onUpdate={handleUpdate}
+      />
+    )}
+  </div>
+);
 }
 
 export default App;
