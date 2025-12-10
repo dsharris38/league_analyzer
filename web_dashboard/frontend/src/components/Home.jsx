@@ -190,6 +190,11 @@ export default function Home({ onSelect, onAnalyze }) {
                     </div>
                 )}
 
+                {/* DEBUG FOOTER */}
+                <div className="mt-8 text-xs text-slate-700">
+                    Backend: {config.API_URL}
+                </div>
+
             </main>
         </div>
     );
