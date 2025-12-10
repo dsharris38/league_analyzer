@@ -78,10 +78,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "http://127.0.0.1:5173",
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 if 'RENDER' in os.environ:
     # Add the Vercel frontend URL to CORS_ALLOWED_ORIGINS
