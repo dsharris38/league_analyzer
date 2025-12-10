@@ -13,9 +13,10 @@ class LolalyticsData:
 
 class Lolalytics:
     @staticmethod
-    def get_champion_data(champion: str, lane: str = "mid") -> Optional[LolalyticsData]:
+    def get_champion_data(champion: str, lane: str = "mid", vs_champion: Optional[str] = None) -> Optional[LolalyticsData]:
         """
         Scrapes live data from Lolalytics.com.
+        Relies on their SSR HTML structure.
         """
         if not champion:
             return None
@@ -23,7 +24,27 @@ class Lolalytics:
         champion_slug = champion.lower().replace(" ", "").replace("'", "").replace(".", "")
         if champion_slug == "wukong": champion_slug = "monkeyking"
         
+        # Lolalytics uses specific lane names
+        # 'top', 'jungle', 'mid', 'adc' (bottom), 'support'
+        lane_map = {
+            "top": "top",
+            "jungle": "jungle",
+            "mid": "middle",
+            "adc": "bottom",
+            "bottom": "bottom",
+            "support": "support",
+            "utility": "support"
+        }
+        
         url = f"https://www.lolalytics.com/lol/{champion_slug}/build/"
+        
+        # If we have a matchup, use the VS url
+        # Format: /lol/ahri/vs/syndra/build/
+        if vs_champion and vs_champion != "Unknown":
+            vs_slug = vs_champion.lower().replace(" ", "").replace("'", "").replace(".", "")
+            if vs_slug == "wukong": vs_slug = "monkeyking"
+            url = f"https://www.lolalytics.com/lol/{champion_slug}/vs/{vs_slug}/build/"
+            # print(f"[Lolalytics] Fetching matchup: {champion} vs {vs_champion}")
         
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -75,6 +96,6 @@ class Lolalytics:
             return None
 
 if __name__ == "__main__":
-    print("Testing extraction for Ahri...")
-    data = Lolalytics.get_champion_data("Ahri")
+    print("Testing extraction for Ahri vs Syndra...")
+    data = Lolalytics.get_champion_data("Ahri", vs_champion="Syndra")
     print(data)

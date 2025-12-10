@@ -66,7 +66,7 @@ def _get_item_name(item_id: int) -> str:
 
 
 
-def _fetch_meta_context(champion: str, role: str) -> str:
+def _fetch_meta_context(champion: str, role: str, vs_champion: str | None = None) -> str:
     """
     Fetch meta context (winrates, top items) from Lolalytics.
     Returns a summarized string for the LLM.
@@ -86,13 +86,14 @@ def _fetch_meta_context(champion: str, role: str) -> str:
         lane = role_map.get(role, "mid") # Default to mid if unknown
 
         # Fetch data
-        data = Lolalytics.get_champion_data(champion, lane=lane)
+        data = Lolalytics.get_champion_data(champion, lane=lane, vs_champion=vs_champion)
         
         if not data:
              return f"No stats found for {champion} in {lane}."
 
         # Extract key insights (Safely)
-        summary = f"**Current Meta for {champion} ({lane})**:\n"
+        context_str = f" ({lane})" if not vs_champion else f" ({lane} vs {vs_champion})"
+        summary = f"**Current Meta for {champion}{context_str}**:\n"
         summary += f"- Tier: {getattr(data, 'tier', 'Unknown')}\n"
         summary += f"- Win Rate: {getattr(data, 'win_rate', 'N/A')}%\n"
         
@@ -612,13 +613,16 @@ def _build_single_game_prompt(match_data: Dict[str, Any]) -> str:
     kda = f"{self_p.get('kills')}/{self_p.get('deaths')}/{self_p.get('assists')}"
 
     # --- 0. Meta Context ---
-    meta_context = _fetch_meta_context(champion, role)
+    # We need to find the lane opponent name efficiently FIRST before calling this
+    # So we move this call to AFTER the participant loop
+    meta_context = "" # Placeholder
     
     # --- 1. Team Context ---
     your_team_id = self_p.get("team_id")
     your_team = []
     enemy_team = []
-    lane_opponent = None
+    lane_opponent_str = None
+    lane_opponent_name = None
     
     pid_map = {} # ID -> Name (Champ)
     
@@ -635,7 +639,11 @@ def _build_single_game_prompt(match_data: Dict[str, Any]) -> str:
         else:
             enemy_team.append(info)
             if p_role == role and role != "UNKNOWN":
-                lane_opponent = f"{p_name} ({p_kda})"
+                lane_opponent_str = f"{p_name} ({p_kda})"
+                lane_opponent_name = p_name
+
+    # Now fetch meta with known opponent
+    meta_context = _fetch_meta_context(champion, role, vs_champion=lane_opponent_name)
 
     # --- 2. Rich Timeline Construction ---
     events = []
@@ -747,7 +755,7 @@ Instead, explain the interaction between items, champions, and game state.
 - Champion: {champion} ({role})
 - KDA: {kda}
 - Duration: {match_data.get("game_duration", 0) // 60} minutes
-- Lane Opponent: {lane_opponent or "Unknown"}
+    - Lane Opponent: {lane_opponent_str or "Unknown"}
 
 **Meta Data (Live Winrates)**:
 {meta_context}
