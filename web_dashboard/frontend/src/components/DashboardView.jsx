@@ -348,7 +348,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                 <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg">
                                     <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
                                         <div className="w-1.5 h-6 bg-violet-500 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]"></div>
-                                        <h3 className="text-xl font-bold text-white">Strategic Overview</h3>
+                                        <h3 className="text-xl font-bold text-white">Identity & Diagnosis</h3>
                                     </div>
                                     <div className="p-8 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white prose-li:text-slate-300">
                                         <ReactMarkdown>{report.overview}</ReactMarkdown>
@@ -388,7 +388,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                     <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-lg hover:border-purple-500/30 transition-colors">
                                         <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
                                             <div className="w-1.5 h-6 bg-purple-500 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
-                                            <h3 className="text-lg font-bold text-white">Focus Goals</h3>
+                                            <h3 className="text-lg font-bold text-white">Top 5 Strategic Priorities</h3>
                                         </div>
                                         <div className="p-6 prose prose-invert max-w-none text-sm prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white flex-1">
                                             <ReactMarkdown>{report.goals}</ReactMarkdown>

@@ -9,6 +9,7 @@ from typing import Any, Dict, List
 from openai import OpenAI
 import requests
 from functools import lru_cache
+from lolalytics_api import Lolalytics
 from dotenv import load_dotenv
 
 # --- Configuration ---
@@ -62,6 +63,42 @@ def _get_item_name(item_id: int) -> str:
     item_map = _get_item_map(version)
     
     return item_map.get(str(item_id), f"Item {item_id}")
+
+
+
+def _fetch_meta_context(champion: str, role: str) -> str:
+    """
+    Fetch meta context (winrates, top items) from Lolalytics.
+    Returns a summarized string for the LLM.
+    """
+    try:
+        if not champion or champion == "Unknown":
+            return "No meta data available (Champion Unknown)."
+        
+        # Map Riot role names to Lolalytics role names
+        role_map = {
+            "TOP": "top",
+            "JUNGLE": "jungle",
+            "MIDDLE": "mid",
+            "BOTTOM": "adc",
+            "UTILITY": "support"
+        }
+        lane = role_map.get(role, "mid") # Default to mid if unknown
+
+        # Fetch data
+        data = Lolalytics.get_champion_data(champion, lane=lane)
+        
+        if not data:
+             return f"No stats found for {champion} in {lane}."
+
+        # Extract key insights (Safely)
+        summary = f"**Current Meta for {champion} ({lane})**:\\n"
+        summary += f"- Tier: {getattr(data, 'tier', 'Unknown')}\\n"
+        summary += f"- Win Rate: {getattr(data, 'win_rate', 'N/A')}%\\n"
+        
+        return summary
+    except Exception as e:
+        return f"Could not fetch meta data: {str(e)}"
 
 
 def _extract_json_from_text(text: str) -> Dict[str, Any] | None:
@@ -135,7 +172,7 @@ def _get_openai_client() -> OpenAI:
     return OpenAI(api_key=key)
 
 
-def _build_crew_prompt(analysis: Dict[str, Any], match_id: str | None = None) -> str:
+def _build_crew_prompt(agent_payload: Dict[str, Any], match_id: str | None = None) -> str:
     """
     Build a single prompt that simulates a multi-agent coaching crew using
     the rich JSON output from the league_analyzer.
@@ -199,252 +236,91 @@ def _build_crew_prompt(analysis: Dict[str, Any], match_id: str | None = None) ->
         movement_for_llm.append(clean_m)
 
     prompt = f"""
-You are a **League of Legends multi-agent coaching crew** analyzing a player's recent ranked games.
-You receive structured JSON exported from a local Python analyzer that already computed
-advanced stats, loss reasons, and timeline-based movement summaries.
+You are a **High-Elo League of Legends Analyst & Performance Psychologist**.
+Your goal is NOT to summarize games, but to **DIAGNOSE the player's fundamental identity and bottlenecks**.
+You are analyzing their "Quarterly Performance Review" based on their last 20 ranked games.
 
 Data schema version: {schema_version}
 
-You are NOT allowed to ask the user questions. Your job is to produce a single, clear,
-actionable coaching report.
+**Your Analysis Strategy**:
+1.  **Identity Profiling (The "Archetype")**:
+    - Look at KDA, Damage Share, and Vision.
+    - Are they "The KDA Saver" (High KDA, Low Dmg)?
+    - Are they "The Coinflip Carry" (High Kills, High Deaths)?
+    - Are they "The Lane Kingdom" (High CS/Gold, but Low Winrate)?
+    - **Assign them a creative, descriptive Archetype name.**
+
+2.  **Root Cause Analysis (The "Why")**:
+    - Don't just list symptoms ("You die too much"). Start with the symptom and find the cause.
+    - Example: "You have high deaths because you fight for Tier 2 towers without vision (Macro Discipline)."
+    - Example: "You lose games because you pick early-game champs but play for late-game scaling (Identity Mismatch)."
+
+3.  **The "One Big Thing"**:
+    - Identify the single biggest factor stopping them from climbing. Is it CS? Vision? Mental?
 
 ---
-
-## Player & Context
-
+## Player Context
 - Riot ID: **{riot_id}**
-- Intended role focus: **{intended_role}**
-- Primary role inferred from data: **{primary_role}**
-- Self-reported rank (may be missing or imprecise): **{player_rank}**
-- Extra notes from player: "{notes_for_coach}"
+- Role: **{primary_role}**
+- Rank: **{player_rank}**
+- Notes: "{notes_for_coach}"
 
----
-
-## Available Data (JSON)
-
-1. Summary (overall performance across recent games)
-
+## Data (JSON)
+1. Summary:
 ```json
 {summary_json}
 ```
 
-2. Per-champion stats (for this dataset)
-
+2. Per-Champion:
 ```json
 {per_champ_json}
 ```
-Each entry has:
-  - champion
-  - games
-  - winrate
-  - avg_kda
-  - cs_per_min
-  - dmg_share
-  - avg_kp
 
-3. Loss patterns (aggregated classifiers)
-
+3. Loss Patterns:
 ```json
 {loss_patterns_json}
 ```
 
-4. Baseline comparison vs high-elo players
-
+4. Baseline & Responsibility:
 ```json
 {baseline_json}
 ```
-
-5. "You vs team" responsibility index
-
+You vs Team:
 ```json
 {you_vs_team_json}
 ```
 
-6. Per-game loss details
-
+5. Loss Details:
 ```json
 {per_game_loss_json}
 ```
-Each entry may include:
-  - match_id
-  - champion
-  - game_length_min
-  - kills, deaths, assists
-  - cs_per_min, dmg_share, kp
-  - team_kills, enemy_kills
-  - reasons[]
-  - role
 
-7. Timeline-based loss diagnostics (gold swings & objectives)
-
+6. Macro Profile (Objectives & Throws):
 ```json
-{timeline_json}
-```
-Each item has:
-  - match_id
-  - primary_reason (e.g., "threw_lead", "early_gap", "objective_gap", etc.)
-  - tags (threw_lead, early_gap, objective_gap, got_picked_before_objective, win)
-  - details with:
-      - max_lead, max_deficit
-      - early_min (gold diff ~10 min)
-      - mid_max (max lead around midgame)
-      - dragon_gap, baron_gap
-      - picked_before_objective (count)
-
-8. Movement summaries (location-based behaviour)
-
-```json
-{movement_json}
+{json.dumps(macro_profile, ensure_ascii=False)}
 ```
 
-9. Patch summary (if available)
-
+7. Champion Profiles:
 ```json
-{patch_summary_json}
+{json.dumps(champion_profiles, ensure_ascii=False)}
 ```
 
-If present, this describes which game patches are most represented in the data.
-When making build/rune recommendations and champion pool suggestions, you should
-prioritize patterns that make sense for the **most recent or most represented patches**.
-
-10. Champion Profiles (hand-authored metadata for specific champions)
-
+8. Recent Patch Context:
 ```json
-{champion_profiles_json}
+{json.dumps(patch_summary, ensure_ascii=False)}
 ```
-
-Each profile (when present) includes:
-  - recommended_roles: typical positions for this champ
-  - archetype: high-level identity (e.g. "tempo jungler", "control mage")
-  - strengths: what this champ is meant to do well
-  - core_goals: a checklist of what a "good game" looks like for this champ
-
-These profiles are only provided for champions the player actually used in the
-analyzed games (plus an optional __meta__ entry). Use them heavily to make your
-advice **champion-specific**, not just generic to the role.
-
-11. Macro Profile (aggregated macro patterns)
-
-```json
-{macro_profile_json}
-```
-
-This aggregates how often different loss tags occur (e.g. threw_lead, early_gap,
-objective_gap, got_picked_before_objective), and average leads/deficits and
-dragon/baron gaps. Use this to anchor your macro coaching in specific numbers
-(e.g., "you lose dragons in 70% of your losses" or "you often throw leads").
-
-12. Per-Game Team Compositions
-
-```json
-{per_game_comp_json}
-```
-
-Each entry shows, per match:
-  - match_id
-  - your_champion, your_role
-  - ally_champions
-  - enemy_champions
-
-Use this to comment on whether this player's **champion choices** fit what their
-team needed (e.g. lack of frontline, lack of engage, no AP threats), and whether
-alternative picks from their role & champ pool might have been better.
-
-13. Itemization Data
-
-```json
-{itemization_profile_json}
-```
-
-```json
-{per_game_items_json}
-```
-
-`itemization_profile` gives coarse stats (e.g., games without boots, 6-item completion).
-`per_game_items` lists final builds per game, including item IDs and best-effort item names.
-Use these to give concrete, champion-specific itemization coaching. Make sure your advice
-is consistent with the patch context and the champion's intended strengths.
 
 ---
 
-## Your Job
-
-You are a **Holistic League of Legends Coaching System**. Your goal is to analyze the provided JSON data and generate a comprehensive, actionable report that covers all aspects of gameplay.
-
-### Analysis Modules
-
-You must mentally perform the following analyses before generating the report. **CRITICAL**: Use `champion_profiles` to adjust your expectations based on the champion's **archetype** and **core_goals**.
-
-1.  **Laning & Farming Analysis**:
-    - Check `cs_per_min`. **Contextualize this**: A "roaming support" or "river shen" will have lower CS than a "hyper-scaling marksman".
-    - Is it above 7.0 for carries? If not, why?
-    - Look at `per_game_loss_details`: are there "early_gap" tags?
-    - **Output Target**: Put advice on CSing, wave management, and trading in **`champion_feedback`**.
-
-2.  **Skirmishing & Dueling Analysis**:
-    - Check `avg_kda` and `avg_damage_share`.
-    - **Contextualize this**: An "engage tank" (e.g. Nautilus) may have high deaths but high assists. A "reset skirmisher" (e.g. Viego) needs kills.
-    - High damage but low kills? (Struggling to finish). High deaths? (Over-aggressive).
-    - **Output Target**: Put advice on mechanics, power spikes, and 1v1s in **`champion_feedback`**.
-
-3.  **Teamfighting & Positioning Analysis**:
-    - Check `avg_kp` (Kill Participation). < 50% usually means splitting too much or late to fights.
-    - Check `deaths` in `summary`. High avg deaths (> 5) often indicates poor positioning in fights.
-    - **Output Target**: Put advice on grouping, flanking, and peel in **`overview`**.
-
-4.  **Objective & Macro Control Analysis**:
-    - **CRITICAL**: Check `macro_profile`.
-    - `avg_dragon_gap` / `avg_baron_gap`: Positive means good control, negative means getting out-macro'd.
-    - `tag_rates`: High "threw_lead"? (Mid-game throws). High "objective_gap"? (Giving up neutral objectives).
-    - **Contextualize this**: A "split-push skirmisher" (e.g. Fiora) should pressure side lanes, while a "control mage" (e.g. Orianna) should group for objectives.
-    - **Output Target**: Put high-level game plans and map control advice in **`overview`**.
-
-5.  **Draft & Composition Analysis**:
-    - Check `per_game_comp`. Does the player pick full AD into armor stackers? Do they pick no-CC champs when the team needs engage?
-    - **Output Target**: Put draft and identity advice in **`overview`** or **`champion_feedback`** as appropriate.
-
-6.  **Itemization & Rune Analysis**:
-    - Check `per_game_items` and `itemization_profile`.
-    - Are they building static builds every game?
-    - Are they skipping boots?
-    - Do they buy anti-heal vs healers?
-    - **Output Target**: Put specific build corrections in **`itemization_tips`**.
-
----
-
-## Report Generation
-
-Synthesize your findings into the following 4 sections. **Be specific. Cite numbers.**
-
----
-
-## Report Structure (JSON)
-
-**CRITICAL INSTRUCTIONS**:
-1. You must output a **valid JSON object** containing exactly these 4 keys.
-2. Each value must be a Markdown string.
-3. **DO NOT** include any thought process, reasoning, or explanations before the JSON.
-4. **DO NOT** wrap the JSON in markdown code blocks (no ```json).
-5. Your response must START with {{ and END with }}.
-6. Output ONLY the JSON object, nothing else.
-
-Expected format:
-
+## Required JSON Output
+Start response with {{{{ and end with }}}}. Output ONLY valid JSON.
+format:
 {{{{
-  "overview": "Markdown string. 2-4 paragraphs summarizing the player's identity, strengths, weaknesses, and main bottleneck. Use **bold** for key terms. Use > Blockquotes for critical takeaways.",
-  "champion_feedback": "Markdown string. Specific advice for their most played champions. Use **bullet points** for readability. Bold key stats or mechanics.",
-  "itemization_tips": "Markdown string. Concrete itemization and rune advice. Use **concise bullet points**. Use > Blockquotes for 'Golden Rules' of building.",
-  "goals": "Markdown string. A numbered list of 5-10 concrete, measurable drills or goals."
+  "overview": "Markdown. **The Diagnosis**. \\n\\n1. **Your Archetype**: [Name]. Explain who they are as a player based on the data. \\n2. **The Root Cause**: Explain the underlying habit or mindset issue causing their losses. \\n3. **The 'One Big Thing'**: The single most critical focus area.",
+  "champion_feedback": "Markdown. **Champion-Specific Adjustments**. Group by champion. Focus on identity shifts (e.g., 'Stop playing Vayne like a lane bully').",
+  "itemization_tips": "Markdown. **Build Efficiency**. Point out static build errors or rune mistakes seen in the data.",
+  "goals": "Markdown. **Top 5 Strategic Priorities**. A ranked list of 5 concrete, actionable habits to fix the Root Cause. No fluff."
 }}}}
-
-**Formatting Guidelines (NN/g Style)**:
-1. **Summaries**: Start each section with a 1-sentence summary in *italics*.
-2. **Bullet Points**: Use bullet points for lists to improve scannability. Avoid walls of text.
-3. **Bold**: Bold important concepts, but do not exceed 30% of the text.
-4. **Callouts**: Use blockquotes (>) to highlight critical insights or "Aha!" moments.
-5. **Short Paragraphs**: Keep paragraphs under 3-4 lines.
-
-**REMINDER**: Start your response with {{{{ immediately. No preamble, no explanation, no code blocks.
 """
     return prompt.strip()
 
@@ -728,6 +604,9 @@ def _build_single_game_prompt(match_data: Dict[str, Any]) -> str:
     champion = self_p.get("champion_name", "Unknown")
     role = self_p.get("teamPosition", "UNKNOWN")
     kda = f"{self_p.get('kills')}/{self_p.get('deaths')}/{self_p.get('assists')}"
+
+    # --- 0. Meta Context ---
+    meta_context = _fetch_meta_context(champion, role)
     
     # --- 1. Team Context ---
     your_team_id = self_p.get("team_id")
@@ -852,9 +731,10 @@ def _build_single_game_prompt(match_data: Dict[str, Any]) -> str:
     timeline_str = chr(10).join([e["msg"] for e in events])
 
     prompt = f"""
-You are a **Ruthless, High-Elo League of Legends Coach**.
-Your job is to provide specific, actionable feedback.
-**TONE**: Direct, no fluff, no "In a challenging match..." intros. Cut straight to the point.
+You are a **High-Elo League of Legends Analyst & Educator**.
+Your job is to provide constructive, deep insights into *why* the game resulted in a win or loss.
+**TONE**: Professional, Encouraging, but Fact-Based. Avoid vague fluff ("In a challenging match..."). 
+Instead, explain the interaction between items, champions, and game state.
 
 **Match Context**:
 - Result: {result}
@@ -863,14 +743,19 @@ Your job is to provide specific, actionable feedback.
 - Duration: {match_data.get("game_duration", 0) // 60} minutes
 - Lane Opponent: {lane_opponent or "Unknown"}
 
+**Meta Data (Live Winrates)**:
+{meta_context}
+
 **Your Goal**:
-Analyze this game and identify exactly **WHY** they lost (or how they carried).
+Analyze this game and identify the root cause of the result. Use the Meta Data to critique their build/runes if they deviated significantly from high-winrate options *without a good reason*.
+
 Focus on:
-1. **Build Adaptation**: Did they respect the enemy threats?
-   - **CRITICAL**: If they built Lifeline (Shieldbow/Maw/Sterak) vs no burst, call it out.
-   - **CRITICAL**: If they built no Armor Pen vs tanks, call it out.
-2. **Macro Mistakes**: Look at the timeline events. Did they die before Baron? Did they split while team fought?
-3. **Vision**: Are they blind? (Check ward counts).
+1. **Build Adaptation**: Did they build correctly for *this specific enemy comp*?
+   - Compare their build to the Meta recommendations.
+   - If they built an item with < 48% winrate on this champ, ask why.
+   - **Lifeline/Penetration**: standard checks apply.
+2. **Macro & Rotation**: Look at location snapshots.
+3. **Vision**: Ward usage.
 
 **Data**:
 
@@ -927,7 +812,6 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any]) -> Dic
     if not api_key:
         return {"story": "Error: OPENAI_API_KEY not set.", "mistakes": "", "build_vision": "", "verdict": ""}
         
-    client = OpenAI(api_key=api_key)
     client = OpenAI(api_key=api_key)
     # Use the flagship model for deep dives
     model_name = _get_deep_dive_model_name()
