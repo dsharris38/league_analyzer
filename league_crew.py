@@ -198,40 +198,7 @@ def _build_crew_prompt(analysis: Dict[str, Any], match_id: str | None = None) ->
         clean_m.pop("team_gold_diff", None)
         movement_for_llm.append(clean_m)
 
-    # --- PAYLOAD OPTIMIZATION (Home Page Only) ---
-    # The home page uses gpt-5.1-mini and doesn't need granular timestamps.
-    # We strip out heavy arrays to save tokens.
-
-    if match_id is None: # Only optimize if this is the broad summary (Home Page), not Deep Dive
-        # 1. Simplify Loss Patterns (remove nested details if any)
-         pass 
-
-        # 2. Movement Summaries: Already heavily filtered above, but let's double check.
-        # Ensure we aren't sending thousands of coordinate pairs.
-        # (The filtering loop above lines 180-194 does a good job).
-
-        # 3. Per Game Items: We send 'per_game_items' which has final builds.
-        # We do NOT send full item purchase history for 20 games here.
-        # (Check where 'per_game_items' comes from - if it has history, strip it).
-        
-        # 4. Timeline Diagnostics: Keep high level tags, drop deep 'details' if verbose
-        # The current 'timeline_diag' is list of dicts. 
-        # let's map it to a simpler structure
-        timeline_json = json.dumps([{
-            "mid": t.get("match_id"), 
-            "tags": t.get("tags"), 
-            "reason": t.get("primary_reason")
-        } for t in timeline_diag], ensure_ascii=False, separators=(',', ':'))
-
-    else:
-        # For Deep Dive, we might want full context, or handled elsewhere.
-        # Currently _build_crew_prompt is only for the HOME PAGE summary crew.
-        # Deep dive uses _build_single_game_prompt.
-        # So we can aggressively optimize here.
-        pass
-
     prompt = f"""
-
     prompt = f"""
 You are a **League of Legends multi-agent coaching crew** analyzing a player's recent ranked games.
 You receive structured JSON exported from a local Python analyzer that already computed
