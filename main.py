@@ -261,7 +261,6 @@ def run_analysis_pipeline(
     movement_summaries: List[Dict[str, Any]] = []
 
     if use_timeline:
-    if use_timeline:
         console.print("[bold]Fetching timelines and analyzing movement... (Parallel)[/bold]")
         
         def process_timeline(idx, m_id, m_data):
