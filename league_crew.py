@@ -329,7 +329,7 @@ You vs Team:
 Start response with {{{{ and end with }}}}. Output ONLY valid JSON.
 format:
 {{{{
-  "overview": "Markdown. **The Diagnosis**. \\n\\n1. **Your Archetype**: [Name]. Explain who they are as a player based on the data. \\n2. **The Root Cause**: Explain the underlying habit or mindset issue causing their losses. \\n3. **The 'One Big Thing'**: The single most critical focus area.",
+  "overview": "Markdown. **The Diagnosis**.\n\n1. **Your Archetype**: [Name]. Explain who they are as a player based on the data.\n2. **The Root Cause**: Explain the underlying habit or mindset issue causing their losses.\n3. **The 'One Big Thing'**: The single most critical focus area.",
   "champion_feedback": "Markdown. **Champion-Specific Adjustments**. Group by champion. Focus on identity shifts (e.g., 'Stop playing Vayne like a lane bully').",
   "itemization_tips": "Markdown. **Build Efficiency**. Point out static build errors or rune mistakes seen in the data.",
   "goals": "Markdown. **Top 5 Strategic Priorities**. A ranked list of 5 concrete, actionable habits to fix the Root Cause. No fluff."
@@ -808,11 +808,11 @@ Analyze this game holistically. We are not just analyzing the gameplay, but the 
 Return a **valid JSON object** with the following keys. Each value must be a Markdown string.
 
 {{{{
-  "draft_analysis": "Markdown. **Draft & Win Condition**. Analyze team comps. Who has the edge?",
+  "draft_analysis": "Markdown. **Draft & Win Condition**. Analyze team comps. Who has the edge? Why?",
   "pick_quality": "Markdown. **Pick Critique**. Was {champion} the best choice from their pool? If not, who? If pool is lacking, suggest a **New Champion** to learn.",
   "story": "Markdown string. **The Turning Point**. What decided the game?",
-  "ideal_build": "Markdown. **Objective Best Build**. List the specific items that SHOULD have been built this game.",
-  "build_vision": "Markdown string. **Build & Vision Critique**. Compare their actual build to the Ideal Build. Be constructive.",
+  "ideal_build": "Markdown. **Objective Best Build**. List the specific items associated with the highest winrate for this scenario.",
+  "build_vision": "Markdown string. **Build Critique**. Compare their actual build to the Ideal Build. Explain WHY the ideal items are better in this specific match.",
   "mistakes": "Markdown string. **Critical Mistakes**. Specific execution errors.",
   "verdict": "Markdown string. **Final Verdict**. One sentence summary."
 }}}}
@@ -872,9 +872,12 @@ def analyze_specific_game(match_id: str, full_match_data: Dict[str, Any], champi
         result = {}
         if data:
             result = {
+                "draft_analysis": data.get("draft_analysis", ""),
+                "pick_quality": data.get("pick_quality", ""),
                 "story": data.get("story", text),
-                "mistakes": data.get("mistakes", ""),
+                "ideal_build": data.get("ideal_build", ""),
                 "build_vision": data.get("build_vision", ""),
+                "mistakes": data.get("mistakes", ""),
                 "verdict": data.get("verdict", "")
             }
         else:
