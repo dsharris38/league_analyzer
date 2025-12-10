@@ -9,9 +9,12 @@ from typing import Any, Dict, List
 from openai import OpenAI
 import requests
 from functools import lru_cache
+from dotenv import load_dotenv
 
 # --- Configuration ---
 SCRIPT_DIR = Path(__file__).resolve().parent
+load_dotenv(SCRIPT_DIR / ".env")
+
 CACHE_DIR = SCRIPT_DIR / "saves" / "cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
