@@ -460,7 +460,7 @@ def call_league_crew(agent_payload: Dict[str, Any]) -> Dict[str, str]:
             "OPENAI_API_KEY is not set. Please add it to your .env or environment."
         )
 
-        )
+
 
     # Use the efficiently priced mini model for the 20-game summary
     model_name = _get_home_model_name()
