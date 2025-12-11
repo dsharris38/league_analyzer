@@ -98,7 +98,7 @@ export default function Home({ onSelect, onAnalyze }) {
 
             {/* Main Content */}
             <main className="relative z-10 flex-1 flex flex-col items-center justify-center p-6 pb-32">
-                <h1 className="text-5xl md:text-6xl font-extrabold text-center mb-8 tracking-tight font-serif">
+                <h1 className="text-5xl md:text-6xl font-extrabold text-center mb-8 tracking-tight">
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-white drop-shadow-sm">
                         Master Your Gameplay
                     </span>

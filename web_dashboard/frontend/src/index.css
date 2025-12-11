@@ -28,3 +28,30 @@ body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
 }
+
+@layer components {
+  .prose-coaching {
+    @apply prose prose-invert max-w-none;
+
+    /* Text & Spacing */
+    @apply prose-p:text-slate-300 prose-p:leading-loose prose-p:mb-4;
+
+    /* Headers */
+    @apply prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight prose-headings:mb-3 prose-headings:mt-6;
+    @apply prose-h3:text-violet-100 prose-h3:text-lg;
+
+    /* Acents */
+    @apply prose-strong:text-violet-400 prose-strong:font-bold;
+    @apply prose-a:text-violet-400 prose-a:no-underline hover:prose-a:underline;
+
+    /* Lists */
+    @apply prose-ul:text-slate-300 prose-ul:list-disc prose-ul:pl-5 prose-ul:mb-4;
+    @apply prose-li:marker:text-violet-500 prose-li:pl-1;
+
+    /* Quotes (Aha Moments) */
+    @apply prose-blockquote:border-l-4 prose-blockquote:border-violet-500 prose-blockquote:bg-violet-500/10 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:my-4 prose-blockquote:not-italic prose-blockquote:text-slate-200 prose-blockquote:rounded-r-lg;
+
+    /* Code/Pre */
+    @apply prose-code:text-violet-300 prose-code:bg-slate-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none;
+  }
+}

@@ -350,7 +350,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                         <div className="w-1.5 h-6 bg-violet-500 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]"></div>
                                         <h3 className="text-xl font-bold text-white">Identity & Diagnosis</h3>
                                     </div>
-                                    <div className="p-8 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white prose-li:text-slate-300">
+                                    <div className="p-8 prose-coaching">
                                         <ReactMarkdown>{report.overview}</ReactMarkdown>
                                     </div>
                                 </div>
@@ -364,7 +364,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                             <div className="w-1.5 h-6 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
                                             <h3 className="text-lg font-bold text-white">Champion Specifics</h3>
                                         </div>
-                                        <div className="p-6 prose prose-invert max-w-none text-sm prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white flex-1">
+                                        <div className="p-6 flex-1 prose-coaching">
                                             <ReactMarkdown>{report.champion_feedback}</ReactMarkdown>
                                         </div>
                                     </div>
@@ -377,7 +377,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                             <div className="w-1.5 h-6 bg-yellow-500 rounded-full shadow-[0_0_8px_rgba(234,179,8,0.5)]"></div>
                                             <h3 className="text-lg font-bold text-white">Itemization & Builds</h3>
                                         </div>
-                                        <div className="p-6 prose prose-invert max-w-none text-sm prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white flex-1">
+                                        <div className="p-6 flex-1 prose-coaching">
                                             <ReactMarkdown>{report.itemization_tips}</ReactMarkdown>
                                         </div>
                                     </div>
@@ -390,7 +390,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                             <div className="w-1.5 h-6 bg-purple-500 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
                                             <h3 className="text-lg font-bold text-white">Top 5 Strategic Priorities</h3>
                                         </div>
-                                        <div className="p-6 prose prose-invert max-w-none text-sm prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white flex-1">
+                                        <div className="p-6 flex-1 prose-coaching">
                                             <ReactMarkdown>{report.goals}</ReactMarkdown>
                                         </div>
                                     </div>

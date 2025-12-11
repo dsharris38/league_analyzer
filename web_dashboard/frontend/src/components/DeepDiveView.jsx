@@ -81,7 +81,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                         <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
                                                         <h3 className="text-lg font-bold text-white">Draft & Win Condition</h3>
                                                     </div>
-                                                    <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                    <div className="p-6 prose-coaching">
                                                         <ReactMarkdown>{report.draft_analysis || "No draft analysis available."}</ReactMarkdown>
                                                     </div>
                                                 </div>
@@ -91,7 +91,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                         <div className="w-1 h-6 bg-purple-500 rounded-full"></div>
                                                         <h3 className="text-lg font-bold text-white">Pick & Identity</h3>
                                                     </div>
-                                                    <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                    <div className="p-6 prose-coaching">
                                                         <ReactMarkdown>{report.pick_quality || "No pick critique available."}</ReactMarkdown>
                                                     </div>
                                                 </div>
@@ -103,7 +103,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                     <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
                                                     <h3 className="text-lg font-bold text-white">The Story of the Game</h3>
                                                 </div>
-                                                <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                <div className="p-6 prose-coaching">
                                                     <ReactMarkdown>{report.story}</ReactMarkdown>
                                                 </div>
                                             </div>
@@ -115,7 +115,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                         <div className="w-1 h-6 bg-emerald-500 rounded-full"></div>
                                                         <h3 className="text-lg font-bold text-white">Objective Best Build</h3>
                                                     </div>
-                                                    <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                    <div className="p-6 prose-coaching">
                                                         <ReactMarkdown>{report.ideal_build || "No ideal build generated."}</ReactMarkdown>
                                                     </div>
                                                 </div>
@@ -125,7 +125,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                         <div className="w-1 h-6 bg-yellow-500 rounded-full"></div>
                                                         <h3 className="text-lg font-bold text-white">Your Build Critique</h3>
                                                     </div>
-                                                    <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                    <div className="p-6 prose-coaching">
                                                         <ReactMarkdown>{report.build_vision}</ReactMarkdown>
                                                     </div>
                                                 </div>
@@ -137,7 +137,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                     <div className="w-1 h-6 bg-red-500 rounded-full"></div>
                                                     <h3 className="text-lg font-bold text-white">Critical Mistakes</h3>
                                                 </div>
-                                                <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                <div className="p-6 prose-coaching">
                                                     <ReactMarkdown>{report.mistakes}</ReactMarkdown>
                                                 </div>
                                             </div>
@@ -148,14 +148,14 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                     <div className="w-1 h-6 bg-emerald-500 rounded-full"></div>
                                                     <h3 className="text-lg font-bold text-white">Final Verdict</h3>
                                                 </div>
-                                                <div className="p-6 prose prose-invert max-w-none prose-p:text-slate-300 prose-headings:text-white prose-strong:text-white">
+                                                <div className="p-6 prose-coaching">
                                                     <ReactMarkdown>{report.verdict}</ReactMarkdown>
                                                 </div>
                                             </div>
                                         </>
                                     ) : (
                                         // Fallback for old string reports or errors
-                                        <div className="prose prose-invert max-w-none prose-headings:text-blue-300 prose-strong:text-white prose-p:text-slate-300">
+                                        <div className="prose-coaching">
                                             <ReactMarkdown>{typeof report === 'string' ? report : report.story || "No analysis available."}</ReactMarkdown>
                                         </div>
                                     )}
