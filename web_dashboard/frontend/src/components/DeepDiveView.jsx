@@ -74,102 +74,107 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                     {/* Story Card */}
                                     {typeof report === 'object' && report.story ? (
                                         <>
-                                            {/* Draft & Pick Analysis (New) */}
-                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                    <div className="p-4 border-b border-slate-700/50 bg-blue-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
-                                                        <h3 className="text-lg font-bold text-white">Draft & Win Condition</h3>
+                                            {/* Row 1: Context (Draft, Pick, Story) */}
+                                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                                {/* Draft Analysis */}
+                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
+                                                    <div className="p-3 border-b border-slate-700/50 bg-blue-500/10 flex items-center gap-2">
+                                                        <div className="w-1 h-5 bg-blue-500 rounded-full"></div>
+                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Draft & Win Con</h3>
                                                     </div>
-                                                    <div className="p-6 prose-coaching">
-                                                        <ReactMarkdown>{report.draft_analysis || "No draft analysis available."}</ReactMarkdown>
+                                                    <div className="p-4 prose-coaching flex-1 overflow-auto">
+                                                        <ReactMarkdown>{report.draft_analysis || "No draft analysis."}</ReactMarkdown>
                                                     </div>
                                                 </div>
 
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                    <div className="p-4 border-b border-slate-700/50 bg-purple-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-6 bg-purple-500 rounded-full"></div>
-                                                        <h3 className="text-lg font-bold text-white">Pick & Identity</h3>
+                                                {/* Pick Critique */}
+                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
+                                                    <div className="p-3 border-b border-slate-700/50 bg-purple-500/10 flex items-center gap-2">
+                                                        <div className="w-1 h-5 bg-purple-500 rounded-full"></div>
+                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Pick Identity</h3>
                                                     </div>
-                                                    <div className="p-6 prose-coaching">
-                                                        <ReactMarkdown>{report.pick_quality || "No pick critique available."}</ReactMarkdown>
+                                                    <div className="p-4 prose-coaching flex-1 overflow-auto">
+                                                        <ReactMarkdown>{report.pick_quality || "No pick critique."}</ReactMarkdown>
+                                                    </div>
+                                                </div>
+
+                                                {/* Story */}
+                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
+                                                    <div className="p-3 border-b border-slate-700/50 bg-violet-500/10 flex items-center gap-2">
+                                                        <div className="w-1 h-5 bg-violet-500 rounded-full"></div>
+                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">The Turning Point</h3>
+                                                    </div>
+                                                    <div className="p-4 prose-coaching flex-1 overflow-auto">
+                                                        <ReactMarkdown>{report.story}</ReactMarkdown>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {/* Story Card */}
-                                            <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                <div className="p-4 border-b border-slate-700/50 bg-violet-500/10 flex items-center gap-2">
-                                                    <div className="w-1 h-6 bg-violet-500 rounded-full"></div>
-                                                    <h3 className="text-lg font-bold text-white">The Story of the Game</h3>
-                                                </div>
-                                                <div className="p-6 prose-coaching">
-                                                    <ReactMarkdown>{report.story}</ReactMarkdown>
-                                                </div>
-                                            </div>
-
-                                            {/* Smart Itemization (New) */}
-                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                    <div className="p-4 border-b border-slate-700/50 bg-emerald-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-6 bg-emerald-500 rounded-full"></div>
-                                                        <h3 className="text-lg font-bold text-white">Objective Best Build</h3>
+                                            {/* Row 2: Execution (Builds & Mistakes) */}
+                                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                                {/* Ideal Build */}
+                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
+                                                    <div className="p-3 border-b border-slate-700/50 bg-emerald-500/10 flex items-center gap-2">
+                                                        <div className="w-1 h-5 bg-emerald-500 rounded-full"></div>
+                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Objective Build</h3>
                                                     </div>
-                                                    <div className="p-6 prose-coaching">
-                                                        <ReactMarkdown>{report.ideal_build || "No ideal build generated."}</ReactMarkdown>
+                                                    <div className="p-4 prose-coaching flex-1 overflow-auto">
+                                                        <ReactMarkdown>{report.ideal_build || "No build data."}</ReactMarkdown>
                                                     </div>
                                                 </div>
 
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                    <div className="p-4 border-b border-slate-700/50 bg-yellow-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-6 bg-yellow-500 rounded-full"></div>
-                                                        <h3 className="text-lg font-bold text-white">Your Build Critique</h3>
+                                                {/* Build Critique */}
+                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
+                                                    <div className="p-3 border-b border-slate-700/50 bg-yellow-500/10 flex items-center gap-2">
+                                                        <div className="w-1 h-5 bg-yellow-500 rounded-full"></div>
+                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Build Critique</h3>
                                                     </div>
-                                                    <div className="p-6 prose-coaching">
+                                                    <div className="p-4 prose-coaching flex-1 overflow-auto">
                                                         <ReactMarkdown>{report.build_vision}</ReactMarkdown>
                                                     </div>
                                                 </div>
+
+                                                {/* Mistakes */}
+                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
+                                                    <div className="p-3 border-b border-slate-700/50 bg-red-500/10 flex items-center gap-2">
+                                                        <div className="w-1 h-5 bg-red-500 rounded-full"></div>
+                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Critical Errors</h3>
+                                                    </div>
+                                                    <div className="p-4 prose-coaching flex-1 overflow-auto">
+                                                        <ReactMarkdown>{report.mistakes}</ReactMarkdown>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            {/* Critical Mistakes (Full Width) */}
+                                            {/* Verdict Card (Compact) */}
                                             <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                <div className="p-4 border-b border-slate-700/50 bg-red-500/10 flex items-center gap-2">
-                                                    <div className="w-1 h-6 bg-red-500 rounded-full"></div>
-                                                    <h3 className="text-lg font-bold text-white">Critical Mistakes</h3>
+                                                <div className="p-3 border-b border-slate-700/50 bg-emerald-500/10 flex items-center gap-2">
+                                                    <div className="w-1 h-5 bg-emerald-500 rounded-full"></div>
+                                                    <h3 className="text-sm font-bold text-white uppercase tracking-wide">Final Verdict</h3>
                                                 </div>
-                                                <div className="p-6 prose-coaching">
-                                                    <ReactMarkdown>{report.mistakes}</ReactMarkdown>
-                                                </div>
-                                            </div>
-
-                                            {/* Verdict Card */}
-                                            <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                <div className="p-4 border-b border-slate-700/50 bg-emerald-500/10 flex items-center gap-2">
-                                                    <div className="w-1 h-6 bg-emerald-500 rounded-full"></div>
-                                                    <h3 className="text-lg font-bold text-white">Final Verdict</h3>
-                                                </div>
-                                                <div className="p-6 prose-coaching">
+                                                <div className="p-4 prose-coaching">
                                                     <ReactMarkdown>{report.verdict}</ReactMarkdown>
                                                 </div>
                                             </div>
                                         </>
-                                    ) : (
-                                        // Fallback for old string reports or errors
-                                        <div className="prose-coaching">
-                                            <ReactMarkdown>{typeof report === 'string' ? report : report.story || "No analysis available."}</ReactMarkdown>
-                                        </div>
+                                        </>
+                            ) : (
+                            // Fallback for old string reports or errors
+                            <div className="prose-coaching">
+                                <ReactMarkdown>{typeof report === 'string' ? report : report.story || "No analysis available."}</ReactMarkdown>
+                            </div>
                                     )}
-                                </div>
+                        </div>
                             )}
-                            {activeTab === 'map' && matchData && (
-                                <div className="h-full">
-                                    <TimelineMap match={matchData} puuid={puuid} showWards={true} />
-                                </div>
-                            )}
-                        </>
+                    {activeTab === 'map' && matchData && (
+                        <div className="h-full">
+                            <TimelineMap match={matchData} puuid={puuid} showWards={true} />
+                        </div>
                     )}
-                </div>
+                </>
+                    )}
             </div>
         </div>
+        </div >
     );
 }

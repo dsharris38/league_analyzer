@@ -35,11 +35,12 @@ body {
     @apply prose prose-invert max-w-none;
 
     /* Text & Spacing */
-    @apply prose-p:text-slate-300 prose-p:leading-loose prose-p:mb-4;
+    @apply text-sm leading-relaxed;
+    @apply prose-p:text-slate-300 prose-p:mb-2 prose-p:mt-0;
 
     /* Headers */
-    @apply prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight prose-headings:mb-3 prose-headings:mt-6;
-    @apply prose-h3:text-violet-100 prose-h3:text-lg;
+    @apply prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight prose-headings:mb-2 prose-headings:mt-4;
+    @apply prose-h3:text-violet-100 prose-h3:text-base;
 
     /* Acents */
     @apply prose-strong:text-violet-400 prose-strong:font-bold;
