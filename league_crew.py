@@ -817,9 +817,11 @@ Return a **valid JSON object** with the following keys. Each value must be a Mar
   "verdict": "Markdown string. **Final Verdict**. One sentence summary."
 }}}}
 
-**Formatting Guidelines**:
-- Use > Blockquotes for "Aha!" moments.
-- Be concise. No paragraphs longer than 2 sentences.
+**Formatting Guidelines (CRITICAL)**:
+- **EXTREMELY CONCISE**. fit in small cards.
+- **Bullet points ONLY** where possible.
+- Max 2-3 short bullet points per section.
+- NO intro/outro fluff. Go straight to the point.
 """
     return prompt.strip()
 
