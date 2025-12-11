@@ -157,24 +157,23 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                 </div>
                                             </div>
                                         </>
-                                        </>
-                            ) : (
-                            // Fallback for old string reports or errors
-                            <div className="prose-coaching">
-                                <ReactMarkdown>{typeof report === 'string' ? report : report.story || "No analysis available."}</ReactMarkdown>
-                            </div>
+                                    ) : (
+                                        // Fallback for old string reports or errors
+                                        <div className="prose-coaching">
+                                            <ReactMarkdown>{typeof report === 'string' ? report : report.story || "No analysis available."}</ReactMarkdown>
+                                        </div>
                                     )}
-                        </div>
+                                </div>
                             )}
-                    {activeTab === 'map' && matchData && (
-                        <div className="h-full">
-                            <TimelineMap match={matchData} puuid={puuid} showWards={true} />
-                        </div>
+                            {activeTab === 'map' && matchData && (
+                                <div className="h-full">
+                                    <TimelineMap match={matchData} puuid={puuid} showWards={true} />
+                                </div>
+                            )}
+                        </>
                     )}
-                </>
-                    )}
+                </div>
             </div>
-        </div>
         </div >
     );
 }
