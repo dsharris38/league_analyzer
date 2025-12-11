@@ -813,7 +813,7 @@ Return a **valid JSON object** with the following keys. Each value must be a Mar
   "story": "Markdown string. **The Turning Point**. What decided the game?",
   "ideal_build": "Markdown. **Objective Best Build**. List the specific items associated with the highest winrate for this scenario.",
   "build_vision": "Markdown string. **Build Critique**. Compare their actual build to the Ideal Build. Explain WHY the ideal items are better in this specific match.",
-  "mistakes": "Markdown string. **Critical Mistakes**. Specific execution errors.",
+  "mistakes": "Markdown string. **Critical Mistakes & Bad Habits**. Two parts: 1) What specifically lost THIS game? 2) What 'Silent Killer' mistakes did they make (e.g. facechecking) that they didn't get punished for this time, but will hurt their climb?",
   "verdict": "Markdown string. **Final Verdict**. One sentence summary."
 }}}}
 
