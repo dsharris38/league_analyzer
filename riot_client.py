@@ -56,10 +56,11 @@ class RiotClient:
                 return resp
 
             except requests.RequestException as e:
+                status_code = e.response.status_code if e.response else "Unknown"
                 if attempt == max_attempts:
-                    print(f"[RiotClient] Request failed after {max_attempts} attempts: {e}")
+                    print(f"[RiotClient] Request failed after {max_attempts} attempts: url={url}, status={status_code}, error={e}")
                     raise
-                print(f"[RiotClient] Request failed (attempt {attempt}/{max_attempts}). Retrying in {backoff * attempt}s...")
+                print(f"[RiotClient] Request failed (attempt {attempt}/{max_attempts}): url={url}, status={status_code}. Retrying in {backoff * attempt}s...")
                 time.sleep(backoff * attempt)
 
         raise RuntimeError("Unexpected retry failure in RiotClient._get")
@@ -129,4 +130,14 @@ class RiotClient:
         url = f"{BASE_LOL_URL}/lol/league/v4/entries/by-summoner/{summoner_id}"
         r = self._get(url, timeout=10)
         return r.json()
+    # -------------------------------
+    # Mastery
+    # -------------------------------
+
+    def get_champion_mastery(self, puuid: str) -> List[Dict[str, Any]]:
+        """Get all champion mastery entries sorted by number of champion points descending."""
+        url = f"{BASE_LOL_URL}/lol/champion-mastery/v4/champion-masteries/by-puuid/{puuid}"
+        r = self._get(url, timeout=10)
+        return r.json()
+
 

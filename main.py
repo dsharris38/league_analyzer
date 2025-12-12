@@ -8,19 +8,49 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from rich.console import Console
 from rich.table import Table
 
+
 from riot_client import RiotClient
 from analyzer import analyze_matches
 from timeline_analyzer import classify_loss_reason, analyze_timeline_movement
 from league_crew import call_league_crew, classify_matches_and_identify_candidates
 from coach_data_enricher import enrich_coaching_data
 from champion_profile_helper import load_champion_profiles, attach_champion_profiles
-
+from stats_scraper import get_past_ranks
 
 console = Console()
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SAVE_DIR = SCRIPT_DIR / "saves"
 SAVE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def get_cached_past_ranks(puuid: str, game_name: str, tag_line: str, region: str) -> List[Dict[str, str]]:
+    """Fetch past ranks with caching to avoid re-scraping static data."""
+    cache_file = SAVE_DIR / f"cache_past_ranks_{puuid}.json"
+    
+    # Try to load from cache
+    if cache_file.exists():
+        try:
+            with open(cache_file, "r") as f:
+                data = json.load(f)
+                if data: # valid data
+                    return data
+        except Exception:
+            pass # ignore errors, re-fetch
+            
+    # Fetch fresh
+    ranks = get_past_ranks(game_name, tag_line, region)
+    
+    # Save to cache if we found data
+    if ranks:
+        try:
+            with open(cache_file, "w") as f:
+                json.dump(ranks, f)
+        except Exception as e:
+            console.print(f"[yellow]Warning: Could not save cache: {e}[/yellow]")
+            
+    return ranks
+
 
 
 def print_human_summary(
@@ -210,6 +240,7 @@ def run_analysis_pipeline(
             console.print(f"[dim]Debug: Found {len(league_entries)} league entries.[/dim]")
     except Exception as e:
         console.print(f"[yellow]Warning: Failed to fetch summoner/rank data: {e}[/yellow]")
+        console.print("[yellow]Hint: Check your PLATFORM setting in .env (e.g. 'na1', 'euw1') if you are in a non-default region.[/yellow]")
         # Non-critical, continue
 
     console.print(f"[bold]Fetching last {match_count} ranked matches...[/bold]")
@@ -359,11 +390,13 @@ def run_analysis_pipeline(
             "id": summoner.get("id", "")
         },
         "rank_info": league_entries,
+        "past_ranks": get_cached_past_ranks(puuid, game_name, tag_line, client.platform),
         "match_count_requested": match_count,
         "match_ids": match_ids,
         "analysis": analysis,
         "timeline_loss_diagnostics": timeline_loss_diagnostics,
         "movement_summaries": movement_summaries,
+        "champion_mastery": client.get_champion_mastery(puuid)[:10], # Top 10 mastery
         "meta": {
             "intended_role_focus": summary.get("primary_role", "FLEX"),
             "player_self_reported_rank": summary.get(

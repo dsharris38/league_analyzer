@@ -1,16 +1,18 @@
-// Data Dragon Helper
+// Data Dragon Helper (Powered by Meraki Analytics & Community Dragon)
 // Handles version fetching and URL generation for assets
 
 const DD_BASE_URL = "https://ddragon.leagueoflegends.com";
-let currentVersion = "14.23.1"; // Default fallback
+const MERAKI_BASE_URL = "http://cdn.merakianalytics.com/riot/lol/resources/latest/en-US";
+let currentVersion = "15.1.1"; // Default fallback
 
 // Data caches
 let runeMap = {};
 let runeDataMap = {};
 let itemDataMap = {};
-let championDataMap = {};
+let championDataMap = {}; // Now stores ALL champions from Meraki
 let summonerSpellMap = {};
 
+// Keep version fetch for Runes/legacy needs
 export const fetchLatestVersion = async () => {
     try {
         const response = await fetch(`${DD_BASE_URL}/api/versions.json`);
@@ -27,79 +29,67 @@ export const fetchLatestVersion = async () => {
 
 export const getVersion = () => currentVersion;
 
+// --- Meraki/Community Dragon Asset Helpers ---
+
 export const getChampionIconUrl = (championName) => {
     if (!championName) return "";
-    return `${DD_BASE_URL}/cdn/${currentVersion}/img/champion/${championName}.png`;
+    // Ensure name is properly capitalized for CDragon
+    const name = championName.charAt(0).toUpperCase() + championName.slice(1);
+    // Use Community Dragon directly for reliable icons
+    return `https://cdn.communitydragon.org/latest/champion/${name}/square`;
 };
 
 export const getItemIconUrl = (itemId) => {
     if (!itemId || itemId === 0) return "";
-    return `${DD_BASE_URL}/cdn/${currentVersion}/img/item/${itemId}.png`;
+    // If we have data, use the specific icon link (which handles different versions/paths)
+    if (itemDataMap[itemId] && itemDataMap[itemId].icon) {
+        return itemDataMap[itemId].icon;
+    }
+    // Fallback ID-based CDragon link
+    return `https://cdn.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/items/icons2d/${itemId}.png`;
 };
 
 export const getSpellIconUrl = (spellId) => {
-    const spellMap = {
-        1: "SummonerBoost",
-        3: "SummonerExhaust",
-        4: "SummonerFlash",
-        6: "SummonerHaste",
-        7: "SummonerHeal",
-        11: "SummonerSmite",
-        12: "SummonerTeleport",
-        13: "SummonerMana",
-        14: "SummonerDot", // Ignite
-        21: "SummonerBarrier",
-        30: "SummonerPoroRecall",
-        31: "SummonerPoroThrow",
-        32: "SummonerSnowball",
-        39: "SummonerSnowURFSnowball_Mark",
-        54: "Summoner_UltBookPlaceholder",
-    };
-    const spellName = spellMap[spellId];
-    if (!spellName) return "";
-    return `${DD_BASE_URL}/cdn/${currentVersion}/img/spell/${spellName}.png`;
+    // Summoner spells
+    if (summonerSpellMap[spellId] && summonerSpellMap[spellId].icon) {
+        return summonerSpellMap[spellId].icon;
+    }
+    // Fallback DDragon (Meraki summoners might not be loaded yet)
+    return `https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/spell/SummonerFlash.png`; // Fallback placeholder logic
 };
 
 // Get ability icon URL
 export const getAbilityIconUrl = (championName, abilityKey) => {
     if (!championName || !abilityKey) return "";
-    const championData = championDataMap[championName];
-    if (!championData) return "";
-
-    const abilityMap = {
-        'Q': championData.spells[0]?.image?.full,
-        'W': championData.spells[1]?.image?.full,
-        'E': championData.spells[2]?.image?.full,
-        'R': championData.spells[3]?.image?.full
-    };
-
-    const imageName = abilityMap[abilityKey];
-    if (!imageName) return "";
-
-    return `${DD_BASE_URL}/cdn/${currentVersion}/img/spell/${imageName}`;
+    const champ = championDataMap[championName];
+    if (champ && champ.abilities && champ.abilities[abilityKey] && champ.abilities[abilityKey][0]) {
+        return champ.abilities[abilityKey][0].icon;
+    }
+    // Fallback CDragon construction
+    return `https://cdn.communitydragon.org/latest/champion/${championName}/ability-icon/${abilityKey.toLowerCase()}`;
 };
 
 // Get ability data with description
 export const getAbilityData = (championName, abilityKey) => {
     if (!championName || !abilityKey) return null;
-    const championData = championDataMap[championName];
-    if (!championData) return null;
+    const champ = championDataMap[championName];
+    if (!champ || !champ.abilities) return null;
 
-    const abilityIndex = { 'Q': 0, 'W': 1, 'E': 2, 'R': 3 }[abilityKey];
-    if (abilityIndex === undefined) return null;
+    // Handle 'P' vs 'Passive' naming if needed, but Meraki uses 'P', 'Q', 'W', 'E', 'R'
+    const abilityList = champ.abilities[abilityKey];
+    if (!abilityList || abilityList.length === 0) return null;
 
-    const spell = championData.spells[abilityIndex];
-    if (!spell) return null;
+    const spell = abilityList[0]; // Take first form
 
     return {
         name: spell.name,
-        description: spell.description,
-        cooldown: spell.cooldownBurn,
-        cost: spell.costBurn
+        description: spell.effects ? spell.effects.map(e => e.description).join("\n\n") : spell.description, // Meraki splits effects
+        cooldown: spell.cooldown ? spell.cooldown.modifiers[0].values.join(" / ") : "N/A",
+        cost: spell.cost ? spell.cost.modifiers[0].values.join(" / ") : "N/A"
     };
 };
 
-// Fetch runes with descriptions
+// Fetch runes (Keep DDragon for now as it's reliable for IDs)
 let runeTreeData = [];
 
 export const fetchRunes = async () => {
@@ -108,23 +98,13 @@ export const fetchRunes = async () => {
         const data = await response.json();
         runeTreeData = data;
 
-        // Build maps for icons and data
         data.forEach(tree => {
             runeMap[tree.id] = tree.icon;
-            runeDataMap[tree.id] = {
-                name: tree.name,
-                description: tree.name,
-                icon: tree.icon
-            };
-
+            runeDataMap[tree.id] = { name: tree.name, description: tree.name, icon: tree.icon };
             tree.slots.forEach(slot => {
                 slot.runes.forEach(rune => {
                     runeMap[rune.id] = rune.icon;
-                    runeDataMap[rune.id] = {
-                        name: rune.name,
-                        description: rune.longDesc || rune.shortDesc,
-                        icon: rune.icon
-                    };
+                    runeDataMap[rune.id] = { name: rune.name, description: rune.longDesc || rune.shortDesc, icon: rune.icon };
                 });
             });
         });
@@ -137,7 +117,6 @@ export const getAllRunes = () => runeTreeData;
 
 export const getRuneIconUrl = (runeId) => {
     if (!runeId || !runeMap[runeId]) return "";
-    // Fix: Add /cdn/ prefix to the path
     return `${DD_BASE_URL}/cdn/img/${runeMap[runeId]}`;
 };
 
@@ -145,14 +124,16 @@ export const getRuneData = (runeId) => {
     return runeDataMap[runeId] || null;
 };
 
-// Fetch item data
+// Fetch item data (From Meraki)
 export const fetchItems = async () => {
     try {
-        const response = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/item.json`);
+        const response = await fetch(`${MERAKI_BASE_URL}/items.json`);
         const data = await response.json();
-        itemDataMap = data.data;
+        // Meraki returns { "1001": { ... } } directly
+        itemDataMap = data;
     } catch (e) {
-        console.error("Failed to fetch items", e);
+        console.error("Failed to fetch items from Meraki", e);
+        // Fallback to DDragon? No, better to stick to one source to avoid ID mismatches.
     }
 };
 
@@ -161,13 +142,11 @@ export const getItemData = (itemId) => {
     return itemDataMap[itemId] || null;
 };
 
-// Fetch summoner spells
+// Fetch summoner spells (DDragon for now)
 export const fetchSummonerSpells = async () => {
     try {
         const response = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/summoner.json`);
         const data = await response.json();
-
-        // Build a map from spell ID to spell data
         Object.values(data.data).forEach(spell => {
             summonerSpellMap[spell.key] = spell;
         });
@@ -180,17 +159,18 @@ export const getSummonerSpellData = (spellId) => {
     return summonerSpellMap[spellId] || null;
 };
 
-// Fetch champion data (for abilities)
+// Fetch champion data (From Meraki - ALL champions)
 export const fetchChampionData = async (championName) => {
-    if (!championName) return;
-    if (championDataMap[championName]) return; // Already cached
+    // If we already have data (meaning we fetched the big JSON), just return.
+    // NOTE: We ignore `championName` param because we fetch ALL at once.
+    if (Object.keys(championDataMap).length > 0) return;
 
     try {
-        const response = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/champion/${championName}.json`);
-        const data = await response.json();
-        championDataMap[championName] = data.data[championName];
+        const response = await fetch(`${MERAKI_BASE_URL}/champions.json`);
+        // Meraki returns { "Aatrox": { ... }, "Ahri": { ... } }
+        championDataMap = await response.json();
     } catch (e) {
-        console.error(`Failed to fetch champion data for ${championName}`, e);
+        console.error("Failed to fetch champions from Meraki", e);
     }
 };
 
@@ -199,9 +179,28 @@ export const getChampionData = (championName) => {
 };
 
 // Initialize
-(async () => {
-    await fetchLatestVersion();
-    await fetchRunes();
-    await fetchItems();
-    await fetchSummonerSpells();
-})();
+let initPromise = null;
+
+export const initDataDragon = () => {
+    if (initPromise) return initPromise;
+
+    initPromise = (async () => {
+        await fetchLatestVersion(); // Still needed for Runes/Summoners
+        await Promise.all([
+            fetchRunes(),
+            fetchItems(),
+            fetchChampionData(), // Fetches ALL champions
+            fetchSummonerSpells()
+        ]);
+        console.log("Data initialized (Meraki + CDragon)", {
+            version: currentVersion,
+            items: Object.keys(itemDataMap).length,
+            champs: Object.keys(championDataMap).length
+        });
+    })();
+
+    return initPromise;
+};
+
+// Auto-init
+initDataDragon();

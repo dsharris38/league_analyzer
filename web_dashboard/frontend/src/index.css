@@ -55,5 +55,25 @@ body {
 
     /* Code/Pre */
     @apply prose-code:text-violet-300 prose-code:bg-slate-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none;
+
+    /* Glass Commander Components */
+    .glass-panel {
+      @apply bg-slate-900/60 backdrop-blur-2xl border border-white/10 shadow-lg;
+    }
+
+    .glass-card-hover {
+      @apply transition-all duration-300 hover:bg-slate-800/80 hover:border-violet-500/50 hover:shadow-[0_0_15px_rgba(139, 92, 246, 0.2)];
+    }
+
+    .text-glow {
+      text-shadow: 0 0 10px currentColor;
+    }
+
+    .neon-border-blue {
+      @apply border border-cyan-400/30 shadow-[0_0_8px_rgba(34, 211, 238, 0.2)];
+    }
+
+    .neon-border-violet {
+      @apply border border-violet-500/30 shadow-[0_0_8px_rgba(139, 92, 246, 0.2)];
+    }
   }
-}

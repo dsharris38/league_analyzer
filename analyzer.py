@@ -94,15 +94,114 @@ def _role_cs_threshold(role: str) -> float:
 
 
 def _detect_role(self_participant: Dict[str, Any]) -> str:
-    # Prefer explicit teamPosition, fallback to individualPosition, then default to MIDDLE
-    return (
-        self_participant.get("teamPosition")
-        or self_participant.get("individualPosition")
-        or "MIDDLE"
-    )
+    """
+    Detect role using heuristics to fix Riot API misclassifications (e.g. Karma Jungle).
+    Priority:
+    1. Smite -> JUNGLE
+    2. Support Item in inventory -> UTILITY
+    3. Specified teamPosition -> As-is
+    4. Fallback -> MIDDLE
+    """
+    # 1. Check for Smite (Summoner 11)
+    # Note: Placeholder for Ultimate Spellbook (54) or others could be added if needed
+    summoners = [self_participant.get("summoner1Id"), self_participant.get("summoner2Id")]
+    if 11 in summoners:
+        return "JUNGLE"
+
+    # 2. Check for Support Items (World Atlas tree)
+    # 3862: World Atlas, 3863: Runic Compass, 3864: Bounty of Worlds, etc.
+    # We check for the starter item mainly.
+    support_items = {3862, 3863, 3864, 3850, 3851, 3853} # Expanded list just in case
+    items = [self_participant.get(f"item{i}", 0) for i in range(7)]
+    if any(item_id in support_items for item_id in items):
+        return "UTILITY"
+
+    # 3. Riot API Team Position
+    pos = self_participant.get("teamPosition")
+    if pos and pos != "Invalid":
+        return pos
+
+    # 4. Fallback
+    return self_participant.get("individualPosition") or "MIDDLE"
+
+
+# --- OP.GG Style Analytics ---------------------------------------------------
+
+def analyze_teammates(matches: List[Dict[str, Any]], self_puuid: str) -> List[Dict[str, Any]]:
+    """Identify frequent teammates (duos) and their performance."""
+    teammate_stats = defaultdict(lambda: {"games": 0, "wins": 0, "name": "", "tag": ""})
+    
+    for match in matches:
+        info = match["info"]
+        self_p = extract_self_participant(match, self_puuid)
+        my_team = self_p["teamId"]
+        win = self_p["win"]
+        
+        for p in info["participants"]:
+            if p["teamId"] == my_team and p["puuid"] != self_puuid:
+                # Key by PUUID for uniqueness
+                ts = teammate_stats[p["puuid"]]
+                ts["games"] += 1
+                if win:
+                    ts["wins"] += 1
+                ts["name"] = p.get("riotIdGameName", p["summonerName"])
+                ts["tag"] = p.get("riotIdTagLine", "")
+                ts["icon"] = p.get("profileIcon", 0)
+
+    # Convert to list and sort by games played
+    results = []
+    for puuid, stats in teammate_stats.items():
+        if stats["games"] > 1: # Only show repeat teammates
+            results.append({
+                "puuid": puuid,
+                "name": stats["name"],
+                "tag": stats["tag"],
+                "games": stats["games"],
+                "wins": stats["wins"],
+                "winrate": round(stats["wins"] / stats["games"], 2),
+                "icon": stats.get("icon", 0)
+            })
+            
+    return sorted(results, key=lambda x: x["games"], reverse=True)[:5]
+
+def analyze_recent_performance(matches: List[Dict[str, Any]], self_puuid: str, days: int = 7) -> List[Dict[str, Any]]:
+    """Calculate winrate per champion over the last N days."""
+    import time
+    cutoff_ms = (time.time() - (days * 24 * 3600)) * 1000
+    
+    recent_stats = defaultdict(lambda: {"wins": 0, "losses": 0, "games": 0})
+    
+    for match in matches:
+        info = match["info"]
+        end_time = info.get("gameEndTimestamp")
+        if not end_time or end_time < cutoff_ms:
+            continue
+            
+        self_p = extract_self_participant(match, self_puuid)
+        champ = self_p["championName"]
+        win = self_p["win"]
+        
+        recent_stats[champ]["games"] += 1
+        if win:
+            recent_stats[champ]["wins"] += 1
+        else:
+            recent_stats[champ]["losses"] += 1
+            
+    results = []
+    for champ, stats in recent_stats.items():
+        results.append({
+            "champion": champ,
+            "games": stats["games"],
+            "wins": stats["wins"],
+            "losses": stats["losses"],
+            "winrate": round(stats["wins"] / stats["games"], 2)
+        })
+        
+    return sorted(results, key=lambda x: x["games"], reverse=True)
 
 
 # --- Core analysis -----------------------------------------------------------
+
 
 
 def analyze_matches(
@@ -554,4 +653,6 @@ def analyze_matches(
         "you_vs_team": you_vs_team,
         "per_game_loss_details": per_game_loss_details,
         "primary_role": primary_role,
+        "teammates": analyze_teammates(matches, puuid),
+        "recent_performance": analyze_recent_performance(matches, puuid),
     }

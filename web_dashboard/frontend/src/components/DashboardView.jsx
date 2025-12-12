@@ -1,16 +1,26 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import SummaryCards from './SummaryCards';
 import MatchSummaryCard from './MatchSummaryCard';
 import MatchDetailView from './MatchDetailView';
 import DeepDiveView from './DeepDiveView';
+import RankCard from './RankCard';
+import MasteryCard from './MasteryCard';
+import TeammateCard from './TeammateCard';
+import RecentPerformanceCard from './RecentPerformanceCard';
 import { ArrowLeft, ChevronDown, ChevronUp, Filter, Search, X } from 'lucide-react';
 import config from '../config';
-import { getVersion } from '../utils/dataDragon';
+import { getVersion, initDataDragon } from '../utils/dataDragon';
+import heroBg from '../assets/hero_bg.jpg';
 
 export default function DashboardView({ data, filename, onBack, onUpdate }) {
     const { analysis, coaching_report_markdown } = data;
     const version = getVersion();
+    const [dataReady, setDataReady] = useState(false);
+
+    useEffect(() => {
+        initDataDragon().then(() => setDataReady(true));
+    }, []);
 
     if (!analysis) {
         return <div className="p-8 text-center text-slate-400 text-lg">Analysis data is missing or corrupt.</div>;
@@ -89,226 +99,102 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
     };
 
     return (
-        <div className="max-w-7xl mx-auto p-6 relative">
-            {/* Deep Dive Modal */}
-            {(deepDiveReport || isDeepDiveLoading) && (
-                <DeepDiveView
-                    report={deepDiveReport}
-                    matchData={deepDiveMatchData}
-                    puuid={data.puuid}
-                    isLoading={isDeepDiveLoading}
-                    onClose={() => {
-                        setDeepDiveReport(null);
-                        setDeepDiveMatchData(null);
-                        setIsDeepDiveLoading(false);
-                    }}
+        <div className="min-h-screen bg-[#0b0c2a] text-slate-200 font-sans relative pb-20">
+            {/* Background Image with Overlay */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <img
+                    src={heroBg}
+                    alt="Background"
+                    className="w-full h-full object-cover object-top opacity-20"
                 />
-            )}
-
-            <button
-                onClick={onBack}
-                className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
-            >
-                <ArrowLeft size={20} />
-                Back to List
-            </button>
-
-            <div className="flex items-center justify-between mb-6 bg-slate-800/80 p-4 rounded-xl border border-white/10 backdrop-blur-md shadow-lg shadow-violet-500/5">
-                <div className="flex items-center gap-4">
-                    {/* Profile Icon & Level */}
-                    <div className="relative group">
-                        <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-slate-600 shadow-md group-hover:border-violet-400 transition-colors duration-300">
-                            <img
-                                src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${data.summoner_info?.profile_icon_id || 29}.png`}
-                                alt="Profile"
-                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                            />
-                        </div>
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-slate-600 shadow-sm">
-                            {data.summoner_info?.level || 0}
-                        </div>
-                    </div>
-
-                    <div>
-                        <div className="flex items-baseline gap-2 mb-0.5">
-                            <h1 className="text-2xl font-bold text-white tracking-tight">{data.game_name}</h1>
-                            <span className="text-sm text-slate-400 font-light">#{data.tag_line}</span>
-                        </div>
-
-                        <div className="flex items-center gap-4 text-xs">
-                            {/* Rank Info */}
-                            {(() => {
-                                const solo = Array.isArray(data.rank_info) ? data.rank_info.find(r => r.queueType === "RANKED_SOLO_5x5") : null;
-                                if (solo) {
-                                    return (
-                                        <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md border border-white/10 text-xs">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-violet-500 shadow-[0_0_6px_rgba(139,92,246,0.8)]"></div>
-                                            <span className="text-slate-400 font-medium">Solo</span>
-                                            <span className="text-white font-bold">{solo.tier} {solo.rank}</span>
-                                            <span className="text-slate-500">{solo.leaguePoints} LP</span>
-                                        </div>
-                                    );
-                                }
-                                return <div className="text-slate-500 text-xs">Unranked</div>;
-                            })()}
-
-                            <div className="text-slate-400">
-                                <span className="text-white font-bold">{data.match_count_requested}</span> Matches
-                            </div>
-                        </div>
-
-                        {/* Last Updated info */}
-                        <div className="mt-1 text-[10px] text-slate-600">
-                            Last updated: {new Date().toLocaleDateString()} (Cached)
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col items-end gap-2">
-                    <button
-                        onClick={onUpdate}
-                        className="bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-violet-500/20 flex items-center gap-2 border border-white/10"
-                    >
-                        Update
-                    </button>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0b0c2a]/80 via-[#0b0c2a]/90 to-[#0b0c2a]"></div>
             </div>
 
-            <SummaryCards summary={summary} analysis={analysis} />
+            <div className="relative z-10 max-w-[1600px] mx-auto p-4 lg:p-6">
 
-            <div className="mt-8 space-y-8">
-
-                {/* Champion Performance Cards - Compact Grid */}
-                <div>
-                    <h3 className="text-sm font-bold text-violet-400 uppercase tracking-wider mb-3">Champion Performance</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                        {per_champion && per_champion.map((champ) => (
-                            <div key={champ.champion} className="bg-slate-800/60 border border-slate-700/50 rounded-lg p-3 hover:bg-slate-800 hover:border-violet-500/30 transition-all group relative overflow-hidden backdrop-blur-sm">
-                                {/* Subtle background gradient based on winrate */}
-                                <div className={`absolute inset-0 opacity-10 ${champ.winrate >= 0.5 ? 'bg-gradient-to-br from-green-500 to-transparent' : 'bg-gradient-to-br from-red-500 to-transparent'}`}></div>
-
-                                <div className="flex items-center gap-3 relative z-10">
-                                    {/* Compact Portrait */}
-                                    <div className="relative w-10 h-10 shrink-0">
-                                        <img
-                                            src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ.champion === "FiddleSticks" ? "Fiddlesticks" : champ.champion}.png`}
-                                            alt={champ.champion}
-                                            className="w-full h-full rounded-md object-cover border border-slate-600 shadow-sm"
-                                            onError={(e) => { e.target.src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/29.png` }}
-                                        />
-                                        <div className={`absolute -bottom-1 -right-1 px-1 rounded text-[8px] font-bold border border-slate-900 shadow-sm ${champ.winrate >= 0.5 ? 'bg-green-500 text-slate-900' : 'bg-red-500 text-white'
-                                            }`}>
-                                            {(champ.winrate * 100).toFixed(0)}%
-                                        </div>
-                                    </div>
-
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex justify-between items-center">
-                                            <h4 className="text-sm font-bold text-slate-200 truncate">{champ.champion}</h4>
-                                            <span className="text-[10px] text-slate-500">{champ.games} G</span>
-                                        </div>
-
-                                        {/* Mini Stats Row */}
-                                        <div className="flex items-center gap-2 mt-1 text-[10px]">
-                                            <div className="flex items-center gap-1 bg-slate-900/40 px-1.5 py-0.5 rounded border border-white/5">
-                                                <span className="text-slate-500">KDA</span>
-                                                <span className={`font-medium ${champ.avg_kda >= 3 ? 'text-blue-300' : 'text-slate-300'}`}>
-                                                    {champ.avg_kda.toFixed(2)}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-1 bg-slate-900/40 px-1.5 py-0.5 rounded border border-white/5">
-                                                <span className="text-slate-500">CS</span>
-                                                <span className={`font-medium ${champ.cs_per_min >= 7 ? 'text-yellow-300' : 'text-slate-300'}`}>
-                                                    {champ.cs_per_min.toFixed(1)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                {/* Header Navigation */}
+                <div className="flex items-center justify-between mb-8">
+                    <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
+                        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                        <span className="text-sm font-medium">Find Summoner</span>
+                    </button>
+                    <div className="flex flex-col items-center">
+                        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-cyan-300 to-violet-400 animate-pulse-slow tracking-tight">
+                            {data.game_name}
+                        </h1>
+                        <div className="text-slate-400 text-sm font-mono tracking-widest">#{data.tag_line}</div>
                     </div>
+                    <button onClick={onUpdate} className="flex items-center gap-2 bg-slate-800/50 hover:bg-violet-600/20 text-violet-300 hover:text-violet-200 px-4 py-2 rounded-lg font-bold text-xs transition-all border border-violet-500/30 hover:border-violet-400 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                        Update Data
+                    </button>
                 </div>
 
-                {/* Match History List */}
-                <div>
-                    <div className="flex items-center justify-between mb-4">
-                        <button
-                            onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                            className="flex items-center gap-2 text-xl font-bold text-white hover:text-violet-400 transition-colors"
-                        >
-                            Match History
-                            {isHistoryOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-                        </button>
+                {/* BENTO GRID LAYOUT */}
+                <div className="space-y-6">
+
+                    {/* TOP DECK: Key Stats Grid (4 Cols) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {/* 1. Rank Card */}
+                        <div className="col-span-1 h-64 lg:h-72">
+                            <RankCard rankInfo={data.rank_info} pastRanks={data.past_ranks} />
+                        </div>
+                        {/* 2. Recent Performance */}
+                        <div className="col-span-1 h-64 lg:h-72">
+                            <RecentPerformanceCard recentStats={analysis.recent_performance} />
+                        </div>
+                        {/* 3. Teammates */}
+                        <div className="col-span-1 h-64 lg:h-72">
+                            <TeammatesCard teammates={analysis.teammates} />
+                        </div>
+                        {/* 4. Mastery */}
+                        <div className="col-span-1 h-64 lg:h-72">
+                            <MasteryCard masteryData={data.champion_mastery} />
+                        </div>
                     </div>
 
-                    {isHistoryOpen && (
-                        <div className="space-y-4">
+                    {/* MAIN DECK: Match History & Analysis */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                        {/* MATCH HISTORY FEED (2 Cols Wide) */}
+                        <div className="lg:col-span-2 space-y-4">
                             {/* Filter Bar */}
-                            <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 flex flex-wrap gap-4 items-center">
-                                <div className="flex items-center gap-2 text-slate-400">
-                                    <Filter size={18} />
-                                    <span className="text-sm font-medium">Filters:</span>
-                                </div>
-
-                                {/* Champion Search */}
-                                <div className="relative">
-                                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                                    <input
-                                        type="text"
-                                        placeholder="Champion..."
-                                        value={filters.champion}
-                                        onChange={(e) => setFilters({ ...filters, champion: e.target.value })}
-                                        className="bg-slate-900 border border-slate-700 rounded-md pl-9 pr-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 w-40"
-                                    />
-                                </div>
-
-                                {/* Role Select */}
-                                <select
-                                    value={filters.role}
-                                    onChange={(e) => setFilters({ ...filters, role: e.target.value })}
-                                    className="bg-slate-900 border border-slate-700 rounded-md px-3 py-1.5 text-sm text-white focus:outline-none focus:border-violet-500"
-                                >
-                                    <option value="ALL">All Roles</option>
-                                    <option value="TOP">Top</option>
-                                    <option value="JUNGLE">Jungle</option>
-                                    <option value="MIDDLE">Mid</option>
-                                    <option value="BOTTOM">Bot</option>
-                                    <option value="UTILITY">Support</option>
-                                </select>
-
-                                {/* Result Select */}
-                                <select
-                                    value={filters.result}
-                                    onChange={(e) => setFilters({ ...filters, result: e.target.value })}
-                                    className="bg-slate-900 border border-slate-700 rounded-md px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500"
-                                >
-                                    <option value="ALL">All Results</option>
-                                    <option value="WIN">Win</option>
-                                    <option value="LOSS">Loss</option>
-                                </select>
-
-                                {hasActiveFilters && (
-                                    <button
-                                        onClick={clearFilters}
-                                        className="ml-auto flex items-center gap-1 text-xs text-red-400 hover:text-red-300"
+                            <div className="glass-panel p-3 rounded-xl flex items-center justify-between">
+                                <h2 className="text-lg font-bold text-white px-2 flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span>
+                                    Battle Log
+                                </h2>
+                                <div className="flex items-center gap-3">
+                                    <div className="relative hidden md:block">
+                                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                                        <input
+                                            type="text"
+                                            placeholder="Search..."
+                                            value={filters.champion}
+                                            onChange={(e) => setFilters({ ...filters, champion: e.target.value })}
+                                            className="bg-black/40 border border-slate-700/50 rounded-md pl-9 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 w-32"
+                                        />
+                                    </div>
+                                    <select
+                                        value={filters.result}
+                                        onChange={(e) => setFilters({ ...filters, result: e.target.value })}
+                                        className="bg-black/40 border border-slate-700/50 rounded-md px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
                                     >
-                                        <X size={14} />
-                                        Clear
-                                    </button>
-                                )}
+                                        <option value="ALL">All Matches</option>
+                                        <option value="WIN">Wins</option>
+                                        <option value="LOSS">Losses</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div className="space-y-0">
+                            {/* List */}
+                            <div className="space-y-3">
                                 {filteredMatches.length === 0 ? (
-                                    <div className="text-center py-8 text-slate-500">
+                                    <div className="text-center py-20 text-slate-500 glass-panel rounded-xl">
                                         No matches found matching filters.
                                     </div>
                                 ) : (
                                     filteredMatches.map((match) => {
-                                        // Check if this match is a review candidate
                                         const candidate = review_candidates?.find(c => c.match_id === match.match_id);
-
                                         return (
                                             <div key={match.match_id}>
                                                 <MatchSummaryCard
@@ -328,78 +214,70 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                                 )}
                             </div>
                         </div>
-                    )}
+
+                        {/* RIGHT COLUMN: Summary & Coaching (1 Col Wide) */}
+                        <div className="space-y-6">
+                            {/* Summary Metrics (KDA, CS, etc) moved here */}
+                            <SummaryCards summary={summary} analysis={analysis} />
+
+                            {/* AI Coach Panel */}
+                            {(data.coaching_report || data.coaching_report_markdown) && (() => {
+                                const report = typeof data.coaching_report === 'object'
+                                    ? data.coaching_report
+                                    : { overview: data.coaching_report || data.coaching_report_markdown };
+
+                                return (
+                                    <div className="glass-panel rounded-xl p-5 border-t-2 border-t-violet-500">
+                                        <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2 text-glow">
+                                            <span className="text-violet-400">AI</span> Commander
+                                        </h2>
+
+                                        {report.overview && (
+                                            <div className="prose-coaching text-xs mb-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                                                <ReactMarkdown>{report.overview}</ReactMarkdown>
+                                            </div>
+                                        )}
+
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {report.champion_feedback && (
+                                                <div className="bg-black/20 rounded p-3 border border-white/5">
+                                                    <h4 className="text-[10px] font-bold text-green-400 mb-1 uppercase tracking-wider">Tactics</h4>
+                                                    <div className="prose-coaching text-xs"><ReactMarkdown>{report.champion_feedback}</ReactMarkdown></div>
+                                                </div>
+                                            )}
+                                            {report.itemization_tips && (
+                                                <div className="bg-black/20 rounded p-3 border border-white/5">
+                                                    <h4 className="text-[10px] font-bold text-yellow-400 mb-1 uppercase tracking-wider">Logistics</h4>
+                                                    <div className="prose-coaching text-xs"><ReactMarkdown>{report.itemization_tips}</ReactMarkdown></div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+                        </div>
+                    </div>
                 </div>
 
-                {/* Coaching Report Cards */}
-                {(data.coaching_report || data.coaching_report_markdown) && (() => {
-                    const report = typeof data.coaching_report === 'object'
-                        ? data.coaching_report
-                        : { overview: data.coaching_report || data.coaching_report_markdown };
-
-                    return (
-                        <div className="space-y-8">
-                            <div className="flex items-center gap-2 mb-4">
-                                <h2 className="text-2xl font-bold text-white">AI Coaching Report</h2>
-                            </div>
-
-                            {/* Overview Card */}
-                            {report.overview && (
-                                <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg">
-                                    <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
-                                        <div className="w-1.5 h-6 bg-violet-500 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]"></div>
-                                        <h3 className="text-xl font-bold text-white">Identity & Diagnosis</h3>
-                                    </div>
-                                    <div className="p-8 prose-coaching">
-                                        <ReactMarkdown>{report.overview}</ReactMarkdown>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                {/* Champion Feedback */}
-                                {report.champion_feedback && (
-                                    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-lg hover:border-green-500/30 transition-colors">
-                                        <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
-                                            <div className="w-1.5 h-6 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
-                                            <h3 className="text-lg font-bold text-white">Champion Specifics</h3>
-                                        </div>
-                                        <div className="p-6 flex-1 prose-coaching">
-                                            <ReactMarkdown>{report.champion_feedback}</ReactMarkdown>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Itemization */}
-                                {report.itemization_tips && (
-                                    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-lg hover:border-yellow-500/30 transition-colors">
-                                        <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
-                                            <div className="w-1.5 h-6 bg-yellow-500 rounded-full shadow-[0_0_8px_rgba(234,179,8,0.5)]"></div>
-                                            <h3 className="text-lg font-bold text-white">Itemization & Builds</h3>
-                                        </div>
-                                        <div className="p-6 flex-1 prose-coaching">
-                                            <ReactMarkdown>{report.itemization_tips}</ReactMarkdown>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Goals */}
-                                {report.goals && (
-                                    <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden flex flex-col shadow-lg hover:border-purple-500/30 transition-colors">
-                                        <div className="p-5 border-b border-slate-700 bg-slate-800/50 flex items-center gap-3">
-                                            <div className="w-1.5 h-6 bg-purple-500 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
-                                            <h3 className="text-lg font-bold text-white">Top 5 Strategic Priorities</h3>
-                                        </div>
-                                        <div className="p-6 flex-1 prose-coaching">
-                                            <ReactMarkdown>{report.goals}</ReactMarkdown>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })()}
+                {/* Modals */}
+                {(deepDiveReport || isDeepDiveLoading) && (
+                    <DeepDiveView
+                        report={deepDiveReport}
+                        matchData={deepDiveMatchData}
+                        puuid={data.puuid}
+                        isLoading={isDeepDiveLoading}
+                        onClose={() => {
+                            setDeepDiveReport(null);
+                            setDeepDiveMatchData(null);
+                            setIsDeepDiveLoading(false);
+                        }}
+                    />
+                )}
             </div>
         </div>
     );
 }
+
+// Helper (moved from RankCard or can be shared but simpler to inline if imports tricky)
+// Actually we import components so we are good.
+

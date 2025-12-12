@@ -393,9 +393,10 @@ function colorizeText(text) {
         { regex: /(\d+(?:\/\d+)*)\s*(magic damage)/gi, className: 'text-[#00bfff]' },
         { regex: /(true damage)/gi, className: 'text-[#ffffff]' }, // White for true damage
 
-        // Scalings
+        // Scalings & Ranges (Meraki uses " : " for level scaling)
         { regex: /\(\+(\d+%?)\s*AP\)/gi, className: 'text-[#ae5bf0]' }, // Purple
         { regex: /\(\+(\d+%?)\s*(?:bonus\s+)?AD\)/gi, className: 'text-[#ff8c00]' }, // Orange
+        { regex: /(\d+(?:(?:\s*:\s*|\/)\d+)+)/g, className: 'text-[#f0e6d2] font-semibold' }, // "10 : 20" or "10/20" white-ish
 
         // Stats
         { regex: /\b(\d+%?)\s*(Health|HP)\b/gi, className: 'text-[#1dc451]' }, // Green

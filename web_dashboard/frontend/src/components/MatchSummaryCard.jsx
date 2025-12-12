@@ -16,10 +16,12 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
 
     return (
         <div className={clsx(
-            "flex flex-col md:flex-row items-stretch rounded-lg border-l-4 mb-2 shadow-sm transition-all hover:shadow-md h-auto md:h-28 relative group backdrop-blur-sm",
-            win ? "bg-blue-500/10 border-blue-500 bg-gradient-to-r from-blue-500/5 to-transparent" : "bg-red-500/10 border-red-500 bg-gradient-to-r from-red-500/5 to-transparent",
-            isReviewCandidate && "ring-1 ring-slate-400/50",
-            match.tags?.includes("Weak Link") && "ring-2 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+            "flex flex-col md:flex-row items-stretch rounded-xl border mb-2 shadow-lg transition-all hover:shadow-xl hover:border-white/20 h-auto md:h-28 relative group backdrop-blur-md",
+            win
+                ? "bg-slate-900/40 border-l-4 border-l-blue-500 border-y-white/5 border-r-white/5 shadow-blue-900/10"
+                : "bg-slate-900/40 border-l-4 border-l-red-500 border-y-white/5 border-r-white/5 shadow-red-900/10",
+            isReviewCandidate && "ring-1 ring-purple-500/30",
+            match.tags?.includes("Weak Link") && "ring-1 ring-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.2)]"
         )}>
             {/* Review Candidate Badge */}
             {isReviewCandidate && (
