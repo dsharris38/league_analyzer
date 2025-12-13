@@ -1,5 +1,5 @@
 import React from 'react';
-import { getRankIconUrl } from '../utils/assets'; // We might need a helper for rank icons
+
 
 export default function RankCard({ rankInfo, pastRanks }) {
     const solo = rankInfo?.find(r => r.queueType === "RANKED_SOLO_5x5");
