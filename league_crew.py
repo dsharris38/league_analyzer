@@ -45,20 +45,32 @@ def _get_latest_ddragon_version() -> str:
 
 @lru_cache(maxsize=1)
 def _get_item_map(version: str) -> Dict[str, str]:
+    """Fetch item map from Meraki Analytics (ignoring version as Meraki is always latest)."""
     try:
-        url = f"https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/item.json"
+        url = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/items.json"
+        
+        # Note: Meraki format is { "1001": { "name": "Boots", ... } }
+        # Only differs from DDragon 'data' wrapper.
+        
         resp = requests.get(url, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            return {k: v["name"] for k, v in data["data"].items()}
-    except Exception:
+            return {k: v["name"] for k, v in data.items()}
+            
+    except Exception as e:
+        print(f"Warning: Failed to fetch Meraki items: {e}")
         pass
+        
+    # Fallback to DDragon if Meraki fails? 
+    # Let's keep a simple fallback or just return empty.
+    # User specifically wants Meraki check, so let's trust it.
     return {}
 
 def _get_item_name(item_id: int) -> str:
     if not item_id or item_id == 0:
         return "Empty Slot"
     
+    # Version is ignored by Meraki fetcher but kept for signature/caching
     version = _get_latest_ddragon_version()
     item_map = _get_item_map(version)
     

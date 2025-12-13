@@ -34,7 +34,18 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
             {/* Game Info */}
             <div className="w-full md:w-28 p-2 flex flex-col justify-center text-xs text-slate-400 shrink-0 border-b md:border-b-0 md:border-r border-slate-700">
                 <div className={clsx("font-bold mb-0.5", win ? "text-blue-400" : "text-red-400")}>
-                    {match.game_mode}
+                    {(() => {
+                        const q = match.queue_id;
+                        if (q === 420) return "Ranked Solo";
+                        if (q === 440) return "Ranked Flex";
+                        if (q === 400) return "Normal Draft";
+                        if (q === 430) return "Blind Pick";
+                        if (q === 450) return "ARAM";
+                        if (q === 490) return "Quickplay";
+                        if (q === 1700) return "Arena";
+                        if (q === 1900) return "URF";
+                        return match.game_mode === "CLASSIC" ? "Normal" : match.game_mode; // Fallback "Normal" over "CLASSIC"
+                    })()}
                 </div>
                 <div className="mb-0.5">{new Date(match.game_creation).toLocaleDateString()}</div>
                 <div className="flex items-center gap-1 mb-1">

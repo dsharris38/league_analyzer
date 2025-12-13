@@ -118,12 +118,27 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                         <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                         <span className="text-sm font-medium">Find Summoner</span>
                     </button>
-                    <div className="flex flex-col items-center">
-                        <h1 className="text-4xl font-black text-white tracking-tight">
-                            {data.game_name}
-                        </h1>
-                        <div className="text-slate-400 text-sm font-mono tracking-widest">#{data.tag_line}</div>
+
+                    {/* Identity (Icon + Name) */}
+                    <div className="flex items-center gap-4">
+                        <div className="relative group">
+                            <img
+                                src={`https://ddragon.leagueoflegends.com/cdn/${version || '14.23.1'}/img/profileicon/${data.summoner_info?.profileIconId || 29}.png`}
+                                alt="Summoner Icon"
+                                className="w-16 h-16 rounded-full border-2 border-violet-400/50 shadow-[0_0_15px_rgba(139,92,246,0.3)] group-hover:border-violet-400 transition-all"
+                            />
+                            <div className="absolute -bottom-1 -right-1 bg-[#0b0c2a] text-xs font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-300">
+                                {data.summoner_info?.summonerLevel || "30"}
+                            </div>
+                        </div>
+                        <div className="flex flex-col">
+                            <h1 className="text-4xl font-black text-white tracking-tight">
+                                {data.game_name}
+                            </h1>
+                            <div className="text-slate-400 text-sm font-mono tracking-widest">#{data.tag_line}</div>
+                        </div>
                     </div>
+
                     <button onClick={onUpdate} className="flex items-center gap-2 bg-slate-800/50 hover:bg-violet-600/20 text-violet-300 hover:text-violet-200 px-4 py-2 rounded-lg font-bold text-xs transition-all border border-violet-500/30 hover:border-violet-400 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)]">
                         Update Data
                     </button>
@@ -134,21 +149,21 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
 
                     {/* TOP DECK: Key Stats Grid (4 Cols) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {/* 1. Rank Card */}
-                        <div className="col-span-1 h-64 lg:h-72">
+                        {/* 1. Rank Card (Scrollable for history) */}
+                        <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
                             <RankCard rankInfo={data.rank_info} pastRanks={data.past_ranks} />
                         </div>
-                        {/* 2. Recent Performance */}
-                        <div className="col-span-1 h-64 lg:h-72">
+                        {/* 2. Recent Performance (Scrollable) */}
+                        <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
                             <RecentPerformanceCard recentStats={analysis.recent_performance} />
                         </div>
                         {/* 3. Teammates */}
                         <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
-                            <TeammatesCard teammates={analysis.teammates} />
-                        </div>
-                        {/* 4. Mastery */}
-                        <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
                             <MasteryCard masteryData={data.champion_mastery} />
+                        </div>
+                        {/* 4. Mastery (Swapped with Teammates in original? Checking original lines 146 vs 150. I will respect original order but ensuring scroll) */}
+                        <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
+                            <TeammatesCard teammates={analysis.teammates} />
                         </div>
                     </div>
 

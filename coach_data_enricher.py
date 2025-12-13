@@ -21,15 +21,14 @@ from typing import Any, Dict, List, Optional
 import requests
 
 
-DD_VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json"
-DD_ITEM_URL_TMPL = "https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/item.json"
+
+MERAKI_ITEMS_URL = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/items.json"
 
 
 def _safe_get_latest_dd_version() -> Optional[str]:
     """Best-effort: fetch latest Data Dragon version string.
-
-    If anything fails, returns None and the enrichment will fall back
-    to using item IDs without names.
+    
+    Useful for fallback image construction if Meraki fails or for other DDragon assets.
     """
     try:
         resp = requests.get(DD_VERSION_URL, timeout=5)
@@ -42,22 +41,19 @@ def _safe_get_latest_dd_version() -> Optional[str]:
         return None
 
 
-def _safe_get_item_names(version: Optional[str]) -> Dict[int, str]:
-    """Best-effort: fetch item ID -> item name mapping for a DDragon version.
-
-    If version is None or anything fails, returns an empty dict.
+def _safe_get_item_names(version: Optional[str] = None) -> Dict[int, str]:
+    """Best-effort: fetch item ID -> item name mapping from Meraki Analytics.
+    
+    Meraki is preferred over raw DDragon as it provides cleaner names and stats.
+    Ignores 'version' as Meraki 'latest' is version-agnostic.
     """
-    if not version:
-        return {}
-
     try:
-        url = DD_ITEM_URL_TMPL.format(version=version)
-        resp = requests.get(url, timeout=5)
+        resp = requests.get(MERAKI_ITEMS_URL, timeout=5)
         resp.raise_for_status()
-        data = resp.json()
-        raw_items = data.get("data", {})
+        data = resp.json() # Meraki: { "1001": { "name": "Boots", ... } }
+        
         mapping: Dict[int, str] = {}
-        for item_id_str, info in raw_items.items():
+        for item_id_str, info in data.items():
             try:
                 item_id = int(item_id_str)
             except ValueError:
@@ -169,6 +165,7 @@ def build_detailed_match_info(
         game_creation = info.get("gameCreation", 0)
         game_duration = info.get("gameDuration", 0)
         game_mode = info.get("gameMode", "UNKNOWN")
+        queue_id = info.get("queueId", 0) # Added queueId
         
         # Process all participants
         processed_participants = []
@@ -261,6 +258,7 @@ def build_detailed_match_info(
             "game_creation": game_creation,
             "game_duration": game_duration,
             "game_mode": game_mode,
+            "queue_id": queue_id, # Added field
             "participants": processed_participants
         })
 
