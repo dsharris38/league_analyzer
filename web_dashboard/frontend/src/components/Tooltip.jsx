@@ -458,63 +458,126 @@ function colorizeText(text) {
 function getStatDisplay(key) {
     const statMap = {
         // Health
-        'FlatHPPoolMod': { icon: '', color: 'text-[#1dc451]', name: 'Health' },
-        'flatHPPoolMod': { icon: '', color: 'text-[#1dc451]', name: 'Health' },
+        'FlatHPPoolMod': { color: 'text-[#1dc451]', name: 'Health' },
+        'flatHPPoolMod': { color: 'text-[#1dc451]', name: 'Health' },
+        'health': { color: 'text-[#1dc451]', name: 'Health' },
+
         // Mana
-        'FlatMPPoolMod': { icon: '', color: 'text-[#1a78ff]', name: 'Mana' },
-        'flatMPPoolMod': { icon: '', color: 'text-[#1a78ff]', name: 'Mana' },
+        'FlatMPPoolMod': { color: 'text-[#1a78ff]', name: 'Mana' },
+        'flatMPPoolMod': { color: 'text-[#1a78ff]', name: 'Mana' },
+        'mana': { color: 'text-[#1a78ff]', name: 'Mana' },
+
         // Armor
-        'FlatArmorMod': { icon: '', color: 'text-[#f5d94e]', name: 'Armor' },
-        'flatArmorMod': { icon: '', color: 'text-[#f5d94e]', name: 'Armor' },
+        'FlatArmorMod': { color: 'text-[#f5d94e]', name: 'Armor' },
+        'flatArmorMod': { color: 'text-[#f5d94e]', name: 'Armor' },
+        'armor': { color: 'text-[#f5d94e]', name: 'Armor' },
+
         // MR
-        'FlatSpellBlockMod': { icon: '', color: 'text-[#87cefa]', name: 'Magic Resist' },
-        'flatSpellBlockMod': { icon: '', color: 'text-[#87cefa]', name: 'Magic Resist' },
+        'FlatSpellBlockMod': { color: 'text-[#87cefa]', name: 'Magic Resist' },
+        'flatSpellBlockMod': { color: 'text-[#87cefa]', name: 'Magic Resist' },
+        'magicResistance': { color: 'text-[#87cefa]', name: 'Magic Resist' },
+        'magicResist': { color: 'text-[#87cefa]', name: 'Magic Resist' },
+
         // AD
-        'FlatPhysicalDamageMod': { icon: '', color: 'text-[#ff8c00]', name: 'Attack Damage' },
-        'flatPhysicalDamageMod': { icon: '', color: 'text-[#ff8c00]', name: 'Attack Damage' },
+        'FlatPhysicalDamageMod': { color: 'text-[#ff8c00]', name: 'Attack Damage' },
+        'flatPhysicalDamageMod': { color: 'text-[#ff8c00]', name: 'Attack Damage' },
+        'attackDamage': { color: 'text-[#ff8c00]', name: 'Attack Damage' },
+
         // AP
-        'FlatMagicDamageMod': { icon: '', color: 'text-[#ae5bf0]', name: 'Ability Power' },
-        'flatMagicDamageMod': { icon: '', color: 'text-[#ae5bf0]', name: 'Ability Power' },
+        'FlatMagicDamageMod': { color: 'text-[#ae5bf0]', name: 'Ability Power' },
+        'flatMagicDamageMod': { color: 'text-[#ae5bf0]', name: 'Ability Power' },
+        'abilityPower': { color: 'text-[#ae5bf0]', name: 'Ability Power' },
+
         // AS
-        'PercentAttackSpeedMod': { icon: '', color: 'text-[#f5d94e]', name: 'Attack Speed' },
-        'percentAttackSpeedMod': { icon: '', color: 'text-[#f5d94e]', name: 'Attack Speed' },
+        'PercentAttackSpeedMod': { color: 'text-[#f5d94e]', name: 'Attack Speed' },
+        'percentAttackSpeedMod': { color: 'text-[#f5d94e]', name: 'Attack Speed' },
+        'attackSpeed': { color: 'text-[#f5d94e]', name: 'Attack Speed' },
+
         // MS
-        'PercentMovementSpeedMod': { icon: '', color: 'text-[#f0e6d2]', name: 'Move Speed' },
-        'percentMovementSpeedMod': { icon: '', color: 'text-[#f0e6d2]', name: 'Move Speed' },
-        'FlatMovementSpeedMod': { icon: '', color: 'text-[#f0e6d2]', name: 'Move Speed' },
-        'flatMovementSpeedMod': { icon: '', color: 'text-[#f0e6d2]', name: 'Move Speed' },
+        'PercentMovementSpeedMod': { color: 'text-[#f0e6d2]', name: 'Move Speed' },
+        'percentMovementSpeedMod': { color: 'text-[#f0e6d2]', name: 'Move Speed' },
+        'movespeed': { color: 'text-[#f0e6d2]', name: 'Move Speed' },
+        'movementSpeed': { color: 'text-[#f0e6d2]', name: 'Move Speed' },
+
         // Crit
-        'FlatCritChanceMod': { icon: '', color: 'text-[#ff4500]', name: 'Crit Chance' },
-        'flatCritChanceMod': { icon: '', color: 'text-[#ff4500]', name: 'Crit Chance' },
+        'FlatCritChanceMod': { color: 'text-[#ff4500]', name: 'Crit Chance' },
+        'flatCritChanceMod': { color: 'text-[#ff4500]', name: 'Crit Chance' },
+        'criticalStrikeChance': { color: 'text-[#ff4500]', name: 'Crit Chance' },
+
         // Life Steal
-        'PercentLifeStealMod': { icon: '', color: 'text-[#ff4500]', name: 'Life Steal' },
-        'percentLifeStealMod': { icon: '', color: 'text-[#ff4500]', name: 'Life Steal' },
+        'PercentLifeStealMod': { color: 'text-[#ff4500]', name: 'Life Steal' },
+        'percentLifeStealMod': { color: 'text-[#ff4500]', name: 'Life Steal' },
+        'lifesteal': { color: 'text-[#ff4500]', name: 'Life Steal' },
+
         // Regen
-        'FlatHPRegenMod': { icon: '', color: 'text-[#1dc451]', name: 'Base Health Regen' },
-        'flatHPRegenMod': { icon: '', color: 'text-[#1dc451]', name: 'Base Health Regen' },
-        'FlatMPRegenMod': { icon: '', color: 'text-[#1a78ff]', name: 'Base Mana Regen' },
-        'flatMPRegenMod': { icon: '', color: 'text-[#1a78ff]', name: 'Base Mana Regen' },
-        // Other
-        'AbilityPower': { icon: '', color: 'text-[#ae5bf0]', name: 'Ability Power' }, // Fallback
-        'abilityPower': { icon: '', color: 'text-[#ae5bf0]', name: 'Ability Power' },
-        'AbilityHaste': { icon: '', color: 'text-[#f0e6d2]', name: 'Ability Haste' },
-        'abilityHaste': { icon: '', color: 'text-[#f0e6d2]', name: 'Ability Haste' },
-        'Lethality': { icon: '', color: 'text-[#ff4500]', name: 'Lethality' },
-        'lethality': { icon: '', color: 'text-[#ff4500]', name: 'Lethality' },
-        'Omnivamp': { icon: '', color: 'text-[#ff4500]', name: 'Omnivamp' },
-        'omnivamp': { icon: '', color: 'text-[#ff4500]', name: 'Omnivamp' }
+        'FlatHPRegenMod': { color: 'text-[#1dc451]', name: 'Base Health Regen' },
+        'flatHPRegenMod': { color: 'text-[#1dc451]', name: 'Base Health Regen' },
+        'healthRegen': { color: 'text-[#1dc451]', name: 'Health Regen' },
+
+        'FlatMPRegenMod': { color: 'text-[#1a78ff]', name: 'Base Mana Regen' },
+        'flatMPRegenMod': { color: 'text-[#1a78ff]', name: 'Base Mana Regen' },
+        'manaRegen': { color: 'text-[#1a78ff]', name: 'Mana Regen' },
+
+        // New / Other
+        'abilityHaste': { color: 'text-[#f0e6d2]', name: 'Ability Haste' },
+        'omnivamp': { color: 'text-[#ff4500]', name: 'Omnivamp' },
+        'lethality': { color: 'text-[#ff4500]', name: 'Lethality' },
+        'tenacity': { color: 'text-[#f0e6d2]', name: 'Tenacity' },
+        'magicPenetration': { color: 'text-[#87cefa]', name: 'Magic Penetration' },
+        'armorPenetration': { color: 'text-[#ff8c00]', name: 'Armor Penetration' }
     };
 
-    return statMap[key] || { icon: '', color: 'text-[#f0e6d2]', name: formatStatName(key) };
+    return statMap[key] || { color: 'text-[#f0e6d2]', name: formatStatName(key) };
 }
 
 function formatStatValue(key, value) {
-    if (key.includes('Percent') || (value > 0 && value < 1)) {
-        return `+${(value * 100).toFixed(0)}%`;
+    let val = value;
+    let isPercent = false;
+
+    // Handle Meraki object structure { flat, percent, ... }
+    if (typeof value === 'object' && value !== null) {
+        if (value.percent && value.percent !== 0) {
+            val = value.percent;
+            // Meraki percent often 0.X (e.g. 0.1 for 10%)? Or whole number?
+            // Usually 0.X. formatStatValue logic below handles < 1 as percent.
+            // But if it is 10 (for 10%), we should check.
+            // Let's assume standard 0-1 range for percent, OR key name check.
+        } else {
+            val = value.flat || 0;
+        }
     }
-    return value > 0 ? `+${value}` : `${value}`;
+
+    // Heuristics for percentage display
+    isPercent = key.toLowerCase().includes('percent') ||
+        key.toLowerCase().includes('speed') ||
+        key.toLowerCase().includes('crit') ||
+        key.toLowerCase().includes('steal') ||
+        key.toLowerCase().includes('tenacity') ||
+        key.toLowerCase().includes('omnivamp') ||
+        key.toLowerCase().includes('penetration') && val < 5; // Pen can be flat or %, usually small numbers < 1 are %.
+
+    // Force percent if value is small and looks like a ratio (e.g. 0.15)
+    if (!isPercent && Math.abs(val) > 0 && Math.abs(val) <= 1) {
+        // Maybe dangerous for small AD/AP? but items usually have > 5 AD.
+        // Attack Speed is likely < 2.5.
+    }
+
+    if (isPercent || (Math.abs(val) > 0 && Math.abs(val) < 1 && key !== 'manageRegen' && key !== 'healthRegen')) {
+        // Check if already 100-based or 0-1 based
+        // Meraki might send 15 for 15%? Inspection needed. 
+        // Inspection showed 'percent': 0.0.
+        // If flat is 0.0 and percent is 0.0, we just show 0.
+
+        // Let's optimize: print value. If < 1, format as %.
+        if (Math.abs(val) <= 2.5) { // Threshold for treating as ratio
+            return `+${(val * 100).toFixed(0)}%`;
+        }
+        return `+${val}%`;
+    }
+
+    return val > 0 ? `+${val}` : `${val}`;
 }
 
 function formatStatName(key) {
-    return key.replace(/([A-Z])/g, ' $1').trim();
+    return key.replace(/([A-Z])/g, ' $1').trim().replace(/^flat\s+/i, '').replace(/^percent\s+/i, '');
 }
