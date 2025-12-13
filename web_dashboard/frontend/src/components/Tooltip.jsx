@@ -138,16 +138,18 @@ export function ItemTooltip({ itemData }) {
             {/* Stats */}
             {Object.keys(stats).length > 0 && (
                 <div className="space-y-1 border-t border-[#1e2328] pt-2">
-                    {Object.entries(stats).map(([key, value]) => {
-                        const { color, name } = getStatDisplay(key);
-                        const formattedValue = formatStatValue(key, value);
-                        return (
-                            <div key={key} className="text-sm flex items-center gap-2">
-                                <span className={`${color} font-medium`}>{formattedValue}</span>
-                                <span className="text-[#a09b8c]">{name}</span>
-                            </div>
-                        );
-                    })}
+                    {Object.entries(stats)
+                        .filter(([_, value]) => !isStatZero(value))
+                        .map(([key, value]) => {
+                            const { color, name } = getStatDisplay(key);
+                            const formattedValue = formatStatValue(key, value);
+                            return (
+                                <div key={key} className="text-sm flex items-center gap-2">
+                                    <span className={`${color} font-medium`}>{formattedValue}</span>
+                                    <span className="text-[#a09b8c]">{name}</span>
+                                </div>
+                            );
+                        })}
                 </div>
             )}
 
@@ -524,60 +526,77 @@ function getStatDisplay(key) {
         'lethality': { color: 'text-[#ff4500]', name: 'Lethality' },
         'tenacity': { color: 'text-[#f0e6d2]', name: 'Tenacity' },
         'magicPenetration': { color: 'text-[#87cefa]', name: 'Magic Penetration' },
-        'armorPenetration': { color: 'text-[#ff8c00]', name: 'Armor Penetration' }
+        'armorPenetration': { color: 'text-[#ff8c00]', name: 'Armor Penetration' },
+        'cooldownReduction': { color: 'text-[#f0e6d2]', name: 'Cooldown Reduction' },
+        'goldPer10': { color: 'text-[#e6ac00]', name: 'Gold Per 10' },
+        'healAndShieldPower': { color: 'text-[#1dc451]', name: 'Heal & Shield Power' }
     };
 
     return statMap[key] || { color: 'text-[#f0e6d2]', name: formatStatName(key) };
 }
 
 function formatStatValue(key, value) {
-    let val = value;
-    let isPercent = false;
+    let valFlat = 0;
+    let valPercent = 0;
 
-    // Handle Meraki object structure { flat, percent, ... }
+    // Handle Meraki object structure { flat: 45, percent: 0 }
     if (typeof value === 'object' && value !== null) {
-        if (value.percent && value.percent !== 0) {
-            val = value.percent;
-            // Meraki percent often 0.X (e.g. 0.1 for 10%)? Or whole number?
-            // Usually 0.X. formatStatValue logic below handles < 1 as percent.
-            // But if it is 10 (for 10%), we should check.
-            // Let's assume standard 0-1 range for percent, OR key name check.
-        } else {
-            val = value.flat || 0;
-        }
+        valFlat = value.flat || 0;
+        valPercent = value.percent || 0;
+    } else {
+        valFlat = value;
     }
 
-    // Heuristics for percentage display
-    isPercent = key.toLowerCase().includes('percent') ||
-        key.toLowerCase().includes('speed') ||
+    // Special Handling: Move Speed
+    if (key.toLowerCase().includes('speed') && !key.toLowerCase().includes('attack')) {
+        if (Math.abs(valFlat) > 0.01) return `+${valFlat}`;
+        if (valPercent > 0) return `+${(valPercent * 100).toFixed(0)}%`;
+        if (Math.abs(valFlat) < 0.01 && Math.abs(valPercent) < 0.01) return `+0`;
+    }
+
+    // Special Handling: Attack Speed
+    if (key.toLowerCase().includes('attack') && key.toLowerCase().includes('speed')) {
+        if (valPercent > 0) return `+${(valPercent * 100).toFixed(0)}%`;
+        if (valFlat > 0 && valFlat < 10) return `+${(valFlat * 100).toFixed(0)}%`;
+    }
+
+    // Default Percent Heuristics
+    if (valPercent !== 0) {
+        return `+${(valPercent * 100).toFixed(0)}%`;
+    }
+
+    // Fallback for flat values that might be percent
+    const isPercentKey = key.toLowerCase().includes('percent') ||
         key.toLowerCase().includes('crit') ||
         key.toLowerCase().includes('steal') ||
         key.toLowerCase().includes('tenacity') ||
         key.toLowerCase().includes('omnivamp') ||
-        key.toLowerCase().includes('penetration') && val < 5; // Pen can be flat or %, usually small numbers < 1 are %.
+        (key.toLowerCase().includes('penetration') && valFlat < 5);
 
-    // Force percent if value is small and looks like a ratio (e.g. 0.15)
-    if (!isPercent && Math.abs(val) > 0 && Math.abs(val) <= 1) {
-        // Maybe dangerous for small AD/AP? but items usually have > 5 AD.
-        // Attack Speed is likely < 2.5.
-    }
-
-    if (isPercent || (Math.abs(val) > 0 && Math.abs(val) < 1 && key !== 'manageRegen' && key !== 'healthRegen')) {
-        // Check if already 100-based or 0-1 based
-        // Meraki might send 15 for 15%? Inspection needed. 
-        // Inspection showed 'percent': 0.0.
-        // If flat is 0.0 and percent is 0.0, we just show 0.
-
-        // Let's optimize: print value. If < 1, format as %.
-        if (Math.abs(val) <= 2.5) { // Threshold for treating as ratio
-            return `+${(val * 100).toFixed(0)}%`;
+    if (isPercentKey) {
+        if (Math.abs(valFlat) <= 2.0) {
+            return `+${(valFlat * 100).toFixed(0)}%`;
         }
-        return `+${val}%`;
+        return `+${valFlat}%`;
     }
 
-    return val > 0 ? `+${val}` : `${val}`;
+    return valFlat > 0 ? `+${valFlat}` : `${valFlat}`;
 }
 
 function formatStatName(key) {
-    return key.replace(/([A-Z])/g, ' $1').trim().replace(/^flat\s+/i, '').replace(/^percent\s+/i, '');
+    // Camel/Flat/Percent removal
+    const raw = key.replace(/([A-Z])/g, ' $1').trim()
+        .replace(/^flat\s+/i, '')
+        .replace(/^percent\s+/i, '');
+
+    // Title Case
+    return raw.replace(/\b\w/g, c => c.toUpperCase());
+}
+
+// Check if stat is effectively zero
+export function isStatZero(value) {
+    if (typeof value === 'object' && value !== null) {
+        return (value.flat || 0) === 0 && (value.percent || 0) === 0;
+    }
+    return value === 0;
 }
