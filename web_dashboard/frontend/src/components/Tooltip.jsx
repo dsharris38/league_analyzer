@@ -333,19 +333,23 @@ export function PassiveTooltip({ passiveData }) {
 // HTML Parsing & Formatting
 // ----------------------------------------------------------------------
 
+// ----------------------------------------------------------------------
+// HTML Parsing & Formatting
+// ----------------------------------------------------------------------
+
 function FormattedDescription({ description }) {
     if (!description) return null;
 
-    // 1. Clean up common HTML entities and tags
+    // 1. Clean up common HTML entities and container tags
     let text = description
+        .replace(/<mainText>/gi, '')   // Remove container
+        .replace(/<\/mainText>/gi, '') // Remove container
+        .replace(/<stats>[\s\S]*?<\/stats>/gi, '') // Remove stats block entirely (we display stats separately)
         .replace(/&nbsp;/g, ' ')
         .replace(/&amp;/g, '&')
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/<br\s*\/?>/gi, '\n');
-
-    // 2. Handle specific tags like <active>, <passive>, <consumable>
-    // We'll replace them with styled spans or just clean text with headers
 
     // Split by newlines to handle blocks
     const lines = text.split('\n');
@@ -353,8 +357,9 @@ function FormattedDescription({ description }) {
     return (
         <div className="space-y-2">
             {lines.map((line, i) => {
-                if (!line.trim()) return null;
-                return <div key={i}>{parseLine(line)}</div>;
+                const trimmed = line.trim();
+                if (!trimmed) return null;
+                return <div key={i}>{parseLine(trimmed)}</div>;
             })}
         </div>
     );
@@ -362,11 +367,15 @@ function FormattedDescription({ description }) {
 
 function parseLine(line) {
     // Check for special start tags
+    // Passives often look like: <passive>Life Draining</passive>
+    // Or just text.
+
+    // Explicit Active/Passive tags
     if (line.toLowerCase().includes('<active>')) {
         return (
             <span>
                 <span className="text-[#f0e6d2] font-bold uppercase text-xs tracking-wider">Active - </span>
-                {colorizeText(line.replace(/<[^>]+>/g, ''))}
+                {colorizeText(line.replace(/<\/?active>/gi, ''))}
             </span>
         );
     }
@@ -374,13 +383,16 @@ function parseLine(line) {
         return (
             <span>
                 <span className="text-[#f0e6d2] font-bold uppercase text-xs tracking-wider">Passive - </span>
-                {colorizeText(line.replace(/<[^>]+>/g, ''))}
+                {colorizeText(line.replace(/<\/?passive>/gi, ''))}
             </span>
         );
     }
 
-    // Regular line parsing
-    // Remove remaining tags but keep content
+    // Fallback: If line starts with a capitalized word followed by colon? (Riot sometimes uses plain text for passives)
+    // E.g. "Life Draining: Return 2.5%..."
+    // colorizeText handles "Name:" pattern already with bold white.
+
+    // Remove remaining generic tags but keep content
     const cleanLine = line.replace(/<[^>]+>/g, '');
     return colorizeText(cleanLine);
 }
@@ -391,26 +403,27 @@ function colorizeText(text) {
     let key = 0;
 
     const patterns = [
-        // Named effects (bold white)
-        { regex: /\b([A-Z][a-z]+(?:'s)?)\s*:/g, className: 'text-[#f0e6d2] font-bold' },
+        // Named effects (bold white) - Matches "Effect Name:"
+        { regex: /\b([A-Z][A-Za-z0-9\s']+(?:'s)?)\s*:/, className: 'text-[#f0e6d2] font-bold' },
+
+        // Attention / Values (Riot uses <attention> or <scaleX>)
+        // We stripped tags, but the values like "3%" remain.
+        // Match numbers and percentages
+        { regex: /(\d+(?:\.\d+)?%?)/, className: 'text-[#f0e6d2]' },
 
         // Damage Types
-        { regex: /(\d+(?:\/\d+)*)\s*\(\+\d+%?\s*(?:bonus\s+)?AD\)\s*(physical damage)/gi, className: 'text-[#ff8c00]' }, // Orange
-        { regex: /(\d+(?:\/\d+)*)\s*\(\+\d+%?\s*AP\)\s*(magic damage)/gi, className: 'text-[#00bfff]' }, // Cyan
-        { regex: /(\d+(?:\/\d+)*)\s*(physical damage)/gi, className: 'text-[#ff8c00]' },
-        { regex: /(\d+(?:\/\d+)*)\s*(magic damage)/gi, className: 'text-[#00bfff]' },
+        { regex: /(physical damage)/gi, className: 'text-[#ff8c00]' }, // Orange
+        { regex: /(magic damage)/gi, className: 'text-[#00bfff]' }, // Cyan
         { regex: /(true damage)/gi, className: 'text-[#ffffff]' }, // White for true damage
 
-        // Scalings & Ranges (Meraki uses " : " for level scaling)
-        { regex: /\(\+(\d+%?)\s*AP\)/gi, className: 'text-[#ae5bf0]' }, // Purple
-        { regex: /\(\+(\d+%?)\s*(?:bonus\s+)?AD\)/gi, className: 'text-[#ff8c00]' }, // Orange
-        { regex: /(\d+(?:(?:\s*:\s*|\/)\d+)+)/g, className: 'text-[#f0e6d2] font-semibold' }, // "10 : 20" or "10/20" white-ish
-
         // Stats
-        { regex: /\b(\d+%?)\s*(Health|HP)\b/gi, className: 'text-[#1dc451]' }, // Green
-        { regex: /\b(\d+%?)\s*Armor\b/gi, className: 'text-[#f5d94e]' }, // Yellow
+        { regex: /\b(Health|HP)\b/gi, className: 'text-[#1dc451]' }, // Green
+        { regex: /\b(Armor)\b/gi, className: 'text-[#f5d94e]' }, // Yellow
         { regex: /\b(Magic Resist|MR)\b/gi, className: 'text-[#87cefa]' }, // Light Blue
-        { regex: /\b(\d+%?)\s*Mana\b/gi, className: 'text-[#1a78ff]' }, // Blue
+        { regex: /\b(Mana)\b/gi, className: 'text-[#1a78ff]' }, // Blue
+        { regex: /\b(Attack Damage|AD)\b/gi, className: 'text-[#ff8c00]' },
+        { regex: /\b(Ability Power|AP)\b/gi, className: 'text-[#ae5bf0]' },
+        { regex: /\b(Life Steal)\b/gi, className: 'text-[#ff4500]' },
 
         // Keywords
         { regex: /\b(Stasis|Invulnerable|Untargetable|Vulnerable|Slow(?:s|ed)?|Stun(?:s|ned)?|Root(?:s|ed)?)\b/gi, className: 'text-[#f0e6d2] font-bold' },
@@ -421,7 +434,11 @@ function colorizeText(text) {
         let earliestPattern = null;
 
         for (const pattern of patterns) {
-            const match = new RegExp(pattern.regex).exec(remaining);
+            // Re-create regex to not have global flag for simple search or use string match
+            // Actually, we need index.
+            const regex = new RegExp(pattern.regex.source, pattern.regex.flags + (pattern.regex.flags.includes('g') ? '' : ''));
+            const match = regex.exec(remaining);
+
             if (match && (!earliestMatch || match.index < earliestMatch.index)) {
                 earliestMatch = match;
                 earliestPattern = pattern;
@@ -443,11 +460,11 @@ function colorizeText(text) {
 
         segments.push(
             <span key={key++} className={earliestPattern.className}>
-                {earliestMatch[0]}
+                {earliestMatch[0] || earliestMatch[1]}
             </span>
         );
 
-        remaining = remaining.substring(earliestMatch.index + earliestMatch[0].length);
+        remaining = remaining.substring(earliestMatch.index + (earliestMatch[0] || earliestMatch[1]).length);
     }
 
     return segments;
