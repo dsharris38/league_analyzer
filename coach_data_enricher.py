@@ -64,6 +64,21 @@ def _get_cached_meraki_items() -> Dict[str, Any]:
     except Exception:
         return {} # Fallback
 
+def _safe_get_latest_dd_version() -> Optional[str]:
+    """Best-effort: fetch latest Data Dragon version string.
+    
+    Useful for fallback image construction if Meraki fails or for other DDragon assets.
+    """
+    try:
+        resp = requests.get("https://ddragon.leagueoflegends.com/api/versions.json", timeout=5)
+        resp.raise_for_status()
+        versions = resp.json()
+        if not isinstance(versions, list) or not versions:
+            return None
+        return versions[0]
+    except Exception:
+        return "14.23.1" # Fallback
+
 def _safe_get_item_names(version: Optional[str] = None) -> Dict[int, str]:
     """Best-effort: fetch item ID -> item name mapping from Meraki Analytics (Cached)."""
     data = _get_cached_meraki_items()
