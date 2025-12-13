@@ -6,7 +6,7 @@ import MatchDetailView from './MatchDetailView';
 import DeepDiveView from './DeepDiveView';
 import RankCard from './RankCard';
 import MasteryCard from './MasteryCard';
-import TeammateCard from './TeammateCard';
+import TeammatesCard from './TeammatesCard';
 import RecentPerformanceCard from './RecentPerformanceCard';
 import { ArrowLeft, ChevronDown, ChevronUp, Filter, Search, X } from 'lucide-react';
 import config from '../config';
