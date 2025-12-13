@@ -22,47 +22,61 @@ import requests
 
 
 
+import os
+import time
+import json
+from pathlib import Path
+
+# ... imports ...
+
 MERAKI_ITEMS_URL = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/items.json"
+CACHE_DIR = Path(__file__).parent / "saves" / "cache"
 
-
-def _safe_get_latest_dd_version() -> Optional[str]:
-    """Best-effort: fetch latest Data Dragon version string.
+def _get_cached_meraki_items() -> Dict[str, Any]:
+    """Fetch Meraki items with local file caching (24h validity)."""
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_path = CACHE_DIR / "meraki_items.json"
     
-    Useful for fallback image construction if Meraki fails or for other DDragon assets.
-    """
+    # Check cache validity
+    if cache_path.exists():
+        mtime = cache_path.stat().st_mtime
+        if time.time() - mtime < 86400: # 24 hours
+            try:
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass # Corrupt cache, refetch
+    
+    # Fetch fresh
     try:
-        resp = requests.get(DD_VERSION_URL, timeout=5)
+        resp = requests.get(MERAKI_ITEMS_URL, timeout=10)
         resp.raise_for_status()
-        versions = resp.json()
-        if not isinstance(versions, list) or not versions:
-            return None
-        return versions[0]
+        data = resp.json()
+        
+        # Save to cache
+        try:
+            with open(cache_path, "w", encoding="utf-8") as f:
+                json.dump(data, f)
+        except Exception:
+            pass
+            
+        return data
     except Exception:
-        return None
-
+        return {} # Fallback
 
 def _safe_get_item_names(version: Optional[str] = None) -> Dict[int, str]:
-    """Best-effort: fetch item ID -> item name mapping from Meraki Analytics.
+    """Best-effort: fetch item ID -> item name mapping from Meraki Analytics (Cached)."""
+    data = _get_cached_meraki_items()
     
-    Meraki is preferred over raw DDragon as it provides cleaner names and stats.
-    Ignores 'version' as Meraki 'latest' is version-agnostic.
-    """
-    try:
-        resp = requests.get(MERAKI_ITEMS_URL, timeout=5)
-        resp.raise_for_status()
-        data = resp.json() # Meraki: { "1001": { "name": "Boots", ... } }
-        
-        mapping: Dict[int, str] = {}
-        for item_id_str, info in data.items():
-            try:
-                item_id = int(item_id_str)
-            except ValueError:
-                continue
-            name = info.get("name") or item_id_str
-            mapping[item_id] = name
-        return mapping
-    except Exception:
-        return {}
+    mapping: Dict[int, str] = {}
+    for item_id_str, info in data.items():
+        try:
+            item_id = int(item_id_str)
+        except ValueError:
+            continue
+        name = info.get("name") or item_id_str
+        mapping[item_id] = name
+    return mapping
 
 
 def _extract_self_participant(match: Dict[str, Any], puuid: str) -> Dict[str, Any]:

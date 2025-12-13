@@ -1,5 +1,6 @@
 // Data Dragon Helper (Powered by Meraki Analytics & Community Dragon)
 // Handles version fetching and URL generation for assets
+import config from '../config';
 
 const DD_BASE_URL = "https://ddragon.leagueoflegends.com";
 const MERAKI_BASE_URL = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US";
@@ -126,14 +127,24 @@ export const getRuneData = (runeId) => {
 };
 
 // Fetch item data (From Meraki)
+
+// Fetch item data (From Local Backend Cache -> Meraki)
 export const fetchItems = async () => {
     try {
-        const response = await fetch(`${MERAKI_BASE_URL}/items.json`);
+        // Use local backend proxy to ensure caching and avoid browser CORS/Rate-limit issues
+        const response = await fetch(`${config.API_URL}/api/meraki/items/`);
+        if (!response.ok) throw new Error("Backend fetch failed");
+
         const data = await response.json();
-        // Meraki returns { "1001": { ... } } directly
         itemDataMap = data;
     } catch (e) {
-        console.error("Failed to fetch items from Meraki", e);
+        console.warn("Failed to fetch items from local backend, falling back to CDN", e);
+        try {
+            const response = await fetch(`${MERAKI_BASE_URL}/items.json`);
+            itemDataMap = await response.json();
+        } catch (e2) {
+            console.error("Failed to fetch items from CDN", e2);
+        }
     }
 };
 
@@ -166,11 +177,20 @@ export const fetchChampionData = async (championName) => {
     if (Object.keys(championDataMap).length > 0) return;
 
     try {
-        const response = await fetch(`${MERAKI_BASE_URL}/champions.json`);
+        // Use local backend proxy to ensure caching and avoid browser CORS/Rate-limit issues
+        const response = await fetch(`${config.API_URL}/api/meraki/champions/`);
+        if (!response.ok) throw new Error("Backend fetch failed");
+
         // Meraki returns { "Aatrox": { ... }, "Ahri": { ... } }
         championDataMap = await response.json();
     } catch (e) {
-        console.error("Failed to fetch champions from Meraki", e);
+        console.warn("Failed to fetch champions from local backend, falling back to CDN", e);
+        try {
+            const response = await fetch(`${MERAKI_BASE_URL}/champions.json`);
+            championDataMap = await response.json();
+        } catch (e2) {
+            console.error("Failed to fetch champions from Meraki CDN", e2);
+        }
     }
 };
 

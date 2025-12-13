@@ -66,7 +66,89 @@ class AnalysisDetailView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+import json
+from django.http import JsonResponse
+from pathlib import Path
+import time
+import requests
+
+# ... existing imports ...
+
+# Define cache path (should match coach_data_enricher)
+CACHE_DIR = Path(__file__).resolve().parent.parent.parent.parent / "saves" / "cache"
+
+def cached_meraki_items(request):
+    """Serve cached Meraki items to frontend."""
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_path = CACHE_DIR / "meraki_items.json"
+    
+    # Check cache validity
+    if cache_path.exists():
+        mtime = cache_path.stat().st_mtime
+        if time.time() - mtime < 86400: # 24 hours
+            try:
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    return JsonResponse(data)
+            except Exception:
+                pass 
+    
+    # Fetch fresh
+    try:
+        url = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/items.json"
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        
+        # Save to cache
+        try:
+            with open(cache_path, "w", encoding="utf-8") as f:
+                json.dump(data, f)
+        except Exception:
+            pass
+            
+        return JsonResponse(data)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+def cached_meraki_champions(request):
+    """Serve cached Meraki champions to frontend."""
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_path = CACHE_DIR / "meraki_champions.json"
+    
+    # Check cache validity
+    if cache_path.exists():
+        mtime = cache_path.stat().st_mtime
+        if time.time() - mtime < 86400: # 24 hours
+            try:
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    return JsonResponse(data)
+            except Exception:
+                pass 
+    
+    # Fetch fresh
+    try:
+        url = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/champions.json"
+        
+        # Champions file is large (~1.5MB), increased timeout
+        resp = requests.get(url, timeout=20) 
+        resp.raise_for_status()
+        data = resp.json()
+        
+        # Save to cache
+        try:
+            with open(cache_path, "w", encoding="utf-8") as f:
+                json.dump(data, f)
+        except Exception:
+            pass
+            
+        return JsonResponse(data)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
 class RunAnalysisView(APIView):
+# ... existing code ...
     def post(self, request):
         riot_id = request.data.get('riot_id')
         match_count = int(request.data.get('match_count', 20))

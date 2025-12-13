@@ -43,27 +43,47 @@ def _get_latest_ddragon_version() -> str:
         pass
     return "14.23.1" # Fallback
 
+import time
+
+# ...
+
 @lru_cache(maxsize=1)
 def _get_item_map(version: str) -> Dict[str, str]:
-    """Fetch item map from Meraki Analytics (ignoring version as Meraki is always latest)."""
+    """Fetch item map from Meraki Analytics (Cached)."""
+    cache_file = CACHE_DIR / "meraki_items.json"
+    
+    # Try Cache
+    if cache_file.exists():
+        if time.time() - cache_file.stat().st_mtime < 86400:
+            try:
+                with open(cache_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    return {k: v["name"] for k, v in data.items()}
+            except Exception:
+                pass
+                
+    # Fetch
     try:
         url = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/items.json"
         
         # Note: Meraki format is { "1001": { "name": "Boots", ... } }
-        # Only differs from DDragon 'data' wrapper.
-        
         resp = requests.get(url, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
+            
+            # Save Cache
+            try:
+                with open(cache_file, "w", encoding="utf-8") as f:
+                    json.dump(data, f)
+            except Exception:
+                pass
+
             return {k: v["name"] for k, v in data.items()}
             
     except Exception as e:
         print(f"Warning: Failed to fetch Meraki items: {e}")
         pass
         
-    # Fallback to DDragon if Meraki fails? 
-    # Let's keep a simple fallback or just return empty.
-    # User specifically wants Meraki check, so let's trust it.
     return {}
 
 def _get_item_name(item_id: int) -> str:
