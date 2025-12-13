@@ -12,7 +12,7 @@ function ParticipantRow({ participant, maxDamage, isSelf, teamId }) {
             isSelf && "bg-blue-500/10"
         )}>
             {/* Champion & Name */}
-            <td className="px-2 py-2 overflow-hidden w-40">
+            <td className="px-1.5 py-1 overflow-hidden w-40">
                 <div className="flex items-center gap-2">
                     <div className="relative shrink-0">
                         <img src={getChampionIconUrl(p.champion_name)} className="w-8 h-8 rounded border border-slate-600" alt={p.champion_name} />
@@ -42,7 +42,7 @@ function ParticipantRow({ participant, maxDamage, isSelf, teamId }) {
             </td>
 
             {/* KDA */}
-            <td className="px-1 py-2 text-center w-16">
+            <td className="px-1 py-1 text-center w-16">
                 <div className="flex flex-col items-center">
                     <div className="text-slate-200 font-medium text-xs whitespace-nowrap">
                         {p.kills}/{p.deaths}/{p.assists}
@@ -52,7 +52,7 @@ function ParticipantRow({ participant, maxDamage, isSelf, teamId }) {
             </td>
 
             {/* Damage */}
-            <td className="px-1 py-2 w-24">
+            <td className="px-1 py-1 w-24">
                 <div className="flex flex-col justify-center w-full gap-1">
                     <div className="flex items-center gap-1 text-slate-400 text-[9px]">
                         <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -67,19 +67,19 @@ function ParticipantRow({ participant, maxDamage, isSelf, teamId }) {
             </td>
 
             {/* Wards */}
-            <td className="px-1 py-2 text-center text-slate-400 text-[10px] w-14">
+            <td className="px-1 py-1 text-center text-slate-400 text-[10px] w-14">
                 <div>{p.vision_score}</div>
                 <div className="text-slate-600">{p.wards_placed}/{p.wards_killed}</div>
             </td>
 
             {/* CS */}
-            <td className="px-1 py-2 text-center text-slate-400 text-[10px] w-14">
+            <td className="px-1 py-1 text-center text-slate-400 text-[10px] w-14">
                 <div className="text-slate-300">{p.cs}</div>
                 <div className="text-slate-600">({p.cs_per_min})</div>
             </td>
 
             {/* Items */}
-            <td className="px-2 py-2">
+            <td className="px-1.5 py-1">
                 <div className="flex flex-wrap gap-0.5 justify-end md:justify-start">
                     {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5].map((item, i) => {
                         const itemData = getItemData(item);

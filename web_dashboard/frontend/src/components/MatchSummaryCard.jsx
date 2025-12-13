@@ -1,7 +1,7 @@
 import React from 'react';
 import { getChampionIconUrl, getItemIconUrl, getSpellIconUrl, getRuneIconUrl, getItemData, getSummonerSpellData, getRuneData } from '../utils/dataDragon';
 import Tooltip, { ItemTooltip, RuneTooltip, SummonerSpellTooltip } from './Tooltip';
-import { Clock, Trophy, Skull, Microscope } from 'lucide-react';
+import { Clock, Trophy, Skull, Microscope, ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidate, reviewReason }) {
@@ -172,17 +172,19 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
             {/* Actions */}
             <div className="flex flex-col border-l border-rose-vale/10">
                 {/* Deep Dive Button */}
+                {/* Deep Dive Button */}
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
                         onDeepDive(match.match_id);
                     }}
                     className={clsx(
-                        "flex-1 w-8 flex items-center justify-center transition-colors border-b border-white/10",
-                        // Always vibrant purple for Deep Dive to stand out
-                        "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/20"
+                        "flex-1 w-8 flex items-center justify-center transition-colors border-b border-white/5",
+                        isReviewCandidate
+                            ? "bg-violet-600 hover:bg-violet-500 text-white shadow-[0_0_10px_rgba(139,92,246,0.5)] animate-pulse-slow"
+                            : "bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white"
                     )}
-                    title="Deep Dive Analysis"
+                    title={isReviewCandidate ? "High Blame - Analyze Now" : "Deep Dive Analysis"}
                 >
                     <Microscope size={16} />
                 </button>
@@ -191,11 +193,10 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                 <button
                     onClick={onExpand}
                     className={clsx(
-                        "flex-1 w-8 flex items-center justify-center transition-colors font-bold text-lg text-white",
-                        win ? "bg-blue-600 hover:bg-blue-500" : "bg-red-600 hover:bg-red-500"
+                        "flex-1 w-8 flex items-center justify-center transition-colors text-slate-400 hover:text-white bg-slate-800/30 hover:bg-slate-700/50"
                     )}
                 >
-                    <div className="rotate-90">›</div>
+                    <ChevronDown size={18} />
                 </button>
             </div>
         </div>

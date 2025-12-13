@@ -119,7 +119,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                         <span className="text-sm font-medium">Find Summoner</span>
                     </button>
                     <div className="flex flex-col items-center">
-                        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-cyan-300 to-violet-400 animate-pulse-slow tracking-tight">
+                        <h1 className="text-4xl font-black text-white tracking-tight">
                             {data.game_name}
                         </h1>
                         <div className="text-slate-400 text-sm font-mono tracking-widest">#{data.tag_line}</div>
@@ -143,124 +143,130 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                             <RecentPerformanceCard recentStats={analysis.recent_performance} />
                         </div>
                         {/* 3. Teammates */}
-                        <div className="col-span-1 h-64 lg:h-72">
-                            <TeammatesCard teammates={analysis.teammates} />
-                        </div>
-                        {/* 4. Mastery */}
-                        <div className="col-span-1 h-64 lg:h-72">
-                            <MasteryCard masteryData={data.champion_mastery} />
-                        </div>
+                        <TeammatesCard teammates={analysis.teammates} />
                     </div>
-
-                    {/* MAIN DECK: Match History & Analysis */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                        {/* MATCH HISTORY FEED (2 Cols Wide) */}
-                        <div className="lg:col-span-2 space-y-4">
-                            {/* Filter Bar */}
-                            <div className="glass-panel p-3 rounded-xl flex items-center justify-between">
-                                <h2 className="text-lg font-bold text-white px-2 flex items-center gap-2">
-                                    <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span>
-                                    Battle Log
-                                </h2>
-                                <div className="flex items-center gap-3">
-                                    <div className="relative hidden md:block">
-                                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                                        <input
-                                            type="text"
-                                            placeholder="Search..."
-                                            value={filters.champion}
-                                            onChange={(e) => setFilters({ ...filters, champion: e.target.value })}
-                                            className="bg-black/40 border border-slate-700/50 rounded-md pl-9 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 w-32"
-                                        />
-                                    </div>
-                                    <select
-                                        value={filters.result}
-                                        onChange={(e) => setFilters({ ...filters, result: e.target.value })}
-                                        className="bg-black/40 border border-slate-700/50 rounded-md px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
-                                    >
-                                        <option value="ALL">All Matches</option>
-                                        <option value="WIN">Wins</option>
-                                        <option value="LOSS">Losses</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* List */}
-                            <div className="space-y-3">
-                                {filteredMatches.length === 0 ? (
-                                    <div className="text-center py-20 text-slate-500 glass-panel rounded-xl">
-                                        No matches found matching filters.
-                                    </div>
-                                ) : (
-                                    filteredMatches.map((match) => {
-                                        const candidate = review_candidates?.find(c => c.match_id === match.match_id);
-                                        return (
-                                            <div key={match.match_id}>
-                                                <MatchSummaryCard
-                                                    match={match}
-                                                    puuid={data.puuid}
-                                                    onExpand={() => setExpandedMatchId(expandedMatchId === match.match_id ? null : match.match_id)}
-                                                    onDeepDive={handleDeepDive}
-                                                    isReviewCandidate={!!candidate}
-                                                    reviewReason={candidate?.reasons?.[0]}
-                                                />
-                                                {expandedMatchId === match.match_id && (
-                                                    <MatchDetailView match={match} puuid={data.puuid} />
-                                                )}
-                                            </div>
-                                        );
-                                    })
-                                )}
-                            </div>
-                        </div>
-
-                        {/* RIGHT COLUMN: Summary & Coaching (1 Col Wide) */}
-                        <div className="space-y-6">
-                            {/* Summary Metrics (KDA, CS, etc) moved here */}
-                            <SummaryCards summary={summary} analysis={analysis} />
-
-                            {/* AI Coach Panel */}
-                            {(data.coaching_report || data.coaching_report_markdown) && (() => {
-                                const report = typeof data.coaching_report === 'object'
-                                    ? data.coaching_report
-                                    : { overview: data.coaching_report || data.coaching_report_markdown };
-
-                                return (
-                                    <div className="glass-panel rounded-xl p-5 border-t-2 border-t-violet-500">
-                                        <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2 text-glow">
-                                            <span className="text-violet-400">AI</span> Commander
-                                        </h2>
-
-                                        {report.overview && (
-                                            <div className="prose-coaching text-xs mb-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                                                <ReactMarkdown>{report.overview}</ReactMarkdown>
-                                            </div>
-                                        )}
-
-                                        <div className="grid grid-cols-1 gap-3">
-                                            {report.champion_feedback && (
-                                                <div className="bg-black/20 rounded p-3 border border-white/5">
-                                                    <h4 className="text-[10px] font-bold text-green-400 mb-1 uppercase tracking-wider">Tactics</h4>
-                                                    <div className="prose-coaching text-xs"><ReactMarkdown>{report.champion_feedback}</ReactMarkdown></div>
-                                                </div>
-                                            )}
-                                            {report.itemization_tips && (
-                                                <div className="bg-black/20 rounded p-3 border border-white/5">
-                                                    <h4 className="text-[10px] font-bold text-yellow-400 mb-1 uppercase tracking-wider">Logistics</h4>
-                                                    <div className="prose-coaching text-xs"><ReactMarkdown>{report.itemization_tips}</ReactMarkdown></div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                );
-                            })()}
-                        </div>
+                    {/* 4. Mastery */}
+                    <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
+                        <MasteryCard masteryData={data.champion_mastery} />
                     </div>
                 </div>
 
-                {/* Modals */}
-                {(deepDiveReport || isDeepDiveLoading) && (
+                {/* MAIN DECK: Match History & Analysis */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                    {/* MATCH HISTORY FEED (2 Cols Wide) */}
+                    <div className="lg:col-span-2 space-y-4">
+                        {/* Filter Bar */}
+                        <div className="glass-panel p-3 rounded-xl flex items-center justify-between">
+                            <h2 className="text-lg font-bold text-white px-2 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span>
+                                Battle Log
+                            </h2>
+                            <div className="flex items-center gap-3">
+                                <div className="relative hidden md:block">
+                                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search..."
+                                        value={filters.champion}
+                                        onChange={(e) => setFilters({ ...filters, champion: e.target.value })}
+                                        className="bg-black/40 border border-slate-700/50 rounded-md pl-9 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 w-32"
+                                    />
+                                </div>
+                                <select
+                                    value={filters.result}
+                                    onChange={(e) => setFilters({ ...filters, result: e.target.value })}
+                                    className="bg-black/40 border border-slate-700/50 rounded-md px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
+                                >
+                                    <option value="ALL">All Matches</option>
+                                    <option value="WIN">Wins</option>
+                                    <option value="LOSS">Losses</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* List */}
+                        <div className="space-y-3">
+                            {filteredMatches.length === 0 ? (
+                                <div className="text-center py-20 text-slate-500 glass-panel rounded-xl">
+                                    No matches found matching filters.
+                                </div>
+                            ) : (
+                                filteredMatches.map((match) => {
+                                    const candidate = review_candidates?.find(c => c.match_id === match.match_id);
+                                    return (
+                                        <div key={match.match_id}>
+                                            <MatchSummaryCard
+                                                match={match}
+                                                puuid={data.puuid}
+                                                onExpand={() => setExpandedMatchId(expandedMatchId === match.match_id ? null : match.match_id)}
+                                                onDeepDive={handleDeepDive}
+                                                isReviewCandidate={!!candidate}
+                                                reviewReason={candidate?.reasons?.[0]}
+                                            />
+                                            {expandedMatchId === match.match_id && (
+                                                <MatchDetailView
+                                                    match={match}
+                                                    puuid={data.puuid}
+                                                    onClose={() => setExpandedMatchId(null)}
+                                                />
+                                            )}
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
+                    </div>
+
+                    {/* RIGHT COLUMN: Summary & Coaching (1 Col Wide) */}
+                    <div className="space-y-6">
+                        {/* Summary Metrics (KDA, CS, etc) moved here */}
+                        <SummaryCards summary={summary} analysis={analysis} />
+
+                        {/* AI Coach Panel */}
+                        {(data.coaching_report || data.coaching_report_markdown) && (() => {
+                            const report = typeof data.coaching_report === 'object'
+                                ? data.coaching_report
+                                : { overview: data.coaching_report || data.coaching_report_markdown };
+
+                            return (
+                                <div className="glass-panel rounded-xl p-5 border-t-2 border-t-violet-500">
+                                    <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2 text-glow">
+                                        <span className="text-violet-400">Nexus</span> Neural Link
+                                    </h2>
+
+                                    {
+                                        report.overview && (
+                                            <div className="prose-coaching text-xs mb-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                                                <ReactMarkdown>{report.overview}</ReactMarkdown>
+                                            </div>
+                                        )
+                                    }
+
+                                    <div className="grid grid-cols-1 gap-3">
+                                        {report.champion_feedback && (
+                                            <div className="bg-black/20 rounded p-3 border border-white/5">
+                                                <h4 className="text-[10px] font-bold text-green-400 mb-1 uppercase tracking-wider">Tactics</h4>
+                                                <div className="prose-coaching text-xs"><ReactMarkdown>{report.champion_feedback}</ReactMarkdown></div>
+                                            </div>
+                                        )}
+                                        {report.itemization_tips && (
+                                            <div className="bg-black/20 rounded p-3 border border-white/5">
+                                                <h4 className="text-[10px] font-bold text-yellow-400 mb-1 uppercase tracking-wider">Logistics</h4>
+                                                <div className="prose-coaching text-xs"><ReactMarkdown>{report.itemization_tips}</ReactMarkdown></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })()}
+                    </div>
+                </div>
+            </div>
+
+            {/* Modals */}
+            {
+                (deepDiveReport || isDeepDiveLoading) && (
                     <DeepDiveView
                         report={deepDiveReport}
                         matchData={deepDiveMatchData}
@@ -272,8 +278,8 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                             setIsDeepDiveLoading(false);
                         }}
                     />
-                )}
-            </div>
+                )
+            }
         </div>
     );
 }

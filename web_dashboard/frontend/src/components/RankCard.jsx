@@ -2,8 +2,11 @@ import React from 'react';
 
 
 export default function RankCard({ rankInfo, pastRanks }) {
-    const solo = rankInfo?.find(r => r.queueType === "RANKED_SOLO_5x5");
-    const flex = rankInfo?.find(r => r.queueType === "RANKED_FLEX_SR");
+    // Debug logging for Rank issue
+    console.log("RankCard received rankInfo:", rankInfo);
+
+    const solo = rankInfo?.find(r => r.queueType === "RANKED_SOLO_5x5" || r.queueType.includes("SOLO"));
+    const flex = rankInfo?.find(r => r.queueType === "RANKED_FLEX_SR" || r.queueType.includes("FLEX"));
 
     return (
         <div className="glass-panel rounded-xl p-5 h-full relative overflow-hidden group">

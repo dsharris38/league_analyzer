@@ -2,7 +2,7 @@
 // Handles version fetching and URL generation for assets
 
 const DD_BASE_URL = "https://ddragon.leagueoflegends.com";
-const MERAKI_BASE_URL = "http://cdn.merakianalytics.com/riot/lol/resources/latest/en-US";
+const MERAKI_BASE_URL = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US";
 let currentVersion = "15.1.1"; // Default fallback
 
 // Data caches
@@ -43,7 +43,7 @@ export const getItemIconUrl = (itemId) => {
     if (!itemId || itemId === 0) return "";
     // If we have data, use the specific icon link (which handles different versions/paths)
     if (itemDataMap[itemId] && itemDataMap[itemId].icon) {
-        return itemDataMap[itemId].icon;
+        return itemDataMap[itemId].icon.replace("http://", "https://");
     }
     // Fallback ID-based CDragon link
     return `https://cdn.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/items/icons2d/${itemId}.png`;
