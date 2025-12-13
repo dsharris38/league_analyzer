@@ -64,7 +64,12 @@ body {
   }
 
   .glass-card-hover {
-    @apply transition-all duration-300 hover:bg-slate-800/80 hover:border-violet-500/50 hover:shadow-[0_0_15px_rgba(139, 92, 246, 0.2)];
+    @apply transition-all duration-300;
+  }
+
+  .glass-card-hover:hover {
+    @apply bg-slate-800/80 border-violet-500/50;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
   }
 
   .text-glow {
@@ -72,10 +77,12 @@ body {
   }
 
   .neon-border-blue {
-    @apply border border-cyan-400/30 shadow-[0_0_8px_rgba(34, 211, 238, 0.2)];
+    @apply border border-cyan-400/30;
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.2);
   }
 
   .neon-border-violet {
-    @apply border border-violet-500/30 shadow-[0_0_8px_rgba(139, 92, 246, 0.2)];
+    @apply border border-violet-500/30;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.2);
   }
 }
