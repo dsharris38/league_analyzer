@@ -162,11 +162,13 @@ def _extract_json_from_text(text: str) -> Dict[str, Any] | None:
 @lru_cache(maxsize=1)
 def _get_home_model_name() -> str:
     """Returns the cost-efficient model for broad summaries."""
+    # CRITICAL: DO NOT CHANGE DEFAULT. User has specific access to gpt-5-mini.
     return os.getenv("OPENAI_HOME_MODEL", "gpt-5-mini")
 
 @lru_cache(maxsize=1)
 def _get_deep_dive_model_name() -> str:
     """Returns the flagship model for deep reasoning."""
+    # CRITICAL: DO NOT CHANGE DEFAULT. User has specific access to gpt-5.1.
     return os.getenv("OPENAI_DEEP_DIVE_MODEL", "gpt-5.1")
 
 
@@ -174,7 +176,7 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 # Using gpt-5-mini for home page coaching (fast/cheap)
 OPENAI_HOME_MODEL = "gpt-5-mini"
 # Using gpt-5-mini for routine match classification (fast/cheap)
-OPENAI_TAGGING_MODEL = "gpt-5-mini"
+OPENAI_TAGGING_MODEL = "gpt-5-mini" # Fallback/Tagging model
 OPENAI_DEEP_DIVE_MODEL = "gpt-5.1"
 
 @lru_cache(maxsize=1)
