@@ -562,6 +562,9 @@ function formatStatValue(key, value) {
 
     // Default Percent Heuristics
     if (valPercent !== 0) {
+        if (Math.abs(valPercent) > 1.0) {
+            return `+${valPercent}%`;
+        }
         return `+${(valPercent * 100).toFixed(0)}%`;
     }
 

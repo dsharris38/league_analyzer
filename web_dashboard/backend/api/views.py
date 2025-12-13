@@ -95,10 +95,35 @@ def cached_meraki_items(request):
     
     # Fetch fresh
     try:
+        # 1. Fetch Meraki (Base Data)
         url = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/items.json"
         resp = requests.get(url, timeout=10)
         resp.raise_for_status()
         data = resp.json()
+
+        # 2. Fetch DDragon (Enrichment for Text/Description)
+        try:
+            # Get latest version
+            v_resp = requests.get("https://ddragon.leagueoflegends.com/api/versions.json", timeout=5)
+            latest_version = v_resp.json()[0]
+            
+            # Get DDragon Items
+            dd_resp = requests.get(f"https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/en_US/item.json", timeout=10)
+            dd_items = dd_resp.json().get("data", {})
+
+            # Merge
+            for item_id, item_info in data.items():
+                dd_item = dd_items.get(item_id)
+                if dd_item:
+                    # If Meraki description is missing or generic, use Riot's
+                    if not item_info.get("description") or item_info.get("description") == "None":
+                        item_info["description"] = dd_item.get("description")
+                    
+                    # Ensure Name is Riot-official
+                    if dd_item.get("name"):
+                         item_info["name"] = dd_item.get("name")
+        except Exception as e:
+            print(f"Warning: Failed to merge DDragon data: {e}")
         
         # Save to cache
         try:
