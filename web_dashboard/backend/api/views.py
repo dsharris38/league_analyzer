@@ -72,6 +72,7 @@ class RunAnalysisView(APIView):
         match_count = int(request.data.get('match_count', 20))
         use_timeline = request.data.get('use_timeline', True)
         call_ai = request.data.get('call_ai', True)
+        region = request.data.get('region', 'NA')
         
         if not riot_id:
             return Response({'error': 'riot_id is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -89,7 +90,8 @@ class RunAnalysisView(APIView):
                 use_timeline=use_timeline,
                 call_ai=call_ai,
                 save_json=True,
-                open_dashboard=False
+                open_dashboard=False,
+                region_key=region
             )
             
             if "error" in analysis_result:

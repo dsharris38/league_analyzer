@@ -28,7 +28,7 @@ function App() {
   };
 
   // Run new analysis
-  const handleAnalyze = async (riotId, matchCount) => {
+  const handleAnalyze = async (riotId, matchCount, region) => {
     // This is passed to Home to run the POST request
     // After POST succeeds, we reload the list or just try to load the file?
     // The backend POST returns { status: 'success', riot_id: ... }
@@ -38,7 +38,8 @@ function App() {
     // First, trigger the analysis
     await axios.post(`${config.API_URL}/api/analyze/`, {
       riot_id: riotId,
-      match_count: matchCount
+      match_count: matchCount,
+      region: region
     });
 
     // Construct probable filename
@@ -69,12 +70,14 @@ function App() {
     if (!analysisData) return;
     const riotId = `${analysisData.game_name}#${analysisData.tag_line}`;
     const matchCount = analysisData.match_count_requested || 20;
+    const region = analysisData.region || 'NA';
 
     setLoading(true);
     try {
       await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
-        match_count: matchCount
+        match_count: matchCount,
+        region: region
       });
       // Refresh data
       // We need to re-fetch the specific file. 

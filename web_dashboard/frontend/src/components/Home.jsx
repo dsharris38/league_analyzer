@@ -7,6 +7,7 @@ import heroBg from '../assets/hero_bg.jpg';
 export default function Home({ onSelect, onAnalyze }) {
     const [riotId, setRiotId] = useState('');
     const [matchCount, setMatchCount] = useState(20);
+    const [region, setRegion] = useState('NA');
     const [recentAnalyses, setRecentAnalyses] = useState([]);
     const [showRecent, setShowRecent] = useState(false);
     const [analyzing, setAnalyzing] = useState(false);
@@ -32,20 +33,6 @@ export default function Home({ onSelect, onAnalyze }) {
     const handleSearch = async (e) => {
         e.preventDefault();
         if (!riotId) return;
-
-        // If user types exactly a cached name, we could load that? 
-        // But usually search means "New Analysis" or "Find". 
-        // For now, let's treat the big button as "Analyze/Update".
-        // But if it's already in the list, maybe we should just load it?
-        // Let's stick to consistent behavior: Search = Analyze/Update.
-        // Actually, if we want to mimic U.GG, search usually brings you to the profile.
-        // If it exists, we show it. If not, we analyze it.
-        // For this app, "Analyze" is expensive (tokens/time).
-
-        // Check if fully updated cache exists? 
-        // Let's just run the analysis pipeline which now handles caching/updating logic or just overwrites.
-        // User asked for "Update" button on profile, so search here should probably just be "Analyze New/Existing".
-
         await runAnalysis(riotId);
     };
 
@@ -59,7 +46,7 @@ export default function Home({ onSelect, onAnalyze }) {
         setAnalyzeError(null);
 
         try {
-            await onAnalyze(targetId, matchCount);
+            await onAnalyze(targetId, matchCount, region);
         } catch (error) {
             console.error('Analysis failed:', error);
             const errorMsg = error.response?.data?.error || error.message || "Unknown error occurred";
@@ -129,6 +116,29 @@ export default function Home({ onSelect, onAnalyze }) {
                         />
 
                         <div className="absolute inset-y-2 right-2 flex items-center gap-2">
+                            <select
+                                value={region}
+                                onChange={(e) => setRegion(e.target.value)}
+                                className="bg-slate-900/50 border border-white/10 text-slate-300 text-sm font-medium rounded-lg px-2 py-2 outline-none hover:bg-violet-500/10 hover:text-white cursor-pointer transition-colors"
+                            >
+                                <option value="NA">NA</option>
+                                <option value="EUW">EUW</option>
+                                <option value="EUNE">EUNE</option>
+                                <option value="KR">KR</option>
+                                <option value="BR">BR</option>
+                                <option value="LAN">LAN</option>
+                                <option value="LAS">LAS</option>
+                                <option value="OCE">OCE</option>
+                                <option value="TR">TR</option>
+                                <option value="RU">RU</option>
+                                <option value="JP">JP</option>
+                                <option value="PH">PH</option>
+                                <option value="SG">SG</option>
+                                <option value="TH">TH</option>
+                                <option value="TW">TW</option>
+                                <option value="VN">VN</option>
+                            </select>
+
                             <select
                                 value={matchCount}
                                 onChange={(e) => setMatchCount(Number(e.target.value))}

@@ -202,6 +202,7 @@ def run_analysis_pipeline(
     call_ai: bool = True,
     save_json: bool = True,
     open_dashboard: bool = False,
+    region_key: str = "NA",
 ) -> Dict[str, Any]:
     """
     Programmatic entry point for the analysis pipeline.
@@ -211,9 +212,9 @@ def run_analysis_pipeline(
         raise ValueError("Invalid Riot ID format. Use Name#TAG.")
 
     game_name, tag_line = riot_id.split("#", 1)
-    client = RiotClient()
+    client = RiotClient(region_key=region_key)
 
-    console.print("[bold]Looking up account...[/bold]")
+    console.print(f"[bold]Looking up account on {region_key} (Routing: {client.region})...[/bold]")
     try:
         account = client.get_account_by_riot_id(game_name, tag_line)
     except Exception as e:
@@ -377,6 +378,7 @@ def run_analysis_pipeline(
     summary = analysis.get("summary", {})
     agent_payload: Dict[str, Any] = {
         "schema_version": "C-enriched-1",
+        "region": region_key,  # Store region for invalidation/updates
         "riot_id": riot_id,
         "game_name": account.get("gameName", game_name),
         "tag_line": account.get("tagLine", tag_line),

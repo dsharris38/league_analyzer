@@ -11,14 +11,20 @@ else:
         print(f"Read {len(lines)} lines.")
         found = False
         for line in lines:
-            if line.startswith("RIOT_API_KEY"):
-                parts = line.split("=", 1)
-                if len(parts) == 2 and parts[1].strip():
-                    print("Found RIOT_API_KEY definition.")
-                    print(f"Key length: {len(parts[1].strip())}")
-                    found = True
-                else:
-                    print("Found RIOT_API_KEY but malformed/empty.")
+            line = line.strip()
+            if not line or line.startswith('#'):
+                print(f"Skipping comment/empty: {line}")
+                continue
+            
+            parts = line.split('=', 1) # Split only on the first '='
+            key = parts[0].strip()
+            print(f"Found key: '{key}'")
+
+            if key == 'RIOT_API_KEY':
+                val = parts[1].strip() if len(parts) > 1 else ""
+                print(f"RIOT_API_KEY is present. Length: {len(val)}")
+                print(f"First 5 chars: {val[:5]}")
+                found = True
         
         if not found:
             print("RIOT_API_KEY not found in file.")
