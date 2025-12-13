@@ -43,10 +43,11 @@ export const getItemIconUrl = (itemId) => {
     if (!itemId || itemId === 0) return "";
     // If we have data, use the specific icon link (which handles different versions/paths)
     if (itemDataMap[itemId] && itemDataMap[itemId].icon) {
+        // Meraki uses HTTP, force HTTPS to avoid mixed content
         return itemDataMap[itemId].icon.replace("http://", "https://");
     }
-    // Fallback to official DDragon (most reliable)
-    return `https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${itemId}.png`;
+    // Fallback ID-based CDragon link
+    return `https://cdn.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/items/icons2d/${itemId}.png`;
 };
 
 export const getSpellIconUrl = (spellId) => {
@@ -58,82 +59,17 @@ export const getSpellIconUrl = (spellId) => {
     return `https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/spell/SummonerFlash.png`; // Fallback placeholder logic
 };
 
-// Get ability icon URL
-export const getAbilityIconUrl = (championName, abilityKey) => {
-    if (!championName || !abilityKey) return "";
-    const champ = championDataMap[championName];
-    if (champ && champ.abilities && champ.abilities[abilityKey] && champ.abilities[abilityKey][0]) {
-        return champ.abilities[abilityKey][0].icon;
-    }
-    // Fallback CDragon construction
-    return `https://cdn.communitydragon.org/latest/champion/${championName}/ability-icon/${abilityKey.toLowerCase()}`;
-};
-
-// Get ability data with description
-export const getAbilityData = (championName, abilityKey) => {
-    if (!championName || !abilityKey) return null;
-    const champ = championDataMap[championName];
-    if (!champ || !champ.abilities) return null;
-
-    // Handle 'P' vs 'Passive' naming if needed, but Meraki uses 'P', 'Q', 'W', 'E', 'R'
-    const abilityList = champ.abilities[abilityKey];
-    if (!abilityList || abilityList.length === 0) return null;
-
-    const spell = abilityList[0]; // Take first form
-
-    return {
-        name: spell.name,
-        description: spell.effects ? spell.effects.map(e => e.description).join("\n\n") : spell.description, // Meraki splits effects
-        cooldown: spell.cooldown ? spell.cooldown.modifiers[0].values.join(" / ") : "N/A",
-        cost: spell.cost ? spell.cost.modifiers[0].values.join(" / ") : "N/A"
-    };
-};
-
-// Fetch runes (Keep DDragon for now as it's reliable for IDs)
-let runeTreeData = [];
-
-export const fetchRunes = async () => {
-    try {
-        const response = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/runesReforged.json`);
-        const data = await response.json();
-        runeTreeData = data;
-
-        data.forEach(tree => {
-            runeMap[tree.id] = tree.icon;
-            runeDataMap[tree.id] = { name: tree.name, description: tree.name, icon: tree.icon };
-            tree.slots.forEach(slot => {
-                slot.runes.forEach(rune => {
-                    runeMap[rune.id] = rune.icon;
-                    runeDataMap[rune.id] = { name: rune.name, description: rune.longDesc || rune.shortDesc, icon: rune.icon };
-                });
-            });
-        });
-    } catch (e) {
-        console.error("Failed to fetch runes", e);
-    }
-};
-
-export const getAllRunes = () => runeTreeData;
-
-export const getRuneIconUrl = (runeId) => {
-    if (!runeId || !runeMap[runeId]) return "";
-    return `${DD_BASE_URL}/cdn/img/${runeMap[runeId]}`;
-};
-
-export const getRuneData = (runeId) => {
-    return runeDataMap[runeId] || null;
-};
+// ... (existing code)
 
 // Fetch item data (From Meraki)
 export const fetchItems = async () => {
     try {
-        // Use official DDragon for reliability
-        const response = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/item.json`);
+        const response = await fetch(`${MERAKI_BASE_URL}/items.json`);
         const data = await response.json();
-        // DDragon returns data in a 'data' property
-        itemDataMap = data.data;
+        // Meraki returns { "1001": { ... } } directly
+        itemDataMap = data;
     } catch (e) {
-        console.error("Failed to fetch items from DDragon", e);
+        console.error("Failed to fetch items from Meraki", e);
     }
 };
 

@@ -95,12 +95,17 @@ export function TooltipContent({ title, description, stats }) {
 export function ItemTooltip({ itemData }) {
     if (!itemData) return null;
 
-    const price = itemData.gold?.total || 0;
+    // Meraki (shop.prices.total) vs Riot (gold.total)
+    const price = itemData.shop?.prices?.total ?? itemData.gold?.total ?? 0;
     const stats = itemData.stats || {};
 
-    // Extract ID from image filename (e.g., "3181.png" -> "3181")
-    const itemId = itemData.image?.full?.replace(/\.png$/, '');
+    // Meraki provides ID directly. Riot provides image.full.
+    // If we have an ID, we can get the icon URL.
+    const itemId = itemData.id || itemData.image?.full?.replace(/\.png$/, '');
     const iconUrl = itemId ? getItemIconUrl(itemId) : '';
+
+    // Meraki provides `simpleDescription` which is cleaner HTML.
+    const rawDescription = itemData.simpleDescription || itemData.description;
 
     return (
         <div className="space-y-3 font-sans">
@@ -147,9 +152,9 @@ export function ItemTooltip({ itemData }) {
             )}
 
             {/* Description */}
-            {itemData.description && (
+            {rawDescription && (
                 <div className="text-sm leading-relaxed text-[#a09b8c] border-t border-[#1e2328] pt-2 mt-2">
-                    <FormattedDescription description={filterStatsFromDescription(itemData.description, stats)} />
+                    <FormattedDescription description={filterStatsFromDescription(rawDescription, stats)} />
                 </div>
             )}
         </div>
@@ -172,21 +177,22 @@ function filterStatsFromDescription(description, stats) {
         if (!cleanLine) return false;
 
         // Check if this line matches any known stat we are already displaying
-        if (cleanLine.includes('Attack Damage') && stats.FlatPhysicalDamageMod) return false;
-        if (cleanLine.includes('Critical Strike Chance') && stats.FlatCritChanceMod) return false;
-        if (cleanLine.includes('Ability Power') && stats.FlatMagicDamageMod) return false;
-        if (cleanLine.match(/Health(?! Regen)/) && stats.FlatHPPoolMod) return false;
-        if (cleanLine.match(/Mana(?! Regen)/) && stats.FlatMPPoolMod) return false;
-        if (cleanLine.includes('Armor') && stats.FlatArmorMod) return false;
-        if (cleanLine.includes('Magic Resist') && stats.FlatSpellBlockMod) return false;
-        if (cleanLine.includes('Attack Speed') && stats.PercentAttackSpeedMod) return false;
-        if ((cleanLine.includes('Move Speed') || cleanLine.includes('Movement Speed')) && (stats.PercentMovementSpeedMod || stats.FlatMovementSpeedMod)) return false;
-        if (cleanLine.includes('Health Regen') && stats.FlatHPRegenMod) return false;
-        if (cleanLine.includes('Mana Regen') && stats.FlatMPRegenMod) return false;
-        if (cleanLine.includes('Life Steal') && stats.PercentLifeStealMod) return false;
-        if (cleanLine.includes('Ability Haste') && stats.AbilityHaste) return false;
-        if (cleanLine.includes('Omnivamp') && stats.Omnivamp) return false;
-        if (cleanLine.includes('Lethality') && stats.Lethality) return false;
+        // Normalize checking against Meraki camelCase keys too
+        if (cleanLine.includes('Attack Damage') && (stats.FlatPhysicalDamageMod || stats.flatPhysicalDamageMod)) return false;
+        if (cleanLine.includes('Critical Strike Chance') && (stats.FlatCritChanceMod || stats.flatCritChanceMod)) return false;
+        if (cleanLine.includes('Ability Power') && (stats.FlatMagicDamageMod || stats.flatMagicDamageMod)) return false;
+        if (cleanLine.match(/Health(?! Regen)/) && (stats.FlatHPPoolMod || stats.flatHPPoolMod)) return false;
+        if (cleanLine.match(/Mana(?! Regen)/) && (stats.FlatMPPoolMod || stats.flatMPPoolMod)) return false;
+        if (cleanLine.includes('Armor') && (stats.FlatArmorMod || stats.flatArmorMod)) return false;
+        if (cleanLine.includes('Magic Resist') && (stats.FlatSpellBlockMod || stats.flatSpellBlockMod)) return false;
+        if (cleanLine.includes('Attack Speed') && (stats.PercentAttackSpeedMod || stats.percentAttackSpeedMod)) return false;
+        if ((cleanLine.includes('Move Speed') || cleanLine.includes('Movement Speed')) && (stats.PercentMovementSpeedMod || stats.FlatMovementSpeedMod || stats.flatMovementSpeedMod)) return false;
+        if (cleanLine.includes('Health Regen') && (stats.FlatHPRegenMod || stats.flatHPRegenMod)) return false;
+        if (cleanLine.includes('Mana Regen') && (stats.FlatMPRegenMod || stats.flatMPRegenMod)) return false;
+        if (cleanLine.includes('Life Steal') && (stats.PercentLifeStealMod || stats.percentLifeStealMod)) return false;
+        if (cleanLine.includes('Ability Haste') && (stats.AbilityHaste || stats.abilityHaste)) return false;
+        if (cleanLine.includes('Omnivamp') && (stats.Omnivamp || stats.omnivamp)) return false;
+        if (cleanLine.includes('Lethality') && (stats.Lethality || stats.lethality)) return false;
 
         return true; // Keep unique stats (e.g. Crit Damage, Tenacity)
     });
@@ -451,19 +457,52 @@ function colorizeText(text) {
 
 function getStatDisplay(key) {
     const statMap = {
+        // Health
         'FlatHPPoolMod': { icon: '', color: 'text-[#1dc451]', name: 'Health' },
+        'flatHPPoolMod': { icon: '', color: 'text-[#1dc451]', name: 'Health' },
+        // Mana
         'FlatMPPoolMod': { icon: '', color: 'text-[#1a78ff]', name: 'Mana' },
+        'flatMPPoolMod': { icon: '', color: 'text-[#1a78ff]', name: 'Mana' },
+        // Armor
         'FlatArmorMod': { icon: '', color: 'text-[#f5d94e]', name: 'Armor' },
+        'flatArmorMod': { icon: '', color: 'text-[#f5d94e]', name: 'Armor' },
+        // MR
         'FlatSpellBlockMod': { icon: '', color: 'text-[#87cefa]', name: 'Magic Resist' },
+        'flatSpellBlockMod': { icon: '', color: 'text-[#87cefa]', name: 'Magic Resist' },
+        // AD
         'FlatPhysicalDamageMod': { icon: '', color: 'text-[#ff8c00]', name: 'Attack Damage' },
+        'flatPhysicalDamageMod': { icon: '', color: 'text-[#ff8c00]', name: 'Attack Damage' },
+        // AP
         'FlatMagicDamageMod': { icon: '', color: 'text-[#ae5bf0]', name: 'Ability Power' },
+        'flatMagicDamageMod': { icon: '', color: 'text-[#ae5bf0]', name: 'Ability Power' },
+        // AS
         'PercentAttackSpeedMod': { icon: '', color: 'text-[#f5d94e]', name: 'Attack Speed' },
+        'percentAttackSpeedMod': { icon: '', color: 'text-[#f5d94e]', name: 'Attack Speed' },
+        // MS
         'PercentMovementSpeedMod': { icon: '', color: 'text-[#f0e6d2]', name: 'Move Speed' },
+        'percentMovementSpeedMod': { icon: '', color: 'text-[#f0e6d2]', name: 'Move Speed' },
+        'FlatMovementSpeedMod': { icon: '', color: 'text-[#f0e6d2]', name: 'Move Speed' },
+        'flatMovementSpeedMod': { icon: '', color: 'text-[#f0e6d2]', name: 'Move Speed' },
+        // Crit
         'FlatCritChanceMod': { icon: '', color: 'text-[#ff4500]', name: 'Crit Chance' },
+        'flatCritChanceMod': { icon: '', color: 'text-[#ff4500]', name: 'Crit Chance' },
+        // Life Steal
         'PercentLifeStealMod': { icon: '', color: 'text-[#ff4500]', name: 'Life Steal' },
+        'percentLifeStealMod': { icon: '', color: 'text-[#ff4500]', name: 'Life Steal' },
+        // Regen
         'FlatHPRegenMod': { icon: '', color: 'text-[#1dc451]', name: 'Base Health Regen' },
+        'flatHPRegenMod': { icon: '', color: 'text-[#1dc451]', name: 'Base Health Regen' },
         'FlatMPRegenMod': { icon: '', color: 'text-[#1a78ff]', name: 'Base Mana Regen' },
-        'AbilityPower': { icon: '', color: 'text-[#ae5bf0]', name: 'Ability Power' } // Fallback
+        'flatMPRegenMod': { icon: '', color: 'text-[#1a78ff]', name: 'Base Mana Regen' },
+        // Other
+        'AbilityPower': { icon: '', color: 'text-[#ae5bf0]', name: 'Ability Power' }, // Fallback
+        'abilityPower': { icon: '', color: 'text-[#ae5bf0]', name: 'Ability Power' },
+        'AbilityHaste': { icon: '', color: 'text-[#f0e6d2]', name: 'Ability Haste' },
+        'abilityHaste': { icon: '', color: 'text-[#f0e6d2]', name: 'Ability Haste' },
+        'Lethality': { icon: '', color: 'text-[#ff4500]', name: 'Lethality' },
+        'lethality': { icon: '', color: 'text-[#ff4500]', name: 'Lethality' },
+        'Omnivamp': { icon: '', color: 'text-[#ff4500]', name: 'Omnivamp' },
+        'omnivamp': { icon: '', color: 'text-[#ff4500]', name: 'Omnivamp' }
     };
 
     return statMap[key] || { icon: '', color: 'text-[#f0e6d2]', name: formatStatName(key) };
