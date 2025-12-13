@@ -25,6 +25,8 @@ class RiotClient:
     def __init__(self) -> None:
         self.session = requests.Session()
         self.session.headers.update(HEADERS)
+        self.platform = PLATFORM
+        self.region = REGION
 
     # -------------------------------
     # Internal GET helper with retries
