@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* FIX: Removing whitespace in rgba values for build */
 @theme {
   --color-dark-bg: #0b0c2a;
   /* Deep Midnight */
