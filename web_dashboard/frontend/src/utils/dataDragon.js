@@ -45,8 +45,8 @@ export const getItemIconUrl = (itemId) => {
     if (itemDataMap[itemId] && itemDataMap[itemId].icon) {
         return itemDataMap[itemId].icon.replace("http://", "https://");
     }
-    // Fallback ID-based CDragon link
-    return `https://cdn.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/items/icons2d/${itemId}.png`;
+    // Fallback to official DDragon (most reliable)
+    return `https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/item/${itemId}.png`;
 };
 
 export const getSpellIconUrl = (spellId) => {
@@ -127,13 +127,13 @@ export const getRuneData = (runeId) => {
 // Fetch item data (From Meraki)
 export const fetchItems = async () => {
     try {
-        const response = await fetch(`${MERAKI_BASE_URL}/items.json`);
+        // Use official DDragon for reliability
+        const response = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/item.json`);
         const data = await response.json();
-        // Meraki returns { "1001": { ... } } directly
-        itemDataMap = data;
+        // DDragon returns data in a 'data' property
+        itemDataMap = data.data;
     } catch (e) {
-        console.error("Failed to fetch items from Meraki", e);
-        // Fallback to DDragon? No, better to stick to one source to avoid ID mismatches.
+        console.error("Failed to fetch items from DDragon", e);
     }
 };
 
