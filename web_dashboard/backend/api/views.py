@@ -80,7 +80,7 @@ CACHE_DIR = Path(__file__).resolve().parent.parent.parent.parent / "saves" / "ca
 def cached_meraki_items(request):
     """Serve cached Meraki items to frontend."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_path = CACHE_DIR / "meraki_items.json"
+    cache_path = CACHE_DIR / "meraki_items_enriched.json"
     
     # Check cache validity
     if cache_path.exists():
@@ -115,8 +115,8 @@ def cached_meraki_items(request):
             for item_id, item_info in data.items():
                 dd_item = dd_items.get(item_id)
                 if dd_item:
-                    # If Meraki description is missing or generic, use Riot's
-                    if not item_info.get("description") or item_info.get("description") == "None":
+                    # Always prefer Riot's description for tooltips (contains formatted passives)
+                    if dd_item.get("description"):
                         item_info["description"] = dd_item.get("description")
                     
                     # Ensure Name is Riot-official
