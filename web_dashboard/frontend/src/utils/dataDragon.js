@@ -59,7 +59,71 @@ export const getSpellIconUrl = (spellId) => {
     return `https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/spell/SummonerFlash.png`; // Fallback placeholder logic
 };
 
-// ... (existing code)
+// Get ability icon URL
+export const getAbilityIconUrl = (championName, abilityKey) => {
+    if (!championName || !abilityKey) return "";
+    const champ = championDataMap[championName];
+    if (champ && champ.abilities && champ.abilities[abilityKey] && champ.abilities[abilityKey][0]) {
+        return champ.abilities[abilityKey][0].icon;
+    }
+    // Fallback CDragon construction
+    return `https://cdn.communitydragon.org/latest/champion/${championName}/ability-icon/${abilityKey.toLowerCase()}`;
+};
+
+// Get ability data with description
+export const getAbilityData = (championName, abilityKey) => {
+    if (!championName || !abilityKey) return null;
+    const champ = championDataMap[championName];
+    if (!champ || !champ.abilities) return null;
+
+    // Handle 'P' vs 'Passive' naming if needed, but Meraki uses 'P', 'Q', 'W', 'E', 'R'
+    const abilityList = champ.abilities[abilityKey];
+    if (!abilityList || abilityList.length === 0) return null;
+
+    const spell = abilityList[0]; // Take first form
+
+    return {
+        name: spell.name,
+        description: spell.effects ? spell.effects.map(e => e.description).join("\n\n") : spell.description, // Meraki splits effects
+        cooldown: spell.cooldown ? spell.cooldown.modifiers[0].values.join(" / ") : "N/A",
+        cost: spell.cost ? spell.cost.modifiers[0].values.join(" / ") : "N/A"
+    };
+};
+
+// Fetch runes (Keep DDragon for now as it's reliable for IDs)
+let runeTreeData = [];
+
+export const fetchRunes = async () => {
+    try {
+        const response = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/runesReforged.json`);
+        const data = await response.json();
+        runeTreeData = data;
+
+        data.forEach(tree => {
+            runeMap[tree.id] = tree.icon;
+            runeDataMap[tree.id] = { name: tree.name, description: tree.name, icon: tree.icon };
+            tree.slots.forEach(slot => {
+                slot.runes.forEach(rune => {
+                    runeMap[rune.id] = rune.icon;
+                    runeDataMap[rune.id] = { name: rune.name, description: rune.longDesc || rune.shortDesc, icon: rune.icon };
+                });
+            });
+        });
+    } catch (e) {
+        console.error("Failed to fetch runes", e);
+    }
+};
+
+export const getAllRunes = () => runeTreeData;
+
+export const getRuneIconUrl = (runeId) => {
+    if (!runeId || !runeMap[runeId]) return "";
+    return `${DD_BASE_URL}/cdn/img/${runeMap[runeId]}`;
+};
+
+export const getRuneData = (runeId) => {
+    return runeDataMap[runeId] || null;
+};
 
 // Fetch item data (From Meraki)
 export const fetchItems = async () => {
