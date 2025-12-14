@@ -227,6 +227,15 @@ export const getChampionData = (championName) => {
     return championDataMap[championName] || null;
 };
 
+export const getChampionNameById = (id) => {
+    if (!id) return "Unknown";
+    // Search the map values
+    for (const [name, data] of Object.entries(championDataMap)) {
+        if (data.id == id || data.key == id) return name;
+    }
+    return "Unknown";
+};
+
 // Initialize
 let initPromise = null;
 
