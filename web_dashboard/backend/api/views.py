@@ -272,3 +272,7 @@ class DeepDiveAnalysisView(APIView):
             print(f"Deep Dive Error: {e}")
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+def health_check(request):
+    """Simple health check for frontend polling."""
+    return JsonResponse({"status": "online", "timestamp": time.time()})

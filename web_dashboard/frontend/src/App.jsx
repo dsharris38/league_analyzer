@@ -3,6 +3,7 @@ import axios from 'axios';
 // import AnalysisList from './components/AnalysisList'; // Deprecated
 import Home from './components/Home';
 import DashboardView from './components/DashboardView';
+import BackendStatus from './components/BackendStatus';
 import config from './config';
 
 function App() {
@@ -102,6 +103,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#0b0c2a] text-slate-100 font-sans">
+      <BackendStatus />
       {!analysisData ? (
         <Home onSelect={handleSelect} onAnalyze={handleAnalyze} />
       ) : (
