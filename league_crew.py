@@ -609,9 +609,10 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
             kp_thresh = 0.35 if is_support else 0.25
             dmg_thresh = 0.05 if is_support else 0.15
             
-            if kp < kp_thresh and dmg_share < dmg_thresh:
-                tags.append("Invisible")
-                reasons.append("Low Participation & Impact")
+            # Invisible Check removed per user preference
+            # if kp < kp_thresh and dmg_share < dmg_thresh:
+            #     tags.append("Invisible")
+            #     reasons.append("Low Participation & Impact")
             
             # If no specific tag yet, but still a loss
             if not tags:

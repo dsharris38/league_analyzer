@@ -72,8 +72,8 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                         ))}
                     </div>
                 )}
-                {/* Review Reason (Coaching Insight) */}
-                {isReviewCandidate && reviewReason && (
+                {/* Review Reason (Coaching Insight) - excluding "Low Participation" per user request */}
+                {isReviewCandidate && reviewReason && reviewReason !== "Low Participation & Impact" && (
                     <div className="mt-2 text-[10px] font-medium text-violet-300 bg-violet-500/10 px-1.5 py-0.5 rounded border border-violet-500/20 leading-tight">
                         {reviewReason}
                     </div>
