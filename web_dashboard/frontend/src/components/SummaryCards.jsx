@@ -17,10 +17,10 @@ export default function SummaryCards({ summary, analysis }) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {cards.map((card) => (
                 <div key={card.label} className="glass-panel p-5 rounded-2xl glass-card-hover group relative overflow-hidden">
-                    <div className="mb-2 pr-10">
+                    <div className="mb-2 pr-14">
                         <span className="text-slate-400 text-sm font-medium group-hover:text-cyan-200 transition-colors block leading-tight">{card.label}</span>
                     </div>
-                    <div className={`absolute top-4 right-4 p-2 rounded-lg ${card.bg} ${card.color} group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/5`}>
+                    <div className={`absolute top-5 right-5 p-2 rounded-lg ${card.bg} ${card.color} group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/5`}>
                         <card.icon size={18} />
                     </div>
                     <div className="text-2xl font-bold text-white tracking-tight text-glow">{card.value}</div>
