@@ -183,7 +183,7 @@ export default function Home({ onSelect, onAnalyze }) {
                                                 <span className="text-violet-400 font-medium">{file.primary_role}</span>
                                                 <span>•</span>
                                                 <Clock size={12} />
-                                                <span>{new Date(file.created).toLocaleDateString()}</span>
+                                                <span>{new Date(file.created * 1000).toLocaleDateString()}</span>
                                             </div>
                                         </div>
                                     </div>
