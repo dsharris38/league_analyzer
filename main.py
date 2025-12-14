@@ -493,21 +493,30 @@ def main() -> None:
         return
 
     match_count_str = console.input(
-        "How many recent ranked games should I analyze? [default 20, max 50]: "
+        "How many recent ranked games should I analyze? [default 20, max 300]: "
     ).strip()
     match_count = 20
     if match_count_str.isdigit():
-        match_count = max(1, min(50, int(match_count_str)))
+        match_count = max(1, min(300, int(match_count_str)))
+
+    # For large batches, default timeline to False to save massive time/bandwidth
+    default_timeline = True
+    if match_count > 50:
+        console.print("[yellow]Large batch detected (>50). Disabling timeline analysis by default to speed up fetching.[/yellow]")
+        default_timeline = False
 
     # Ask whether to fetch timelines & movement diagnostics
     use_timeline = (
         console.input(
-            "Fetch timelines & advanced movement diagnostics? [y/N]: "
+            f"Analyze movement/timeline data? (Slower) [{'Y/n' if default_timeline else 'y/N'}]: "
         )
         .strip()
         .lower()
-        == "y"
     )
+    if default_timeline:
+        use_timeline = use_timeline != "n"
+    else:
+        use_timeline = use_timeline == "y"
 
     # Ask about AI Coach
     call_ai = (
