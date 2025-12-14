@@ -25,7 +25,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
         )}>
             {/* Review Candidate Badge */}
             {isReviewCandidate && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-purple-400/50 shadow-purple-500/20 whitespace-nowrap">
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-purple-400/50 shadow-purple-500/20 whitespace-nowrap">
                     <Trophy size={10} />
                     High Blame Loss
                 </div>
