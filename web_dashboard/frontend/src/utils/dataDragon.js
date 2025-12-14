@@ -139,10 +139,37 @@ export const fetchItems = async () => {
         const data = await response.json();
         itemDataMap = data;
     } catch (e) {
-        console.warn("Failed to fetch items from local backend, falling back to CDN", e);
+        console.warn("Failed to fetch items from local backend, falling back to CDN with DDragon Merge", e);
         try {
-            const response = await fetch(`${MERAKI_BASE_URL}/items.json`);
-            itemDataMap = await response.json();
+            // 1. Fetch Meraki Base
+            const merakiResponse = await fetch(`${MERAKI_BASE_URL}/items.json`);
+            const merakiData = await merakiResponse.json();
+
+            // 2. Fetch DDragon for Descriptions (Client-side fallback merge)
+            try {
+                const ddResponse = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/item.json`);
+                const ddJson = await ddResponse.json();
+                const ddItems = ddJson.data || {};
+
+                // Merge Logic (Replicates Backend)
+                Object.keys(merakiData).forEach(itemId => {
+                    const ddItem = ddItems[itemId];
+                    if (ddItem) {
+                        // Always prefer Riot's description
+                        if (ddItem.description) {
+                            merakiData[itemId].description = ddItem.description;
+                        }
+                        // Ensure Name is Riot-official
+                        if (ddItem.name) {
+                            merakiData[itemId].name = ddItem.name;
+                        }
+                    }
+                });
+            } catch (mergeErr) {
+                console.warn("Failed to merge DDragon data in fallback", mergeErr);
+            }
+
+            itemDataMap = merakiData;
         } catch (e2) {
             console.error("Failed to fetch items from CDN", e2);
         }
