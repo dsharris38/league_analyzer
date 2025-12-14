@@ -132,7 +132,8 @@ export const getRuneData = (runeId) => {
 export const fetchItems = async () => {
     try {
         // Use local backend proxy to ensure caching and avoid browser CORS/Rate-limit issues
-        const response = await fetch(`${config.API_URL}/api/meraki/items/`);
+        // Add cache buster to force fresh data load
+        const response = await fetch(`${config.API_URL}/api/meraki/items/?v=${Date.now()}`);
         if (!response.ok) throw new Error("Backend fetch failed");
 
         const data = await response.json();
