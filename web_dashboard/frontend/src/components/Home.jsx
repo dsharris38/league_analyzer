@@ -92,8 +92,8 @@ export default function Home({ onSelect, onAnalyze }) {
                 </h1>
 
                 <p className="text-cornsilk/60 text-lg mb-12 text-center max-w-2xl font-light">
-                    AI-powered aesthetic analysis for League of Legends.
-                    Deep dive into your mistakes, itemization, and macro with a single search.
+                    Advanced performance analytics for League of Legends.
+                    Get objective insights into your macro, combat, and vision control.
                 </p>
 
                 {/* Search Container */}
