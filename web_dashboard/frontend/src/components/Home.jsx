@@ -111,7 +111,7 @@ export default function Home({ onSelect, onAnalyze }) {
                                 setShowRecent(true);
                             }}
                             onFocus={() => setShowRecent(true)}
-                            placeholder="Search Yourself or a Champion (e.g. Faker#KR1)"
+                            placeholder="Search Riot ID (e.g. Faker#KR1)"
                             className="block w-full pl-14 pr-72 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-slate-400 rounded-xl shadow-2xl focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 text-lg font-medium outline-none transition-all"
                         />
 
