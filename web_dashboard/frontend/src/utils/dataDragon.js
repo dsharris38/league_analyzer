@@ -57,7 +57,8 @@ export const getSpellIconUrl = (spellId) => {
         return summonerSpellMap[spellId].icon;
     }
     // Fallback DDragon (Meraki summoners might not be loaded yet)
-    return `https://ddragon.leagueoflegends.com/cdn/${currentVersion}/img/spell/SummonerFlash.png`; // Fallback placeholder logic
+    // console.warn(`[DataDragon] Missing spell icon for ID: ${spellId}`);
+    return ""; // Return empty string so UI doesn't show misleading Flash icon
 };
 
 // Get ability icon URL

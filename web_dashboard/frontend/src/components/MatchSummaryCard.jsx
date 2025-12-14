@@ -25,7 +25,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
         )}>
             {/* Review Candidate Badge */}
             {isReviewCandidate && (
-                <div className="absolute -top-2.5 left-4 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-purple-400/50 shadow-purple-500/20">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 flex items-center gap-1 border border-purple-400/50 shadow-purple-500/20 whitespace-nowrap">
                     <Trophy size={10} />
                     High Blame Loss
                 </div>
@@ -98,10 +98,10 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                     <div className="flex flex-col gap-0.5">
                         <div className="flex gap-0.5">
                             <Tooltip content={<SummonerSpellTooltip spellData={getSummonerSpellData(self.summoner1Id)} />}>
-                                <img src={getSpellIconUrl(self.summoner1Id)} className="w-5 h-5 rounded cursor-help" alt="Summoner 1" />
+                                {getSpellIconUrl(self.summoner1Id) && <img src={getSpellIconUrl(self.summoner1Id)} className="w-5 h-5 rounded cursor-help" alt="Summoner 1" />}
                             </Tooltip>
                             <Tooltip content={<SummonerSpellTooltip spellData={getSummonerSpellData(self.summoner2Id)} />}>
-                                <img src={getSpellIconUrl(self.summoner2Id)} className="w-5 h-5 rounded cursor-help" alt="Summoner 2" />
+                                {getSpellIconUrl(self.summoner2Id) && <img src={getSpellIconUrl(self.summoner2Id)} className="w-5 h-5 rounded cursor-help" alt="Summoner 2" />}
                             </Tooltip>
                         </div>
                         <div className="flex gap-0.5">
@@ -190,7 +190,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                         onDeepDive(match.match_id);
                     }}
                     className={clsx(
-                        "flex-1 w-8 flex items-center justify-center transition-colors border-b border-white/5",
+                        "flex-1 w-8 flex items-center justify-center transition-colors border-b border-white/5 rounded-tr-xl",
                         isReviewCandidate
                             ? "bg-violet-600 hover:bg-violet-500 text-white shadow-[0_0_10px_rgba(139,92,246,0.5)] animate-pulse-slow"
                             : "bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white"
@@ -204,7 +204,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                 <button
                     onClick={onExpand}
                     className={clsx(
-                        "flex-1 w-8 flex items-center justify-center transition-colors text-slate-400 hover:text-white bg-slate-800/30 hover:bg-slate-700/50"
+                        "flex-1 w-8 flex items-center justify-center transition-colors text-slate-400 hover:text-white bg-slate-800/30 hover:bg-slate-700/50 rounded-br-xl"
                     )}
                 >
                     <ChevronDown size={18} />
