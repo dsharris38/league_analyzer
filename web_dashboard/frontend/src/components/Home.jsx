@@ -112,7 +112,7 @@ export default function Home({ onSelect, onAnalyze }) {
                             }}
                             onFocus={() => setShowRecent(true)}
                             placeholder="Search Yourself or a Champion (e.g. Faker#KR1)"
-                            className="block w-full pl-14 pr-32 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-slate-400 rounded-xl shadow-2xl focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 text-lg font-medium outline-none transition-all"
+                            className="block w-full pl-14 pr-72 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-slate-400 rounded-xl shadow-2xl focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 text-lg font-medium outline-none transition-all"
                         />
 
                         <div className="absolute inset-y-2 right-2 flex items-center gap-2">
@@ -201,7 +201,7 @@ export default function Home({ onSelect, onAnalyze }) {
                 )}
 
                 {/* DEBUG FOOTER */}
-                <div className="mt-8 text-xs text-slate-700">
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] text-white/20 hover:text-white/50 transition-colors">
                     Backend: {config.API_URL}
                 </div>
 
