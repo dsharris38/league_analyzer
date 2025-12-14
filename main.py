@@ -387,8 +387,8 @@ def run_analysis_pipeline(
         "tag_line": account.get("tagLine", tag_line),
         "puuid": puuid,
         "summoner_info": {
-            "level": summoner.get("summonerLevel", 0),
-            "profile_icon_id": summoner.get("profileIconId", 0),
+            "summonerLevel": summoner.get("summonerLevel", 0),
+            "profileIconId": summoner.get("profileIconId", 0),
             "id": summoner.get("id", "")
         },
         "rank_info": league_entries,
