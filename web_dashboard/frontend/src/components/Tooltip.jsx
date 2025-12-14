@@ -375,7 +375,7 @@ function parseLine(line) {
         return (
             <span>
                 <span className="text-[#f0e6d2] font-bold uppercase text-xs tracking-wider">Active - </span>
-                {colorizeText(line.replace(/<\/?active>/gi, ''))}
+                {colorizeText(line.replace(/<\/?active>/gi, '').replace(/<[^>]+>/g, ''))}
             </span>
         );
     }
@@ -383,7 +383,7 @@ function parseLine(line) {
         return (
             <span>
                 <span className="text-[#f0e6d2] font-bold uppercase text-xs tracking-wider">Passive - </span>
-                {colorizeText(line.replace(/<\/?passive>/gi, ''))}
+                {colorizeText(line.replace(/<\/?passive>/gi, '').replace(/<[^>]+>/g, ''))}
             </span>
         );
     }
@@ -567,7 +567,11 @@ function formatStatValue(key, value) {
     // Special Handling: Move Speed
     if (key.toLowerCase().includes('speed') && !key.toLowerCase().includes('attack')) {
         if (Math.abs(valFlat) > 0.01) return `+${valFlat}`;
-        if (valPercent > 0) return `+${(valPercent * 100).toFixed(0)}%`;
+        if (valPercent > 0) {
+            // Heuristic: If > 1.0, assume it's pre-scaled (e.g. 4 => 4%)
+            if (valPercent > 1.0) return `+${valPercent}%`;
+            return `+${(valPercent * 100).toFixed(0)}%`;
+        }
         if (Math.abs(valFlat) < 0.01 && Math.abs(valPercent) < 0.01) return `+0`;
     }
 
