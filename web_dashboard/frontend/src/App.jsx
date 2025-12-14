@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 // import AnalysisList from './components/AnalysisList'; // Deprecated
 import Home from './components/Home';
@@ -11,9 +11,18 @@ function App() {
   const [analysisData, setAnalysisData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Load persistent session
+  useEffect(() => {
+    const savedFile = localStorage.getItem('lastAnalysisFile');
+    if (savedFile) {
+      handleSelect(savedFile);
+    }
+  }, []);
+
   // Load existing analysis from cache/file
   const handleSelect = (filename) => {
     setSelectedFile(filename);
+    localStorage.setItem('lastAnalysisFile', filename); // Persist
     setLoading(true);
     axios.get(`${config.API_URL}/api/analyses/${filename}/`)
       .then(res => {
@@ -23,8 +32,14 @@ function App() {
       .catch(err => {
         console.error(err);
         setLoading(false);
-        alert('Failed to load analysis');
-        setSelectedFile(null);
+        // If load fails (file deleted), clear cache
+        if (err.response && err.response.status === 404) {
+          localStorage.removeItem('lastAnalysisFile');
+          setSelectedFile(null);
+        } else {
+          alert('Failed to load analysis');
+          setSelectedFile(null);
+        }
       });
   };
 
@@ -64,6 +79,7 @@ function App() {
   const handleBack = () => {
     setSelectedFile(null);
     setAnalysisData(null);
+    localStorage.removeItem('lastAnalysisFile');
   };
 
   const handleUpdate = async () => {
