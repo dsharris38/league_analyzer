@@ -15,9 +15,9 @@ export default function RecentPerformanceCard({ recentStats }) {
     }
 
     return (
-        <div className="glass-panel rounded-xl p-5 h-full">
-            <h3 className="text-cyan-400 text-xs font-bold uppercase mb-4 tracking-widest text-glow">7 Day Performance</h3>
-            <div className="space-y-2">
+        <div className="glass-panel rounded-xl p-5 h-full flex flex-col">
+            <h3 className="text-cyan-400 text-xs font-bold uppercase mb-4 tracking-widest text-glow shrink-0">7 Day Performance</h3>
+            <div className="space-y-2 flex-1 overflow-y-auto custom-scrollbar pr-2">
                 {topChamps.map((champ) => (
                     <div key={champ.champion} className="flex items-center gap-3 bg-black/20 p-2 rounded hover:bg-white/5 transition-colors border border-transparent hover:border-cyan-500/20 group">
                         <img

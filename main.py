@@ -427,6 +427,19 @@ def run_analysis_pipeline(
     console.print(
         "This is the JSON the dashboard app reads and the League Coach crew uses."
     )
+    
+    # DEBUG: Verify critical fields
+    if "summoner_info" in agent_payload:
+        console.print(f"[green]DEBUG: summoner_info present: {agent_payload['summoner_info']}[/green]")
+    else:
+        console.print("[red]DEBUG: CRITICAL - summoner_info MISSING from payload![/red]")
+
+    if "rank_info" in agent_payload:
+        entries = agent_payload['rank_info']
+        console.print(f"[green]DEBUG: rank_info present ({len(entries)} entries)[/green]")
+    else:
+        console.print("[red]DEBUG: CRITICAL - rank_info MISSING from payload![/red]")
+
     # console.print("----- BEGIN LEAGUE ANALYZER JSON -----")
     # console.print(json.dumps(agent_payload, indent=2))
     # console.print("----- END LEAGUE ANALYZER JSON -----")

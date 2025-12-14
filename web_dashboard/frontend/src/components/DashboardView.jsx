@@ -150,19 +150,19 @@ export default function DashboardView({ data, filename, onBack, onUpdate }) {
                     {/* TOP DECK: Key Stats Grid (4 Cols) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {/* 1. Rank Card (Scrollable for history) */}
-                        <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
+                        <div className="col-span-1 h-64 lg:h-72">
                             <RankCard rankInfo={data.rank_info} pastRanks={data.past_ranks} />
                         </div>
                         {/* 2. Recent Performance (Scrollable) */}
-                        <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
+                        <div className="col-span-1 h-64 lg:h-72">
                             <RecentPerformanceCard recentStats={analysis.recent_performance} />
                         </div>
                         {/* 3. Teammates */}
-                        <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
+                        <div className="col-span-1 h-64 lg:h-72">
                             <MasteryCard masteryData={data.champion_mastery} />
                         </div>
                         {/* 4. Mastery (Swapped with Teammates in original? Checking original lines 146 vs 150. I will respect original order but ensuring scroll) */}
-                        <div className="col-span-1 h-64 lg:h-72 overflow-y-auto custom-scrollbar">
+                        <div className="col-span-1 h-64 lg:h-72">
                             <TeammatesCard teammates={analysis.teammates} />
                         </div>
                     </div>
