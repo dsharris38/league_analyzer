@@ -9,7 +9,7 @@ from typing import Any, Dict, List
 from openai import OpenAI
 import requests
 from functools import lru_cache
-from lolalytics_api import Lolalytics
+from lolalytics_client import Lolalytics
 from dotenv import load_dotenv
 
 # --- Configuration ---

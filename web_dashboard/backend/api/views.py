@@ -187,7 +187,11 @@ class RunAnalysisView(APIView):
         try:
             # Run the pipeline
             import sys
-            sys.path.append(str(settings.BASE_DIR.parent.parent))
+            # Insert at 0 to prioritize local modules over installed setup
+            project_root = str(settings.BASE_DIR.parent.parent)
+            if project_root not in sys.path:
+                sys.path.insert(0, project_root)
+            
             from main import run_analysis_pipeline
             
             # Note: We set open_dashboard=False since we are already in the dashboard
