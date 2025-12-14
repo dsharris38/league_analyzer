@@ -110,17 +110,53 @@ class RiotClient:
     # Account lookup
     # -------------------------------
 
+    # -------------------------------
+    # Account lookup
+    # -------------------------------
+
     def get_account_by_riot_id(self, game_name: str, tag_line: str) -> Dict[str, Any]:
         """Look up an account by Riot ID (gameName#tagLine)."""
         url = f"{self.base_account_url}/riot/account/v1/accounts/by-riot-id/{game_name}/{tag_line}"
         r = self._get(url, timeout=10)
         return r.json()
 
+    def _get_summoner_id_fallback(self, puuid: str) -> Optional[str]:
+        """Fallback: Get Summoner ID via Match V5 participants if not directly available."""
+        try:
+            # 1. Fetch 1 recent match (fastest way to get participant info)
+            match_ids = self.get_recent_match_ids(puuid, count=1)
+            if not match_ids:
+                return None
+            
+            # 2. Get match details
+            match_data = self.get_match(match_ids[0])
+            participants = match_data.get('info', {}).get('participants', [])
+            
+            # 3. Find self
+            me = next((p for p in participants if p.get('puuid') == puuid), None)
+            if me and 'summonerId' in me:
+                return me['summonerId']
+        except Exception as e:
+            print(f"[RiotClient] Fallback ID fetch failed: {e}")
+        return None
+
     def get_summoner_by_puuid(self, puuid: str) -> Dict[str, Any]:
         """Get Summoner-v4 data for a player by PUUID."""
         url = f"{self.base_lol_url}/lol/summoner/v4/summoners/by-puuid/{puuid}"
         r = self._get(url, timeout=10)
-        return r.json()
+        data = r.json()
+        
+        # Fallback if 'id' is missing (API variance)
+        if 'id' not in data:
+            print(f"[RiotClient] Warning: 'id' missing in summoner-v4 response. Attempting fallback...")
+            fallback_id = self._get_summoner_id_fallback(puuid)
+            if fallback_id:
+                data['id'] = fallback_id
+                print(f"[RiotClient] Fallback ID found: {fallback_id}")
+            else:
+                print(f"[RiotClient] Fallback ID not found.")
+                
+        return data
 
     # -------------------------------
     # Match history
@@ -169,8 +205,15 @@ class RiotClient:
     def get_league_entries(self, summoner_id: str) -> List[Dict[str, Any]]:
         """Get league entries (Rank, LP, etc.) for a summoner."""
         url = f"{self.base_lol_url}/lol/league/v4/entries/by-summoner/{summoner_id}"
-        r = self._get(url, timeout=10)
-        return r.json()
+        try:
+            r = self._get(url, timeout=10)
+            return r.json()
+        except Exception as e:
+            # Handle 403 Forbidden or other errors gracefully
+            if "403" in str(e):
+                print(f"[RiotClient] Warning: 403 Forbidden on League V4 for ID {summoner_id}. Account might be restricted or ID invalid.")
+                return []
+            raise e
     # -------------------------------
     # Mastery
     # -------------------------------
