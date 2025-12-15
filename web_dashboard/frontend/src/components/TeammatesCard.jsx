@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function TeammatesCard({ teammates }) {
+export default function TeammatesCard({ teammates, onPlayerClick }) {
     const topTeammates = teammates?.slice(0, 5) || [];
 
     if (!teammates || teammates.length === 0) {
@@ -21,11 +21,17 @@ export default function TeammatesCard({ teammates }) {
                             <img
                                 src={`https://ddragon.leagueoflegends.com/cdn/15.1.1/img/profileicon/${mate.icon}.png`}
                                 alt="Icon"
-                                className="w-9 h-9 rounded-lg border border-slate-600 group-hover:border-cyan-400 transition-colors shadow-lg"
+                                className="w-9 h-9 rounded-lg border border-slate-600 group-hover:border-cyan-400 transition-colors shadow-lg cursor-pointer"
                                 onError={(e) => { e.target.src = "https://ddragon.leagueoflegends.com/cdn/15.1.1/img/profileicon/29.png" }}
+                                onClick={() => onPlayerClick && onPlayerClick(mate.name)}
                             />
                             <div className="flex flex-col">
-                                <span className="font-bold text-slate-200 group-hover:text-white truncate max-w-[100px] text-sm">{mate.name}</span>
+                                <span
+                                    className="font-bold text-slate-200 group-hover:text-white truncate max-w-[100px] text-sm cursor-pointer hover:underline hover:text-cyan-400 transition-colors"
+                                    onClick={() => onPlayerClick && onPlayerClick(mate.name)}
+                                >
+                                    {mate.name}
+                                </span>
                                 <span className="text-[10px] text-slate-500 font-mono">{mate.games} Games</span>
                             </div>
                         </div>

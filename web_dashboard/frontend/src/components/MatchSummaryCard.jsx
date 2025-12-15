@@ -37,8 +37,8 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                 "flex flex-col md:flex-row items-stretch border shadow-lg transition-all hover:shadow-xl hover:border-white/20 h-auto md:min-h-28 relative backdrop-blur-md overflow-hidden",
                 isExpanded ? "rounded-t-xl rounded-b-none border-b-0" : "rounded-xl mb-2",
                 win
-                    ? "bg-slate-900/40 border-l-4 border-l-blue-500 border-y-white/5 border-r-transparent shadow-blue-900/10"
-                    : "bg-slate-900/40 border-l-4 border-l-red-500 border-y-white/5 border-r-transparent shadow-red-900/10",
+                    ? "bg-slate-900/40 border-l-4 border-l-blue-500 hover:border-l-blue-500 border-y-white/5 border-r-transparent shadow-blue-900/10"
+                    : "bg-slate-900/40 border-l-4 border-l-red-500 hover:border-l-red-500 border-y-white/5 border-r-transparent shadow-red-900/10",
                 isReviewCandidate && "ring-1 ring-purple-500/30",
                 match.tags?.includes("Weak Link") && "ring-1 ring-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.2)]"
             )}>
@@ -235,7 +235,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                 </div>
 
                 {/* Actions (Deep Dive / Expand) */}
-                {!isExpanded && (
+                {!isExpanded ? (
                     <div className="flex flex-row md:flex-col w-full h-10 md:w-8 md:h-auto border-t md:border-t-0 md:border-l border-white/10 shrink-0 self-stretch z-10">
                         {/* Deep Dive Button */}
                         <button
@@ -264,6 +264,9 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                             <ChevronDown size={20} />
                         </button>
                     </div>
+                ) : (
+                    // Placeholder to maintain layout stability (prevent Roster shift)
+                    <div className="hidden md:block md:w-8 shrink-0 self-stretch"></div>
                 )}
             </div>
         </div>

@@ -602,7 +602,8 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
             is_support = self_p.get("teamPosition") == "UTILITY"
             
             # Feeding Check (Nuanced: High dmg/kp exempts you)
-            if deaths >= 7 and kda < 1.6 and dmg_share < 0.22 and kp < 0.45:
+            # Relaxed thresholds to avoid flagging players who are trading kills or dealing average damage
+            if deaths >= 7 and kda < 1.45 and dmg_share < 0.19 and kp < 0.40:
                 tags.append("Feeding")
                 reasons.append(f"High Deaths ({int(deaths)}) with low impact")
             

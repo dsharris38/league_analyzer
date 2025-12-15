@@ -29,8 +29,20 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
     }
 
     const { summary, per_champion, detailed_matches, review_candidates } = analysis;
-    const [expandedMatchId, setExpandedMatchId] = useState(null);
+    const [expandedMatchIds, setExpandedMatchIds] = useState(new Set());
     const [isHistoryOpen, setIsHistoryOpen] = useState(true);
+
+    const toggleExpand = (matchId) => {
+        setExpandedMatchIds(prev => {
+            const next = new Set(prev);
+            if (next.has(matchId)) {
+                next.delete(matchId);
+            } else {
+                next.add(matchId);
+            }
+            return next;
+        });
+    };
 
     // Deep Dive State
     const [deepDiveReport, setDeepDiveReport] = useState(null);
@@ -303,7 +315,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
                         </div>
                         {/* 4. Mastery (Swapped with Teammates in original? Checking original lines 146 vs 150. I will respect original order but ensuring scroll) */}
                         <div className="col-span-1 h-64 lg:h-72">
-                            <TeammatesCard teammates={analysis.teammates} />
+                            <TeammatesCard teammates={analysis.teammates} onPlayerClick={onPlayerClick} />
                         </div>
                     </div>
 
@@ -363,18 +375,18 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
                                                     <MatchSummaryCard
                                                         match={match}
                                                         puuid={data.puuid}
-                                                        onExpand={() => setExpandedMatchId(expandedMatchId === match.match_id ? null : match.match_id)}
-                                                        isExpanded={expandedMatchId === match.match_id}
+                                                        onExpand={() => toggleExpand(match.match_id)}
+                                                        isExpanded={expandedMatchIds.has(match.match_id)}
                                                         onDeepDive={handleDeepDive}
                                                         isReviewCandidate={!!candidate}
                                                         reviewReason={candidate?.reasons?.[0]}
                                                         onPlayerClick={onPlayerClick}
                                                     />
-                                                    {expandedMatchId === match.match_id && (
+                                                    {expandedMatchIds.has(match.match_id) && (
                                                         <MatchDetailView
                                                             match={match}
                                                             puuid={data.puuid}
-                                                            onClose={() => setExpandedMatchId(null)}
+                                                            onClose={() => toggleExpand(match.match_id)}
                                                             onPlayerClick={onPlayerClick}
                                                         />
                                                     )}

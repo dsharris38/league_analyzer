@@ -158,7 +158,7 @@ def analyze_teammates(matches: List[Dict[str, Any]], self_puuid: str, season_pre
     # Convert to list and sort by games played
     results = []
     for puuid, stats in teammate_stats.items():
-        if stats["games"] > 1: # Only show repeat teammates
+        if stats["games"] > 2: # Only show repeat teammates (3+ games)
             results.append({
                 "puuid": puuid,
                 "name": stats["name"],

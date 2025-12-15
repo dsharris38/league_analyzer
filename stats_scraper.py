@@ -99,12 +99,20 @@ def get_past_ranks(game_name: str, tag_line: str, region: str = "na") -> List[Di
         # Valid tiers: Iron, Bronze, Silver, Gold, Platinum, Emerald, Diamond, Master, Grandmaster, Challenger
         # Year pattern: S\d+ or Season \d+
         
-        matches = re.findall(r"(S\d+|Season \d+)[:\s]+(Iron|Bronze|Silver|Gold|Platinum|Emerald|Diamond|Master|Grandmaster|Challenger)\s*([IV\d]*)", text_content, re.IGNORECASE)
+        matches = re.findall(r"(S\d+|Season \d+)(?:[\s-]+S\d+)?[:\s]+(Iron|Bronze|Silver|Gold|Platinum|Emerald|Diamond|Master|Grandmaster|Challenger)\s*([IV\d]*)", text_content, re.IGNORECASE)
         
         seen_seasons = set()
         for season, tier, div in matches:
             # Clean up season string (e.g. "Season 2023" -> "S2023")
             s_clean = season.replace("Season ", "S").replace(" ", "").upper()
+            
+            # Normalize S11 -> S2021 (LoG uses S<Number>)
+            # S1 = 2011, S10 = 2020, S14 = 2024, S15 = 2025
+            match_num = re.search(r"S(\d+)$", s_clean)
+            if match_num:
+                num = int(match_num.group(1))
+                if num < 100: # 2 digits (S14, S11)
+                    s_clean = f"S{2010 + num}"
             
             # Skip duplicate seasons (sometimes they appear multiple times)
             if s_clean in seen_seasons:
