@@ -213,36 +213,56 @@ def run_analysis_pipeline(
 
     game_name, tag_line = riot_id.split("#", 1)
     client = RiotClient(region_key=region_key)
+    safe_riot_id = riot_id.replace("#", "_")
+    account_cache_file = SAVE_DIR / f"cache_account_{safe_riot_id}.json"
 
-    console.print(f"[bold]Looking up account on {region_key} (Routing: {client.region})...[/bold]")
-    try:
-        account = client.get_account_by_riot_id(game_name, tag_line)
-    except Exception as e:
-        msg = f"Failed to find account '{riot_id}'. Error: {e}"
-        console.print(f"[red]{msg}[/red]")
-        return {"error": msg}
+    account = None
+    summoner = None
+    
+    # Try loading cached account/summoner data to speed up repeated runs
+    if account_cache_file.exists():
+        try:
+            with open(account_cache_file, "r") as f:
+                cached_data = json.load(f)
+                account = cached_data.get("account")
+                summoner = cached_data.get("summoner")
+                console.print(f"[dim]Loaded cached account info for {riot_id}[/dim]")
+        except Exception:
+            pass
 
+    # If missing, fetch fresh
+    if not account or not summoner:
+        console.print(f"[bold]Looking up account on {region_key} (Routing: {client.region})...[/bold]")
+        try:
+            account = client.get_account_by_riot_id(game_name, tag_line)
+            puuid = account["puuid"]
+            
+            console.print("[bold]Fetching summoner profile...[/bold]")
+            summoner = client.get_summoner_by_puuid(puuid)
+            
+            # Save to cache
+            with open(account_cache_file, "w") as f:
+                json.dump({"account": account, "summoner": summoner}, f)
+                
+        except Exception as e:
+            msg = f"Failed to find account '{riot_id}'. Error: {e}"
+            console.print(f"[red]{msg}[/red]")
+            return {"error": msg}
+    
     puuid = account["puuid"]
     console.print(
         f"Found account for [green]{account['gameName']}#{account['tagLine']}[/green]"
     )
 
-    # Fetch Summoner Info (Level, Profile Icon) & Rank
-    summoner = {}
+    # Fetch League Info (Rank, LP) - Always fetch fresh as this changes often
     league_entries = []
     try:
-        console.print("[bold]Fetching summoner profile...[/bold]")
-        summoner = client.get_summoner_by_puuid(puuid)
-        
-        # Fetch League Info (Rank, LP)
         console.print("[bold]Fetching rank data...[/bold]")
-        if "id" in summoner:
-            league_entries = client.get_league_entries(summoner["id"])
-            console.print(f"[dim]Debug: Found {len(league_entries)} league entries.[/dim]")
+        league_entries = client.get_league_entries(puuid)
+        console.print(f"[dim]Debug: Found {len(league_entries)} league entries.[/dim]")
     except Exception as e:
-        console.print(f"[yellow]Warning: Failed to fetch summoner/rank data: {e}[/yellow]")
+        console.print(f"[yellow]Warning: Failed to fetch rank data: {e}[/yellow]")
         console.print("[yellow]Hint: Check your PLATFORM setting in .env (e.g. 'na1', 'euw1') if you are in a non-default region.[/yellow]")
-        # Non-critical, continue
 
     console.print(f"[bold]Fetching last {match_count} ranked matches...[/bold]")
     try:
@@ -339,6 +359,13 @@ def run_analysis_pipeline(
                 mid = m['metadata']['matchId']
                 valid_tasks.append((mid, m))
             
+            # OPTIMIZATION: For large batches (250 games), only fetch timelines for the most recent 20.
+            # Timelines are expensive (1 API call per game) and mostly used for "Review Candidates" 
+            # and "Recent Loss Patterns". Older games contribute to stats (KDA/CS) without needing timeline.
+            if len(valid_tasks) > 50:
+                console.print(f"[dim]Optimization: Fetching timelines for recent 20 games only (saving {len(valid_tasks)-20} API calls)...[/dim]")
+                valid_tasks = valid_tasks[:20]
+
             futures = [executor.submit(process_timeline, i, mid, m) for i, (mid, m) in enumerate(valid_tasks)]
             
             for future in as_completed(futures):
@@ -444,9 +471,43 @@ def run_analysis_pipeline(
     # console.print(json.dumps(agent_payload, indent=2))
     # console.print("----- END LEAGUE ANALYZER JSON -----")
 
+    # --- STAGE 1: IMMEDIATE SAVE (Base Stats) ---
+    # Save mostly-complete data so the dashboard updates stats immediately
+    # while the slow AI runs in standard analysis mode.
+    # --- STAGE 1: IMMEDIATE SAVE (Base Stats) ---
+    # Save mostly-complete data so the dashboard updates stats immediately
+    # while the slow AI runs in standard analysis mode.
+    if save_json:
+        safe_riot_id = riot_id.replace("#", "_")
+        filename = SAVE_DIR / f"league_analysis_{safe_riot_id}.json"
+        
+        # PRESERVE OLD REPORT: Try to load existing file to keep the old AI report valid
+        # while the new one generates. This allows the UI to show "Cached" data + "Loading" spinner.
+        try:
+            if filename.exists():
+                with open(filename, "r", encoding="utf-8") as f:
+                    old_data = json.load(f)
+                    if "coaching_report" in old_data:
+                        agent_payload["coaching_report"] = old_data["coaching_report"]
+                        console.print("[dim]Preserving cached coaching report for Stage 1 UI...[/dim]")
+                    if "coaching_report_markdown" in old_data:
+                         agent_payload["coaching_report_markdown"] = old_data["coaching_report_markdown"]
+        except Exception as e:
+            console.print(f"[yellow]Warning: Failed to read old cache, starting fresh: {e}[/yellow]")
+
+        # Set loading flag for UI
+        agent_payload["ai_loading"] = True
+        
+        try:
+            with open(filename, "w", encoding="utf-8") as f:
+                json.dump(agent_payload, f, indent=2)
+            console.print(f"[green]STAGE 1: Saved Base Stats to {filename} (UI Updated)[/green]")
+        except Exception as e:
+            console.print(f"[red]Failed to save Stage 1 JSON: {e}[/red]")
+
     # Optional: call the multi-agent League Coach crew (Gemini)
     if call_ai:
-        console.print("Contacting League Coach Crew (Gemini)...")
+        console.print("Contacting League Coach Crew (Gemini - may take 10-30s)...")
         try:
             coaching_report = call_league_crew(agent_payload)
             
@@ -463,15 +524,19 @@ def run_analysis_pipeline(
                 agent_payload["coaching_report_markdown"] = coaching_report
         except Exception as e:  # noqa: BLE001
             console.print(f"[red]Failed to call League Coach Crew: {e}[/red]")
+            
+    # Mark AI as done
+    agent_payload["ai_loading"] = False
 
-    # Save JSON for dashboard usage (into saves/ folder)
+    # --- STAGE 2: FINAL SAVE (With AI) ---
     if save_json:
-        safe_riot_id = riot_id.replace("#", "_")
+        # safe_riot_id computed above or here
+        safe_riot_id = riot_id.replace("#", "_") 
         filename = SAVE_DIR / f"league_analysis_{safe_riot_id}.json"
         try:
             with open(filename, "w", encoding="utf-8") as f:
                 json.dump(agent_payload, f, indent=2)
-            console.print(f"[green]Saved JSON to {filename}[/green]")
+            console.print(f"[green]STAGE 2: Saved Final Analysis with AI to {filename}[/green]")
 
             if open_dashboard:
                 import webbrowser

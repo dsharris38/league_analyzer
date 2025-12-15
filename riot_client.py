@@ -98,6 +98,13 @@ class RiotClient:
 
             except requests.RequestException as e:
                 status_code = e.response.status_code if e.response else "Unknown"
+                
+                # Fail fast on client errors (4xx) - likely not recoverable by retry
+                # 429 is handled above, so checking 400-499 here covers the rest
+                if isinstance(status_code, int) and 400 <= status_code < 500:
+                    print(f"[RiotClient] Client Error ({status_code}): {url}")
+                    raise e
+
                 if attempt == max_attempts:
                     print(f"[RiotClient] Request failed after {max_attempts} attempts: url={url}, status={status_code}, error={e}")
                     raise
@@ -120,43 +127,19 @@ class RiotClient:
         r = self._get(url, timeout=10)
         return r.json()
 
-    def _get_summoner_id_fallback(self, puuid: str) -> Optional[str]:
-        """Fallback: Get Summoner ID via Match V5 participants if not directly available."""
-        try:
-            # 1. Fetch 1 recent match (fastest way to get participant info)
-            match_ids = self.get_recent_match_ids(puuid, count=1)
-            if not match_ids:
-                return None
-            
-            # 2. Get match details
-            match_data = self.get_match(match_ids[0])
-            participants = match_data.get('info', {}).get('participants', [])
-            
-            # 3. Find self
-            me = next((p for p in participants if p.get('puuid') == puuid), None)
-            if me and 'summonerId' in me:
-                return me['summonerId']
-        except Exception as e:
-            print(f"[RiotClient] Fallback ID fetch failed: {e}")
-        return None
-
     def get_summoner_by_puuid(self, puuid: str) -> Dict[str, Any]:
         """Get Summoner-v4 data for a player by PUUID."""
         url = f"{self.base_lol_url}/lol/summoner/v4/summoners/by-puuid/{puuid}"
         r = self._get(url, timeout=10)
         data = r.json()
         
-        # Fallback if 'id' is missing (API variance)
-        if 'id' not in data:
-            print(f"[RiotClient] Warning: 'id' missing in summoner-v4 response. Attempting fallback...")
-            fallback_id = self._get_summoner_id_fallback(puuid)
-            if fallback_id:
-                data['id'] = fallback_id
-                print(f"[RiotClient] Fallback ID found: {fallback_id}")
-            else:
-                print(f"[RiotClient] Fallback ID not found.")
-                
+        # Note: 'id' (SummonerID) might be missing in some regions/responses.
+        # Since we switched to checking Rank by PUUID, we no longer enforce 'id' presence.
         return data
+
+    # -------------------------------
+    # Match history
+    # -------------------------------
 
     # -------------------------------
     # Match history
@@ -169,49 +152,118 @@ class RiotClient:
         queue: Optional[int] = 420,
     ) -> List[str]:
         """
-        Get recent match IDs.
-
-        Default queue = 420 (Ranked Solo/Duo)
-        queue = 440    (Ranked Flex)
-        queue = None   (No filter, all queues)
+        Get recent match IDs with automatic pagination.
+        Riot API limits 'count' to 100 per request.
         """
         url = f"{self.base_match_url}/lol/match/v5/matches/by-puuid/{puuid}/ids"
-        params: Dict[str, Any] = {
-            "start": 0,
-            "count": count,
-        }
-        if queue is not None:
-            params["queue"] = queue
+        all_ids = []
+        start_index = 0
+        
+        while len(all_ids) < count:
+            # Determine batch size (max 100)
+            remaining = count - len(all_ids)
+            batch_size = min(remaining, 100)
+            
+            params: Dict[str, Any] = {
+                "start": start_index,
+                "count": batch_size,
+            }
+            if queue is not None:
+                params["queue"] = queue
 
-        r = self._get(url, params=params, timeout=10)
-        return r.json()
+            try:
+                r = self._get(url, params=params, timeout=10)
+                batch_ids = r.json()
+            except Exception as e:
+                print(f"[RiotClient] Failed to fetch match batch at start={start_index}: {e}")
+                break
+
+            if not batch_ids:
+                break # No more matches available
+                
+            all_ids.extend(batch_ids)
+            start_index += len(batch_ids)
+            
+            # Rate limit politeness handled by _get internals, but safeguard infinite loops
+            if len(batch_ids) < batch_size:
+                break
+                
+        return all_ids
 
     def get_match(self, match_id: str) -> Dict[str, Any]:
-        """Fetch full match-v5 payload for a given match ID."""
+        """Fetch full match-v5 payload for a given match ID (Cached)."""
+        # Cache Check
+        from pathlib import Path
+        import json
+        
+        cache_dir = Path(__file__).parent / "saves" / "cache" / "matches"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_file = cache_dir / f"{match_id}.json"
+        
+        if cache_file.exists():
+            try:
+                with open(cache_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass # Corrupt? Fetch fresh.
+
         url = f"{self.base_match_url}/lol/match/v5/matches/{match_id}"
         r = self._get(url, timeout=15)
-        return r.json()
+        data = r.json()
+        
+        # Save to Cache
+        try:
+            with open(cache_file, "w", encoding="utf-8") as f:
+                json.dump(data, f)
+        except Exception as e:
+            print(f"[RiotClient] Failed to cache match {match_id}: {e}")
+            
+        return data
 
     def get_match_timeline(self, match_id: str) -> Dict[str, Any]:
-        """Fetch match timeline for deeper analysis."""
+        """Fetch match timeline for deeper analysis (Cached)."""
+        # Cache Check
+        from pathlib import Path
+        import json
+        
+        cache_dir = Path(__file__).parent / "saves" / "cache" / "timelines"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_file = cache_dir / f"{match_id}_timeline.json"
+        
+        if cache_file.exists():
+            try:
+                with open(cache_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass 
+
         url = f"{self.base_match_url}/lol/match/v5/matches/{match_id}/timeline"
         r = self._get(url, timeout=15)
-        return r.json()
+        data = r.json()
+        
+        # Save to Cache
+        try:
+            with open(cache_file, "w", encoding="utf-8") as f:
+                json.dump(data, f)
+        except Exception as e:
+            print(f"[RiotClient] Failed to cache timeline {match_id}: {e}")
+            
+        return data
 
     # -------------------------------
     # League / Rank
     # -------------------------------
 
-    def get_league_entries(self, summoner_id: str) -> List[Dict[str, Any]]:
-        """Get league entries (Rank, LP, etc.) for a summoner."""
-        url = f"{self.base_lol_url}/lol/league/v4/entries/by-summoner/{summoner_id}"
+    def get_league_entries(self, puuid: str) -> List[Dict[str, Any]]:
+        """Get league entries (Rank, LP, etc.) for a summoner by PUUID."""
+        url = f"{self.base_lol_url}/lol/league/v4/entries/by-puuid/{puuid}"
         try:
             r = self._get(url, timeout=10)
             return r.json()
         except Exception as e:
             # Handle 403 Forbidden or other errors gracefully
             if "403" in str(e):
-                print(f"[RiotClient] Warning: 403 Forbidden on League V4 for ID {summoner_id}. Account might be restricted or ID invalid.")
+                print(f"[RiotClient] Warning: 403 Forbidden on League V4 for PUUID {puuid}. Account might be restricted or ID invalid.")
                 return []
             raise e
     # -------------------------------

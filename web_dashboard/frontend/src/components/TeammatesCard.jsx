@@ -13,7 +13,7 @@ export default function TeammatesCard({ teammates }) {
 
     return (
         <div className="glass-panel rounded-xl p-5 h-full flex flex-col">
-            <h3 className="text-cyan-400 text-xs font-bold uppercase mb-4 tracking-widest text-glow shrink-0">Recent Duos</h3>
+            <h3 className="text-cyan-400 text-xs font-bold uppercase mb-4 tracking-widest text-glow shrink-0">Season Duos</h3>
             <div className="space-y-1 flex-1 overflow-y-auto custom-scrollbar pr-2">
                 {topTeammates.map((mate, i) => (
                     <div key={mate.puuid} className="flex items-center justify-between p-2 rounded hover:bg-white/5 transition-colors group border-b border-transparent hover:border-cyan-500/20">
@@ -31,7 +31,7 @@ export default function TeammatesCard({ teammates }) {
                         </div>
 
                         <div className="text-right">
-                            <div className={`font-bold text-sm ${mate.winrate >= 0.5 ? 'text-green-400' : 'text-red-400'}`}>
+                            <div className={`font-bold text-sm font-mono ${mate.winrate >= 0.5 ? 'text-green-400' : 'text-red-400'}`}>
                                 {(mate.winrate * 100).toFixed(0)}%
                             </div>
                             <div className="text-[10px] text-slate-500 font-mono">

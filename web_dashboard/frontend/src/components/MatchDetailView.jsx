@@ -5,7 +5,7 @@ import BuildAnalysis from './BuildAnalysis';
 import TimelineMap from './TimelineMap';
 import GoldXpGraph from './GoldXpGraph';
 
-export default function MatchDetailView({ match, puuid, onClose }) {
+export default function MatchDetailView({ match, puuid, onClose, onPlayerClick }) {
     const [activeTab, setActiveTab] = useState('overview');
 
     const tabs = [
@@ -14,51 +14,54 @@ export default function MatchDetailView({ match, puuid, onClose }) {
         { id: 'timeline', label: 'Timeline' },
     ];
 
+    const selfParams = match.participants.find(p => p.puuid === puuid);
+    const isWin = selfParams?.win;
+
     return (
-        <div className="fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-xl p-4 md:p-10 flex flex-col animate-in fade-in duration-200">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex border-b border-slate-700 bg-slate-800/50 rounded-t-lg overflow-hidden">
+        <div className={clsx(
+            "bg-slate-900/60 border-r border-b border-white/5 rounded-b-xl p-2 pt-4 animate-in slide-in-from-top-2 duration-200 mb-4 shadow-xl backdrop-blur-md relative z-0 -mt-2",
+            isWin ? "border-l-4 border-l-blue-500" : "border-l-4 border-l-red-500"
+        )}>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-2 border-b border-white/5 pb-2">
+                <div className="flex bg-slate-900/50 rounded-lg p-1 border border-white/5">
                     {tabs.map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={clsx(
-                                "px-6 py-3 text-sm font-bold transition-colors relative",
-                                activeTab === tab.id ? "text-white bg-white/5" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                                "px-4 py-1.5 text-xs font-bold rounded-md transition-all",
+                                activeTab === tab.id
+                                    ? "bg-violet-600 text-white shadow-lg shadow-violet-500/20"
+                                    : "text-slate-400 hover:text-white hover:bg-white/5"
                             )}
                         >
                             {tab.label}
-                            {activeTab === tab.id && (
-                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-violet-500 shadow-[0_0_10px_rgba(139,92,246,0.5)]"></div>
-                            )}
                         </button>
                     ))}
                 </div>
 
                 <button
                     onClick={onClose}
-                    className="p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors border border-white/10"
+                    className="text-xs font-bold text-slate-500 hover:text-slate-300 uppercase tracking-wider flex items-center gap-1"
                 >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    Collapse <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
                 </button>
             </div>
 
-            {/* Content Container - Scrollable */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
-                <div className="max-w-7xl mx-auto w-full">
-                    {activeTab === 'overview' && <Scoreboard match={match} puuid={puuid} />}
-                    {activeTab === 'build' && <BuildAnalysis match={match} puuid={puuid} />}
-                    {activeTab === 'timeline' && (
-                        <div className="space-y-8 p-4 bg-slate-800/20 rounded-xl border border-white/5">
-                            <GoldXpGraph
-                                goldXpSeries={match.gold_xp_series}
-                                teamGoldDiff={match.team_gold_diff}
-                            />
-                            <TimelineMap match={match} puuid={puuid} showWards={false} />
-                        </div>
-                    )}
-                </div>
+            {/* Content */}
+            <div className="min-h-[300px]">
+                {activeTab === 'overview' && <Scoreboard match={match} puuid={puuid} onPlayerClick={onPlayerClick} />}
+                {activeTab === 'build' && <BuildAnalysis match={match} puuid={puuid} />}
+                {activeTab === 'timeline' && (
+                    <div className="space-y-6">
+                        <GoldXpGraph
+                            goldXpSeries={match.gold_xp_series}
+                            teamGoldDiff={match.team_gold_diff}
+                        />
+                        <TimelineMap match={match} puuid={puuid} showWards={false} />
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -363,10 +363,10 @@ You vs Team:
 Start response with {{{{ and end with }}}}. Output ONLY valid JSON.
 format:
 {{{{
-  "overview": "Markdown. **The Diagnosis**.\n\n1. **Your Archetype**: [Name]. Explain who they are as a player based on the data.\n2. **The Root Cause**: Explain the underlying habit or mindset issue causing their losses.\n3. **The 'One Big Thing'**: The single most critical focus area.",
-  "champion_feedback": "Markdown. **Champion-Specific Adjustments**. Group by champion. Focus on identity shifts (e.g., 'Stop playing Vayne like a lane bully').",
-  "itemization_tips": "Markdown. **Build Efficiency**. Point out static build errors or rune mistakes seen in the data.",
-  "goals": "Markdown. **Top 5 Strategic Priorities**. A ranked list of 5 concrete, actionable habits to fix the Root Cause. No fluff."
+  "overview": "**The Diagnosis**.\n\n1. **Your Archetype**: [Name]. Explain who they are as a player based on the data.\n2. **The Root Cause**: Explain the underlying habit or mindset issue causing their losses.\n3. **The 'One Big Thing'**: The single most critical focus area.",
+  "champion_feedback": "**Champion-Specific Adjustments**. Use '### ChampionName' headers for each group. Focus on specific identity shifts.",
+  "itemization_tips": "**Build Efficiency**. Point out static build errors or rune mistakes seen in the data.",
+  "goals": "**Top 5 Strategic Priorities**. A ranked list of 5 concrete, actionable habits to fix the Root Cause. No fluff."
 }}}}
 """
     return prompt.strip()
@@ -546,8 +546,8 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
             opp_gold = lane_opponent.get("goldEarned", 0)
             my_gold = self_p.get("goldEarned", 0)
             
-            # If opponent has 20% more gold and high KDA while you struggled
-            if opp_gold > my_gold * 1.2 and opp_kda > 4.0 and kda < 2.0:
+            # If opponent has 12% more gold and good KDA while you struggled
+            if opp_gold > my_gold * 1.12 and opp_kda > 2.5 and kda < 2.0:
                 opponent_gap = True
 
         # 2. Objective Death Analysis
@@ -556,9 +556,11 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
             bad_death = True
 
         if is_win:
-            if kda > 4.0 and kp > 0.55 and dmg_share > 0.25:
+            # Hyper Carry: High stats OR Massive Damage Carry
+            if (kda > 4.0 and kp > 0.50 and dmg_share > 0.22) or (dmg_share > 0.30 and kda > 2.5):
                 tags.append("Hyper Carry")
-            elif kda < 2.0 and kp < 0.40:
+            # Passenger: Low KDA/KP AND Low Damage (Exempts split pushers)
+            elif kda < 1.8 and kp < 0.40 and dmg_share < 0.15:
                 tags.append("Passenger") # You got carried
             elif max_lead > 5000 and d_match.get("game_duration", 0) < 1500: # < 25 min
                 tags.append("Stomp")
@@ -573,7 +575,7 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
                 reasons.append("Threw significant lead")
             
             # B. Ace in Defeat (High Agency)
-            elif kp > 0.50 and kda > 2.5: 
+            elif (kp > 0.45 and kda > 2.2) or (dmg_share > 0.28 and kda > 1.8): 
                 tags.append("Ace in Defeat") 
                 reasons.append("High Agency Loss (Strong performance but lost)")
             
@@ -599,8 +601,8 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
             
             is_support = self_p.get("teamPosition") == "UTILITY"
             
-            # Feeding Check
-            if deaths >= 11 and kda < 1.5:
+            # Feeding Check (Nuanced: High dmg/kp exempts you)
+            if deaths >= 7 and kda < 1.6 and dmg_share < 0.22 and kp < 0.45:
                 tags.append("Feeding")
                 reasons.append(f"High Deaths ({int(deaths)}) with low impact")
             

@@ -1,33 +1,47 @@
-import { Trophy, Target, Crosshair, TrendingUp } from 'lucide-react';
+import { Trophy, Target, Crosshair, TrendingUp, Hash, Eye, Sword } from 'lucide-react';
 
 export default function SummaryCards({ summary, analysis }) {
     const winrate = (summary.winrate * 100).toFixed(1);
     const kda = summary.avg_kda.toFixed(2);
     const cs = summary.avg_cs_per_min.toFixed(1);
     const kp = (summary.avg_kp * 100).toFixed(1);
+    const vis = (summary.avg_vis_score || 0).toFixed(1);
+    const dpm = (summary.avg_dpm || 0).toFixed(0);
 
-    const cards = [
-        { label: 'Winrate', value: `${winrate}%`, icon: Trophy, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+    const stats = [
         { label: 'KDA', value: kda, icon: Crosshair, color: 'text-blue-300', bg: 'bg-blue-500/10' },
-        { label: 'CS / Min', value: cs, icon: Target, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
         { label: 'Kill Participation', value: `${kp}%`, icon: TrendingUp, color: 'text-red-400', bg: 'bg-red-500/10' },
+        { label: 'Damage / Min', value: dpm, icon: Sword, color: 'text-orange-400', bg: 'bg-orange-500/10' },
+        { label: 'Vision Score', value: vis, icon: Eye, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+        { label: 'CS / Min', value: cs, icon: Target, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
     ];
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {cards.map((card) => (
-                <div key={card.label} className="glass-panel p-5 rounded-2xl glass-card-hover group">
-                    <div className="flex justify-between items-start">
-                        <div className="flex flex-col gap-1 pr-2">
-                            <span className="text-slate-400 text-sm font-medium group-hover:text-cyan-200 transition-colors block leading-tight">{card.label}</span>
-                            <div className="text-2xl font-bold text-white tracking-tight text-glow mt-1">{card.value}</div>
+        <div className="glass-panel p-5 rounded-xl border border-white/5">
+            <h3 className="text-cyan-400 text-xs font-bold uppercase mb-4 tracking-widest text-glow flex items-center gap-2">
+                Season Stats
+            </h3>
+
+            <div className="space-y-3">
+                {stats.map((stat, idx) => (
+                    <div key={stat.label} className="flex items-center gap-3 bg-black/20 p-3 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-violet-500/20 group">
+                        {/* Icon */}
+                        <div className={`p-2 rounded-lg ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/5`}>
+                            <stat.icon size={18} />
                         </div>
-                        <div className={`p-2 rounded-lg ${card.bg} ${card.color} group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/5 flex-shrink-0`}>
-                            <card.icon size={18} />
+
+                        {/* Label */}
+                        <div className="flex-1 text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
+                            {stat.label}
+                        </div>
+
+                        {/* Value */}
+                        <div className="text-xl font-bold text-white tracking-tight text-glow font-mono">
+                            {stat.value}
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 }

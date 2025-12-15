@@ -43,36 +43,51 @@ function App() {
       });
   };
 
-  // Run new analysis
+  // Run new analysis / Navigate to player (Optimized: Check First)
   const handleAnalyze = async (riotId, matchCount, region) => {
-    // This is passed to Home to run the POST request
-    // After POST succeeds, we reload the list or just try to load the file?
-    // The backend POST returns { status: 'success', riot_id: ... }
-    // It saves the file as league_analysis_{riot_id}.json (likely).
-    // We can then try to load it immediately.
+    setLoading(true);
 
-    // First, trigger the analysis
-    await axios.post(`${config.API_URL}/api/analyze/`, {
-      riot_id: riotId,
-      match_count: matchCount,
-      region: region
-    });
+    try {
+      // 1. Check if analysis already exists (Fast Switch)
+      const res = await axios.get(`${config.API_URL}/api/analyses/`);
+      const files = res.data;
 
-    // Construct probable filename
-    // Note: The backend sanitizes filenames. We might need a delay or a lookup.
-    // For simplicity, we can fetch the list and find the newest one, OR just rely on the user to click it in "Recent".
-    // Better UX: Auto-load the result. 
-    // Let's assume the standard naming convention: league_analysis_{riot_id_sanitized}.json
+      const targetId = riotId.toLowerCase().replace(/#/g, '').replace(/\s/g, '');
+      const match = files.find(f =>
+        f.riot_id.toLowerCase().replace(/#/g, '').replace(/\s/g, '') === targetId
+      );
 
-    // Actually, asking the backend for the "latest" for this user would be best but we don't have that endpoint.
-    // Let's just find it in the list of reliable recent files.
-    const res = await axios.get(`${config.API_URL}/api/analyses/`);
-    const files = res.data;
-    // Find file matching riotId (approx)
-    // The list endpoint returns { riot_id: ... }
-    const match = files.find(f => f.riot_id.toLowerCase() === riotId.toLowerCase()) || files[0];
-    if (match) {
-      handleSelect(match.filename);
+      if (match) {
+        console.log("Found existing analysis, loading:", match.filename);
+        handleSelect(match.filename);
+        return;
+      }
+
+      // 2. If not found, trigger new analysis
+      await axios.post(`${config.API_URL}/api/analyze/`, {
+        riot_id: riotId,
+        match_count: matchCount,
+        region: region
+      });
+
+      // 3. Fetch list again to find the new file
+      const res2 = await axios.get(`${config.API_URL}/api/analyses/`);
+      const files2 = res2.data;
+      // Fallback to latest but try to match first
+      const match2 = files2.find(f =>
+        f.riot_id.toLowerCase().replace(/#/g, '').replace(/\s/g, '') === targetId
+      ) || (files2.length > 0 ? files2[0] : null);
+
+      if (match2) {
+        handleSelect(match2.filename);
+      } else {
+        setLoading(false);
+        alert("Analysis completed but file not found.");
+      }
+    } catch (err) {
+      console.error("Navigation error:", err);
+      setLoading(false);
+      alert("Failed to load player analysis.");
     }
   };
 
@@ -82,6 +97,17 @@ function App() {
     localStorage.removeItem('lastAnalysisFile');
   };
 
+  // Silent refresh for updates
+  const refreshData = (filename) => {
+    axios.get(`${config.API_URL}/api/analyses/${filename}/`)
+      .then(res => {
+        setAnalysisData(res.data);
+      })
+      .catch(err => {
+        console.error("Silent refresh failed:", err);
+      });
+  };
+
   const handleUpdate = async () => {
     // Re-run analysis for the current user
     if (!analysisData) return;
@@ -89,22 +115,26 @@ function App() {
     const matchCount = analysisData.match_count_requested || 20;
     const region = analysisData.region || 'NA';
 
-    setLoading(true);
+    // Do NOT set full screen loading. We want the dashboard to stay visible.
+    // The DashboardView can show its own local loading state if needed.
     try {
       await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
         match_count: matchCount,
         region: region
       });
-      // Refresh data
-      // We need to re-fetch the specific file. 
-      // Since the filename usually stays the same if riot_id is same, just re-call handleSelect
-      handleSelect(selectedFile);
+      // Refresh data silently
+      refreshData(selectedFile);
     } catch (err) {
       console.error(err);
       alert('Update failed');
-      setLoading(false);
     }
+  };
+
+  const handlePlayerClick = (riotId) => {
+    // Navigate to player analysis
+    const region = analysisData?.region || 'NA';
+    handleAnalyze(riotId, 20, region);
   };
 
 
@@ -128,6 +158,7 @@ function App() {
           filename={selectedFile}
           onBack={handleBack}
           onUpdate={handleUpdate}
+          onPlayerClick={handlePlayerClick}
         />
       )}
     </div>

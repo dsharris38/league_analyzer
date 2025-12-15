@@ -104,8 +104,9 @@ export function ItemTooltip({ itemData }) {
     const itemId = itemData.id || itemData.image?.full?.replace(/\.png$/, '');
     const iconUrl = itemId ? getItemIconUrl(itemId) : '';
 
-    // Meraki provides `simpleDescription` which is cleaner HTML.
-    const rawDescription = itemData.simpleDescription || itemData.description;
+    // Meraki provides `simpleDescription` which is cleaner HTML but often lacks scaling numbers.
+    // We prefer `description` for full detailed stats.
+    const rawDescription = itemData.description || itemData.simpleDescription;
 
     return (
         <div className="space-y-3 font-sans">
@@ -349,6 +350,7 @@ function FormattedDescription({ description }) {
         .replace(/&amp;/g, '&')
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
+        .replace(/\s*\((?:0s|NaN|null)\)/gi, '') // Remove broken cooldown/value placeholders
         .replace(/<br\s*\/?>/gi, '\n');
 
     // Split by newlines to handle blocks
@@ -372,20 +374,30 @@ function parseLine(line) {
 
     // Explicit Active/Passive tags
     if (line.toLowerCase().includes('<active>')) {
-        return (
-            <span>
-                <span className="text-[#f0e6d2] font-bold uppercase text-xs tracking-wider">Active - </span>
-                {colorizeText(line.replace(/<\/?active>/gi, '').replace(/<[^>]+>/g, ''))}
-            </span>
-        );
+        const content = line.replace(/<\/?active>/gi, '').replace(/<[^>]+>/g, '').trim();
+        // Heuristic: Headers are usually short. Descriptions are long sentences.
+        if (content.length < 50) {
+            return (
+                <span>
+                    <span className="text-[#f0e6d2] font-bold uppercase text-xs tracking-wider">Active - </span>
+                    <span className="text-[#f0e6d2] font-bold">{content}</span>
+                </span>
+            );
+        }
+        return colorizeText(content);
     }
     if (line.toLowerCase().includes('<passive>')) {
-        return (
-            <span>
-                <span className="text-[#f0e6d2] font-bold uppercase text-xs tracking-wider">Passive - </span>
-                {colorizeText(line.replace(/<\/?passive>/gi, '').replace(/<[^>]+>/g, ''))}
-            </span>
-        );
+        const content = line.replace(/<\/?passive>/gi, '').replace(/<[^>]+>/g, '').trim();
+        // Heuristic: Headers are usually short. Descriptions are long sentences.
+        if (content.length < 50) {
+            return (
+                <span>
+                    <span className="text-[#f0e6d2] font-bold uppercase text-xs tracking-wider">Passive - </span>
+                    <span className="text-[#f0e6d2] font-bold">{content}</span>
+                </span>
+            );
+        }
+        return colorizeText(content);
     }
 
     // Fallback: If line starts with a capitalized word followed by colon? (Riot sometimes uses plain text for passives)

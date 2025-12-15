@@ -53,12 +53,14 @@ export const getItemIconUrl = (itemId) => {
 
 export const getSpellIconUrl = (spellId) => {
     // Summoner spells
-    if (summonerSpellMap[spellId] && summonerSpellMap[spellId].icon) {
-        return summonerSpellMap[spellId].icon;
+    const spell = summonerSpellMap[spellId];
+    if (spell) {
+        if (spell.icon) return spell.icon;
+        if (spell.image && spell.image.full) {
+            return `${DD_BASE_URL}/cdn/${currentVersion}/img/spell/${spell.image.full}`;
+        }
     }
-    // Fallback DDragon (Meraki summoners might not be loaded yet)
-    // console.warn(`[DataDragon] Missing spell icon for ID: ${spellId}`);
-    return ""; // Return empty string so UI doesn't show misleading Flash icon
+    return "";
 };
 
 // Get ability icon URL
@@ -131,51 +133,63 @@ export const getRuneData = (runeId) => {
 
 // Fetch item data (From Local Backend Cache -> Meraki)
 export const fetchItems = async () => {
+    let data = null;
     try {
         // Use local backend proxy to ensure caching and avoid browser CORS/Rate-limit issues
-        // Add cache buster to force fresh data load
         const response = await fetch(`${config.API_URL}/api/meraki/items/?v=${Date.now()}`);
         if (!response.ok) throw new Error("Backend fetch failed");
-
-        const data = await response.json();
-        itemDataMap = data;
+        data = await response.json();
     } catch (e) {
-        console.warn("Failed to fetch items from local backend, falling back to CDN with DDragon Merge", e);
+        console.warn("Failed to fetch items from local backend, falling back to CDN", e);
         try {
-            // 1. Fetch Meraki Base
             const merakiResponse = await fetch(`${MERAKI_BASE_URL}/items.json`);
-            const merakiData = await merakiResponse.json();
-
-            // 2. Fetch DDragon for Descriptions (Client-side fallback merge)
-            try {
-                const ddResponse = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/item.json`);
-                const ddJson = await ddResponse.json();
-                const ddItems = ddJson.data || {};
-
-                // Merge Logic (Replicates Backend)
-                Object.keys(merakiData).forEach(itemId => {
-                    const ddItem = ddItems[itemId];
-                    if (ddItem) {
-                        // Always prefer Riot's description
-                        if (ddItem.description) {
-                            merakiData[itemId].description = ddItem.description;
-                        }
-                        // Ensure Name is Riot-official
-                        if (ddItem.name) {
-                            merakiData[itemId].name = ddItem.name;
-                        }
-                    }
-                });
-            } catch (mergeErr) {
-                console.warn("Failed to merge DDragon data in fallback", mergeErr);
-            }
-
-            itemDataMap = merakiData;
-        } catch (e2) {
-            console.error("Failed to fetch items from CDN", e2);
+            data = await merakiResponse.json();
+        } catch (cdnErr) {
+            console.error("Critical: Failed to fetch items from any source", cdnErr);
+            return;
         }
     }
+
+    // Always attempt to enrich with DDragon data to fix missing descriptions (e.g. Seraph's Embrace)
+    // Meraki sometimes relies on simpleDescription which strips scaling numbers.
+    if (data) {
+        try {
+            await enrichWithDDragon(data);
+        } catch (err) {
+            console.warn("DDragon enrichment failed", err);
+        }
+        itemDataMap = data;
+    }
 };
+
+// Helper: Merge DDragon descriptions into Meraki data where missing
+async function enrichWithDDragon(merakiData) {
+    try {
+        const ddResponse = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/item.json`);
+        const ddJson = await ddResponse.json();
+        const ddItems = ddJson.data || {};
+
+        Object.keys(merakiData).forEach(itemId => {
+            const ddItem = ddItems[itemId];
+            if (ddItem) {
+                // If Meraki lacks a full description (only simpleDescription), use Riot's
+                if (!merakiData[itemId].description && ddItem.description) {
+                    merakiData[itemId].description = ddItem.description;
+                }
+                // Ensure Name is Riot-official if missing
+                if (!merakiData[itemId].name && ddItem.name) {
+                    merakiData[itemId].name = ddItem.name;
+                }
+                // Fallback for gold if missing
+                if (!merakiData[itemId].gold && ddItem.gold) {
+                    merakiData[itemId].gold = ddItem.gold;
+                }
+            }
+        });
+    } catch (e) {
+        console.warn("Enrichment fetch failed", e);
+    }
+}
 
 export const getItemData = (itemId) => {
     if (!itemId || itemId === 0) return null;

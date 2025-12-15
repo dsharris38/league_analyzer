@@ -352,6 +352,11 @@ def build_per_game_comp(
     return per_game_comp
 
 
+def _get_season_from_version(game_version: str) -> str:
+    if not game_version:
+        return "0"
+    return game_version.split(".")[0]
+
 def build_per_game_items(
     matches: List[Dict[str, Any]],
     match_ids: List[str],
@@ -380,7 +385,22 @@ def build_per_game_items(
         2422, 2423, 2424, 3159
     }
 
+    # Optimization: If very large batch (>50), strictly filter item build analysis
+    # to the CURRENT season matches only. This prevents AI from analyzing ancient builds.
+    current_season_prefix = "15" # Default
+    if matches:
+        latest_ver = matches[0].get("info", {}).get("gameVersion", "15.1")
+        current_season_prefix = _get_season_from_version(latest_ver)
+
+    should_filter_season = len(matches) > 50
+
     for match, mid in zip(matches, match_ids):
+        # Check season filter
+        if should_filter_season:
+            gv = match.get("info", {}).get("gameVersion", "")
+            if _get_season_from_version(gv) != current_season_prefix:
+                continue
+
         try:
             p = _extract_self_participant(match, puuid)
         except Exception:
@@ -422,6 +442,7 @@ def build_per_game_items(
         "games_without_boots_rate": games_without_boots / total if total else 0.0,
         "games_with_6_or_more_items": games_with_6_items,
         "games_with_6_or_more_items_rate": games_with_6_items / total if total else 0.0,
+        "season_filter": current_season_prefix if should_filter_season else "ALL"
     }
 
     return {

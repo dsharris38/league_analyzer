@@ -25,11 +25,13 @@ export default function MasteryCard({ masteryData }) {
                 {/* Portrait (Square) */}
                 <div className="relative shrink-0">
                     <img
-                        src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${champ.championId}.png`}
+                        src={`https://ddragon.leagueoflegends.com/cdn/${version || '14.23.1'}/img/champion/${champName}.png`}
                         alt={champName}
-                        className="w-10 h-10 rounded-lg border border-slate-700 group-hover:border-violet-400/50 transition-colors object-cover shadow-sm"
+                        className="w-10 h-10 rounded-lg border border-slate-700 group-hover:border-violet-400/50 transition-colors object-cover shadow-sm bg-slate-900"
                         onError={(e) => {
-                            e.target.src = "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/29.png";
+                            // Fallback to older community dragon path or default icon if name lookup fails
+                            e.target.src = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${champ.championId}.png`;
+                            e.target.onerror = (e2) => { e2.target.src = "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/29.png"; }
                         }}
                     />
                     {/* Level Badge (Overlapping corner) */}
@@ -50,7 +52,7 @@ export default function MasteryCard({ masteryData }) {
 
                 {/* Points (Popping Numbers) */}
                 <div className="text-right shrink-0">
-                    <div className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-violet-200 to-white text-glow">
+                    <div className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-violet-200 to-white text-glow font-mono">
                         {formatPoints(champ.championPoints)}
                     </div>
                     <div className="text-[9px] text-slate-600 font-bold uppercase tracking-widest">PTS</div>

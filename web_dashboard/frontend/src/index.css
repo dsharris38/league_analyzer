@@ -22,13 +22,17 @@
   --color-primary: var(--color-deep-blue);
   --color-text-main: var(--color-cornsilk);
   --color-bg-main: var(--color-dark-bg);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 body {
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
   margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-sans);
 }
 
 @layer components {
@@ -73,7 +77,7 @@ body {
   }
 
   .text-glow {
-    text-shadow: 0 0 10px currentColor;
+    text-shadow: 0 0 3px currentColor;
   }
 
   .neon-border-blue {
