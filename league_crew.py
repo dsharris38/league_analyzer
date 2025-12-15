@@ -817,6 +817,8 @@ Analyze this game holistically. We are not just analyzing the gameplay, but the 
 **CRITICAL**: You must cross-reference your advice with the **Meta Data** above.
 - The Meta Data comes from a live Lolalytics scrape. It is the GROUND TRUTH for the current patch.
 - **NEVER** recommend removed runes (e.g., **Predator**, **Lethal Tempo**). If in doubt, use the 'Core Keystone' from the Meta Data.
+- **NEVER** recommend removed items (e.g., **Divine Sunderer**, **Galeforce**, **Everfrost**).
+- **ALWAYS** start your build recommendation with the 'Core Build' listed in the Meta Data. Only deviate if the enemy comp demands it (e.g. Anti-Heal), but explain why.
 
 **Deep Dive Analysis Required**:
 
