@@ -49,7 +49,7 @@ function App() {
 
     try {
       // 1. Check if analysis already exists (Fast Switch)
-      const res = await axios.get(`${config.API_URL}/api/analyses/`);
+      const res = await axios.get(`${config.API_URL}/api/analyses/?_t=${Date.now()}`);
       const files = res.data;
 
       const targetId = riotId.toLowerCase().replace(/#/g, '').replace(/\s/g, '');
@@ -71,7 +71,7 @@ function App() {
       });
 
       // 3. Fetch list again to find the new file
-      const res2 = await axios.get(`${config.API_URL}/api/analyses/`);
+      const res2 = await axios.get(`${config.API_URL}/api/analyses/?_t=${Date.now()}`);
       const files2 = res2.data;
       // Fallback to latest but try to match first
       const match2 = files2.find(f =>

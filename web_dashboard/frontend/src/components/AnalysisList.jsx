@@ -17,7 +17,7 @@ export default function AnalysisList({ onSelect }) {
 
     const fetchAnalyses = () => {
         setLoading(true);
-        axios.get(`${config.API_URL}/api/analyses/`)
+        axios.get(`${config.API_URL}/api/analyses/?_t=${Date.now()}`)
             .then(res => {
                 setAnalyses(res.data);
                 setLoading(false);
