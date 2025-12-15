@@ -129,6 +129,10 @@ def _fetch_meta_context(champion: str, role: str, vs_champion: str | None = None
         summary += f"- Tier: {getattr(data, 'tier', 'Unknown')}\n"
         summary += f"- Win Rate: {getattr(data, 'win_rate', 'N/A')}%\n"
         
+        # Add Keystone (Vital for checking against removed runes)
+        if getattr(data, 'keystone', None):
+            summary += f"- Core Keystone: {data.keystone}\n"
+        
         # Resolve Items
         build_ids = getattr(data, 'popular_build', [])
         if build_ids:
@@ -809,6 +813,10 @@ Analyze this game holistically. We are not just analyzing the gameplay, but the 
 
 **Champion Pool Context (Top Champs)**:
 {chr(10).join([f"- {x}" for x in champion_pool])}
+
+**CRITICAL**: You must cross-reference your advice with the **Meta Data** above.
+- The Meta Data comes from a live Lolalytics scrape. It is the GROUND TRUTH for the current patch.
+- **NEVER** recommend removed runes (e.g., **Predator**, **Lethal Tempo**). If in doubt, use the 'Core Keystone' from the Meta Data.
 
 **Deep Dive Analysis Required**:
 

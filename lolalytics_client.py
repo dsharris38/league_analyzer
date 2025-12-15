@@ -3,15 +3,35 @@ import re
 from typing import Optional, List
 
 class LolalyticsData:
-    def __init__(self, tier: str, win_rate: str, popular_build: List[int]):
+    def __init__(self, tier: str, win_rate: str, popular_build: List[int], keystone: Optional[str] = None):
         self.tier = tier
         self.win_rate = win_rate
         self.popular_build = popular_build
+        self.keystone = keystone
     
     def __repr__(self):
-        return f"LolalyticsData(tier='{self.tier}', win_rate='{self.win_rate}', build={self.popular_build})"
+        return f"LolalyticsData(tier='{self.tier}', win_rate='{self.win_rate}', build={self.popular_build}, keystone='{self.keystone}')"
 
 class Lolalytics:
+    KEYSTONE_MAP = {
+       "8005": "Press the Attack",
+       "8008": "Lethal Tempo", 
+       "8021": "Fleet Footwork",
+       "8010": "Conqueror",
+       "8112": "Electrocute",
+       "8128": "Dark Harvest",
+       "9923": "Hail of Blades",
+       "8214": "Summon Aery",
+       "8229": "Arcane Comet",
+       "8230": "Phase Rush",
+       "8437": "Grasp of the Undying",
+       "8439": "Aftershock",
+       "8465": "Guardian",
+       "8351": "Glacial Augment",
+       "8360": "Unsealed Spellbook",
+       "8369": "First Strike"
+    }
+
     @staticmethod
     def get_champion_data(champion: str, lane: str = "mid", vs_champion: Optional[str] = None) -> Optional[LolalyticsData]:
         """
@@ -71,7 +91,7 @@ class Lolalytics:
                  wr_match_loose = re.search(r'([\d\.]+)%</div>.*?Win', html)
                  if wr_match_loose:
                      win_rate = wr_match_loose.group(1)
-
+ 
             # 2. Tier
             tier_match = re.search(r'>([SABCDF][\+\-]?)<!----></div><div[^>]*>Tier', html)
             tier = "Unknown"
@@ -88,8 +108,18 @@ class Lolalytics:
                 # Extract IDs
                 ids_str = build_match.group(1)
                 popular_build = [int(x) for x in ids_str.split("_")]
+
+            # 4. Extract Keystone
+            keystone = None
+            # Scan all 4-digit IDs in the HTML, check against MAP
+            # The FIRST one found is usually the Primary/Selected one in the SSR HTML
+            found_ids = re.findall(r'(\d{4})', html)
+            for fid in found_ids:
+                if fid in Lolalytics.KEYSTONE_MAP:
+                    keystone = Lolalytics.KEYSTONE_MAP[fid]
+                    break
             
-            return LolalyticsData(tier=tier, win_rate=win_rate, popular_build=popular_build)
+            return LolalyticsData(tier=tier, win_rate=win_rate, popular_build=popular_build, keystone=keystone)
             
         except Exception as e:
             print(f"[Lolalytics] Error: {e}")
