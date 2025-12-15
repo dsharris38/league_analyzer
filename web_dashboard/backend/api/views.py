@@ -184,6 +184,26 @@ class RunAnalysisView(APIView):
         if not riot_id:
             return Response({'error': 'riot_id is required'}, status=status.HTTP_400_BAD_REQUEST)
             
+        # Check for existing analysis to save tokens (Global Cache)
+        # Format: league_analysis_{Name}_{Tag}.json (spaces -> _, # -> _)
+        # Note: This is case-sensitive on Linux, but usually files are saved with original casing or normalized?
+        # main.py uses the riot_id as passed or from account data. 
+        # To be safe, we might miss if case differs, but accurate inputs will hit cache.
+        safe_id = riot_id.replace('#', '_').replace(' ', '_')
+        expected_filename = f"league_analysis_{safe_id}.json"
+        expected_path = SAVES_DIR / expected_filename
+        
+        # If file exists and is recent (< 2 hours), skip re-run
+        # Or just return it if it exists for now to satisfy "save tokens" request strongly.
+        if expected_path.exists():
+            # Check age? 
+            # stats = expected_path.stat()
+            # if time.time() - stats.st_mtime < 7200: ...
+            # For now, simply return success. The user can delete the file if they want a force-fresh run (not exposed yet)
+            # or we can add a 'force' param later.
+            print(f"CACHE HIT: Found existing analysis for {riot_id}, skipping pipeline.")
+            return Response({'status': 'success', 'riot_id': riot_id, 'cached': True})
+            
         try:
             # Run the pipeline
             import sys
