@@ -180,6 +180,7 @@ class RunAnalysisView(APIView):
         use_timeline = request.data.get('use_timeline', True)
         call_ai = request.data.get('call_ai', True)
         region = request.data.get('region', 'NA')
+        force_refresh = request.data.get('force_refresh', False)
         
         if not riot_id:
             return Response({'error': 'riot_id is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -195,7 +196,7 @@ class RunAnalysisView(APIView):
         
         # If file exists and is recent (< 2 hours), skip re-run
         # Or just return it if it exists for now to satisfy "save tokens" request strongly.
-        if expected_path.exists():
+        if expected_path.exists() and not force_refresh:
             # Check age? 
             # stats = expected_path.stat()
             # if time.time() - stats.st_mtime < 7200: ...

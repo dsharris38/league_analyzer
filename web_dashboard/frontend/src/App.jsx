@@ -121,7 +121,8 @@ function App() {
       await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
         match_count: matchCount,
-        region: region
+        region: region,
+        force_refresh: true
       });
       // Refresh data silently
       refreshData(selectedFile);

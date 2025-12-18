@@ -1,5 +1,5 @@
-import React from 'react';
-import { getChampionIconUrl, getItemIconUrl, getSpellIconUrl, getRuneIconUrl, getItemData, getSummonerSpellData, getRuneData } from '../utils/dataDragon';
+import React, { useEffect, useState } from 'react';
+import { getChampionIconUrl, getItemIconUrl, getSpellIconUrl, getRuneIconUrl, getItemData, getSummonerSpellData, getRuneData, subscribeToData } from '../utils/dataDragon';
 import Tooltip, { ItemTooltip, RuneTooltip, SummonerSpellTooltip } from './Tooltip';
 import { Clock, Trophy, Skull, Microscope, ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
@@ -19,6 +19,12 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
     const win = self.win;
     const durationMin = Math.floor(match.game_duration / 60);
     const durationSec = match.game_duration % 60;
+
+    // Force re-render when DataDragon is ready (to fix slow icon loading)
+    const [, setDataLoaded] = useState(0);
+    useEffect(() => {
+        return subscribeToData(() => setDataLoaded(prev => prev + 1));
+    }, []);
 
     // Teams
     const team100 = match.participants.filter(p => p.team_id === 100);
@@ -107,7 +113,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                             <img
                                 src={getChampionIconUrl(self.champion_name)}
                                 alt={self.champion_name}
-                                className="w-12 h-12 md:w-14 md:h-14 rounded border-2 border-rose-vale/30"
+                                className="w-12 h-12 md:w-14 md:h-14 rounded border-2 border-rose-vale/30 bg-slate-800 text-transparent"
                             />
                             <div className="absolute -bottom-1 -right-1 bg-slate-900 text-[10px] rounded-full w-5 h-5 flex items-center justify-center border border-slate-600 text-white">
                                 {self.champ_level || 18}
@@ -183,11 +189,12 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                             <div key={p.puuid} className="flex items-center gap-1 w-full">
                                 <img
                                     src={getChampionIconUrl(p.champion_name)}
-                                    className="w-3 h-3 rounded-sm shrink-0 cursor-pointer hover:ring-1 hover:ring-cyan-400 transition-all"
+                                    className="w-3 h-3 rounded-sm shrink-0 cursor-pointer hover:ring-1 hover:ring-cyan-400 transition-all bg-slate-800 text-transparent"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onPlayerClick && onPlayerClick(p.riot_id);
                                     }}
+                                    loading="lazy"
                                 />
                                 <span
                                     className={clsx(
@@ -210,11 +217,12 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                             <div key={p.puuid} className="flex items-center gap-1 w-full">
                                 <img
                                     src={getChampionIconUrl(p.champion_name)}
-                                    className="w-3 h-3 rounded-sm shrink-0 cursor-pointer hover:ring-1 hover:ring-cyan-400 transition-all"
+                                    className="w-3 h-3 rounded-sm shrink-0 cursor-pointer hover:ring-1 hover:ring-cyan-400 transition-all bg-slate-800 text-transparent"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onPlayerClick && onPlayerClick(p.riot_id);
                                     }}
+                                    loading="lazy"
                                 />
                                 <span
                                     className={clsx(

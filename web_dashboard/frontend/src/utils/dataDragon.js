@@ -32,11 +32,61 @@ export const getVersion = () => currentVersion;
 
 // --- Meraki/Community Dragon Asset Helpers ---
 
+// Helper: Normalize name for lookup (handles "MonkeyKing" vs "Wukong", "Kai'Sa" vs "Kaisa", etc.)
+export const findChampionKey = (name) => {
+    if (!name) return null;
+
+    // 1. Direct match
+    if (championDataMap[name]) return name;
+
+    // 2. Normalize input: remove spaces, ' . and lowercase
+    const cleanInput = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    // 3. Search Loop (Cache this if slow, but 160 items is fast enough)
+    // Common mappings:
+    const manualMap = {
+        "fiddlesticks": "Fiddlesticks", // sometimes casing diff
+        "monkeyking": "MonkeyKing", // Riot uses MonkeyKing, others might too
+        "wukong": "MonkeyKing"      // alias
+    };
+
+    // Check manual aliases first
+    if (manualMap[cleanInput]) {
+        const mapped = manualMap[cleanInput];
+        if (championDataMap[mapped]) return mapped;
+    }
+
+    // Scan keys
+    for (const key of Object.keys(championDataMap)) {
+        const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (cleanKey === cleanInput) return key;
+    }
+
+    // 4. Fallback for things like "Nunu&Willump" vs "Nunu"
+    if (cleanInput.includes("nunu")) {
+        if (championDataMap["Nunu"]) return "Nunu";
+        if (championDataMap["NunuWillump"]) return "NunuWillump"; // correct DDragon key
+    }
+    if (cleanInput === "renata") return "Renata"; // vs RenataGlasc
+
+    // Return original if nothing found (likely will fail lookup but consistent)
+    return name;
+};
+
 export const getChampionIconUrl = (championName) => {
     if (!championName) return "";
-    // Ensure name is properly capitalized for CDragon
-    const name = championName.charAt(0).toUpperCase() + championName.slice(1);
-    // Use Community Dragon directly for reliable icons
+
+    const key = findChampionKey(championName);
+
+    // 1. Try to find ID from map (Reliable for CDragon)
+    // championDataMap keys are Names (e.g. "Aatrox"), values have .key (ID, e.g. "266")
+    if (championDataMap[key] && championDataMap[key].key) {
+        return `https://cdn.communitydragon.org/latest/champion/${championDataMap[key].key}/square`;
+    }
+
+    // 2. Fallback: Use name directly (CDragon handles most casings)
+    // We try to capitalize first letter just in case it came in lower, but preserve the rest (CamelCase)
+    const name = key.charAt(0).toUpperCase() + key.slice(1);
     return `https://cdn.communitydragon.org/latest/champion/${name}/square`;
 };
 
@@ -66,18 +116,20 @@ export const getSpellIconUrl = (spellId) => {
 // Get ability icon URL
 export const getAbilityIconUrl = (championName, abilityKey) => {
     if (!championName || !abilityKey) return "";
-    const champ = championDataMap[championName];
+    const cleanName = findChampionKey(championName);
+    const champ = championDataMap[cleanName];
     if (champ && champ.abilities && champ.abilities[abilityKey] && champ.abilities[abilityKey][0]) {
         return champ.abilities[abilityKey][0].icon;
     }
     // Fallback CDragon construction
-    return `https://cdn.communitydragon.org/latest/champion/${championName}/ability-icon/${abilityKey.toLowerCase()}`;
+    return `https://cdn.communitydragon.org/latest/champion/${cleanName}/ability-icon/${abilityKey.toLowerCase()}`;
 };
 
 // Get ability data with description
 export const getAbilityData = (championName, abilityKey) => {
     if (!championName || !abilityKey) return null;
-    const champ = championDataMap[championName];
+    const cleanName = findChampionKey(championName);
+    const champ = championDataMap[cleanName];
     if (!champ || !champ.abilities) return null;
 
     // Handle 'P' vs 'Passive' naming if needed, but Meraki uses 'P', 'Q', 'W', 'E', 'R'
@@ -127,6 +179,23 @@ export const getRuneIconUrl = (runeId) => {
 
 export const getRuneData = (runeId) => {
     return runeDataMap[runeId] || null;
+};
+
+// Stat Mod Definitions (Shards)
+const shardData = {
+    5001: { name: "Health Scaling", description: "+10-180 Health (based on level)" },
+    5002: { name: "Armor", description: "+6 Armor" },
+    5003: { name: "Magic Resist", description: "+8 Magic Resist" },
+    5005: { name: "Attack Speed", description: "+10% Attack Speed" },
+    5007: { name: "Ability Haste", description: "+8 Ability Haste" },
+    5008: { name: "Adaptive Force", description: "+9 Adaptive Force" },
+    5010: { name: "Movement Speed", description: "+2% Movement Speed" },
+    5011: { name: "Health", description: "+65 Health" },
+    5013: { name: "Tenacity and Slow Resist", description: "+10% Tenacity and Slow Resist" }
+};
+
+export const getStatModData = (id) => {
+    return shardData[id] || { name: "Unknown Value", description: "Stat Modifier" };
 };
 
 // Fetch item data (From Meraki)
@@ -250,6 +319,25 @@ export const getChampionNameById = (id) => {
     return "Unknown";
 };
 
+// Listeners for data updates
+const listeners = [];
+
+export const subscribeToData = (callback) => {
+    listeners.push(callback);
+    // If we're already initialized, call immediately
+    if (initPromise) {
+        initPromise.then(() => callback());
+    }
+    return () => {
+        const index = listeners.indexOf(callback);
+        if (index > -1) listeners.splice(index, 1);
+    };
+};
+
+const notifyListeners = () => {
+    listeners.forEach(cb => cb());
+};
+
 // Initialize
 let initPromise = null;
 
@@ -269,6 +357,7 @@ export const initDataDragon = () => {
             items: Object.keys(itemDataMap).length,
             champs: Object.keys(championDataMap).length
         });
+        notifyListeners();
     })();
 
     return initPromise;
