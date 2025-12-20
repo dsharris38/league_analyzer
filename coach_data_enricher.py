@@ -503,6 +503,9 @@ def enrich_coaching_data(
             dm["roams"] = t_data.get("roams", {})
             dm["jungle_pathing"] = t_data.get("jungle_pathing", {})
             dm["fight_presence"] = t_data.get("fight_presence", {})
+            dm["gold_xp_series"] = t_data.get("gold_xp_series", [])
+            dm["team_gold_diff"] = t_data.get("team_gold_diff", [])
+            dm["all_gold_xp_series"] = t_data.get("all_gold_xp_series", {})
 
     new_analysis["macro_profile"] = macro_profile
     new_analysis["per_game_comp"] = per_game_comp

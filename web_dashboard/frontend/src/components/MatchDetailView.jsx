@@ -58,6 +58,9 @@ export default function MatchDetailView({ match, puuid, onClose, onPlayerClick }
                         <GoldXpGraph
                             goldXpSeries={match.gold_xp_series}
                             teamGoldDiff={match.team_gold_diff}
+                            allGoldXpData={match.all_gold_xp_series}
+                            participants={match.participants}
+                            puuid={puuid}
                         />
                         <TimelineMap match={match} puuid={puuid} showWards={false} />
                     </div>

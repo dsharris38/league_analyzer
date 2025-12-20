@@ -8,10 +8,17 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
     const version = getVersion();
 
     // Map constants
-    const mapSize = 14820;
+    // Map constants - Fine-tuned for artistic map padding
+    const MIN_X = -1000;
+    const MAX_X = 16000;
+    const MIN_Y = -1000;
+    const MAX_Y = 16000;
+    const mapWidth = MAX_X - MIN_X;
+    const mapHeight = MAX_Y - MIN_Y;
+
     const getMapStyle = (x, y) => ({
-        left: `${(x / mapSize) * 100}%`,
-        bottom: `${(y / mapSize) * 100}%`,
+        left: `${((x - MIN_X) / mapWidth) * 100}%`,
+        bottom: `${((y - MIN_Y) / mapHeight) * 100}%`,
     });
 
     const getDeathTimer = (gameTimeMin) => 0.5 + (gameTimeMin * 0.05);
@@ -449,388 +456,263 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
         return isBlueTeam(p) ? "text-blue-400" : "text-red-400";
     };
 
-    // --- Ward Recorder Logic ---
-    const [isRecording, setIsRecording] = useState(false);
-    const [recordedSpots, setRecordedSpots] = useState([]);
-    const [recordingSide, setRecordingSide] = useState("BLUE"); // "BLUE" or "RED"
 
-    const handleMapClick = (e) => {
-        if (!isRecording) return;
-
-        // Get click coordinates relative to the map container
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        // Convert to game coordinates (0-14820)
-        // Map is 512x512
-        const gameX = Math.round((x / 512) * 14820);
-        const gameY = Math.round(((512 - y) / 512) * 14820);
-
-        const name = prompt(`Enter a name for this ${recordingSide} side ward spot (e.g., 'Pixel Brush'):`, "New Spot");
-        if (name) {
-            setRecordedSpots([...recordedSpots, { name, x: gameX, y: gameY, side: recordingSide }]);
-        }
-    };
-
-    const copyRecordedData = () => {
-        const json = JSON.stringify(recordedSpots, null, 2);
-        navigator.clipboard.writeText(json);
-        alert("Copied ward data to clipboard! Paste this into a file for the AI.");
-    };
 
     return (
         <div className="flex flex-col gap-6 font-sans text-white">
             {/* Header with Recorder Toggle */}
-            <div className="flex items-center justify-between p-4 bg-slate-900/60 border-b border-slate-700/50 rounded-t-lg backdrop-blur-sm">
-                <h2 className="text-lg font-bold text-white flex items-center gap-2 font-serif">
-                    <span className="text-xl">🗺️</span>
-                    Timeline Map
-                </h2>
-                <div className="flex items-center gap-4">
-                    <div className="text-sm text-slate-400">
-                        {Math.floor(currentTime)}:{(Math.floor((currentTime % 1) * 60)).toString().padStart(2, '0')} / {duration}:00
+            <div className="rounded-xl border border-white/5 bg-slate-900/40 backdrop-blur-sm overflow-hidden shadow-lg">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-gradient-to-r from-teal-900/20 to-transparent">
+                    <div className="flex items-center gap-3">
+                        <div className="w-1 h-5 bg-teal-500 rounded-full shadow-[0_0_12px_rgba(20,184,166,0.6)]" />
+                        <h2 className="text-sm font-bold text-slate-200 tracking-wider uppercase flex items-center gap-2">
+                            Match Events Map
+                        </h2>
                     </div>
-                    <button
-                        onClick={() => setIsRecording(!isRecording)}
-                        className={clsx(
-                            "px-3 py-1 rounded text-xs font-bold transition-colors border",
-                            isRecording
-                                ? "bg-red-500/20 text-red-300 border-red-500/50 hover:bg-red-500/30"
-                                : "bg-slate-800 text-slate-300 border-white/10 hover:bg-slate-700"
-                        )}
-                    >
-                        {isRecording ? "🔴 Stop Recording" : "⏺️ Record Wards"}
-                    </button>
+
+                    <div className="flex items-center gap-4">
+                        <div className="text-xs font-mono text-teal-400 bg-teal-500/10 px-2 py-1 rounded border border-teal-500/20 shadow-[0_0_10px_rgba(20,184,166,0.1)]">
+                            {Math.floor(currentTime)}:{(Math.floor((currentTime % 1) * 60)).toString().padStart(2, '0')} <span className="text-slate-500 mx-1">/</span> {duration}:00
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-6 items-start relative">
+            <div className="flex flex-col 2xl:flex-row gap-6 items-start relative">
 
 
 
                 {/* Left Column: Map + Timeline */}
-                <div className="flex-1 flex flex-col gap-4 w-full max-w-[750px]">
-                    <div className="bg-slate-900 rounded-lg border border-slate-700 relative overflow-hidden flex items-center justify-center p-4">
-                        {/* Map Container */}
-                        <div
-                            className={clsx(
-                                "relative w-[512px] h-[512px] bg-slate-900 shadow-2xl rounded-lg overflow-hidden border-4 border-slate-800 select-none",
-                                isRecording && "cursor-crosshair ring-2 ring-red-500/50"
-                            )}
-                            onClick={handleMapClick}
-                        >
-                            <img
-                                src="/map_background.jpg"
-                                className="absolute inset-0 w-full h-full object-cover opacity-60"
-                                alt="Summoner's Rift"
-                                draggable={false}
-                            />
+                <div className="flex-none flex flex-col gap-4 w-full xl:w-auto">
 
-                            {/* Champions */}
-                            {Object.values(championStates).map((state, i) => (
-                                <React.Fragment key={i}>
-                                    {state.targetPos && !state.isDead && (
-                                        <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-                                            <line
-                                                x1={`${(state.x / mapSize) * 100}%`}
-                                                y1={`${100 - (state.y / mapSize) * 100}%`}
-                                                x2={`${(state.targetPos.x / mapSize) * 100}%`}
-                                                y2={`${100 - (state.targetPos.y / mapSize) * 100}%`}
-                                                stroke={state.isBlue ? "rgba(59, 130, 246, 0.4)" : "rgba(239, 68, 68, 0.4)"}
-                                                strokeWidth="1"
-                                                strokeDasharray="4 2"
-                                            />
-                                        </svg>
-                                    )}
+                    {/* Map & Controls Container */}
+                    <div className="bg-slate-900/40 rounded-xl border border-white/5 p-1 relative overflow-hidden backdrop-blur-sm shadow-lg">
 
-                                    <div
-                                        className={clsx(
-                                            "absolute w-8 h-8 -ml-4 -mb-4 transition-all duration-300 z-10",
-                                            state.isDead ? "grayscale opacity-60" :
-                                                state.isKilling ? "scale-125 z-20 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]" : ""
-                                        )}
-                                        style={getMapStyle(state.x, state.y)}
-                                    >
-                                        <div className={clsx(
-                                            "w-full h-full overflow-hidden border-2 rounded-sm",
-                                            state.isDead ? "border-slate-500" :
-                                                state.isKilling ? "border-yellow-400" :
-                                                    state.isBlue ? "border-blue-500" : "border-red-500"
-                                        )}>
-                                            <img
-                                                src={getChampionIconUrl(state.championName)}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
+                        <div className="flex flex-col items-center gap-4 p-4">
+                            {/* Map Itself */}
+                            <div
+                                className="relative w-[512px] h-[512px] bg-slate-950 shadow-2xl rounded-lg overflow-hidden border border-white/10 select-none"
+                            >
+                                <img
+                                    src="/map_background_v2.jpg"
+                                    className="absolute inset-0 w-full h-full object-cover opacity-80"
+                                    alt="Summoner's Rift"
+                                    draggable={false}
+                                />
 
-                                        {state.isKilling && (
-                                            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 text-xl filter drop-shadow-md">
-                                                ⚔️
-                                            </div>
-                                        )}
-                                        {state.isDead && (
-                                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[10px] font-bold text-slate-300 bg-black/50 px-1 rounded">
-                                                DEAD
-                                            </div>
-                                        )}
-                                    </div>
-                                </React.Fragment>
-                            ))}
-
-                            {/* Towers */}
-                            {activeTowers.map((tower, i) => (
-                                <div
-                                    key={`tower-${i}`}
-                                    className={clsx(
-                                        "absolute w-6 h-6 -ml-3 -mb-3 z-0",
-                                        tower.teamId === 100 ? "text-blue-600" : "text-red-600"
-                                    )}
-                                    style={getMapStyle(tower.x, tower.y)}
-                                >
-                                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full drop-shadow-md">
-                                        <path d="M12 2L2 22h20L12 2zm0 3.5L18.5 20H5.5L12 5.5z" />
-                                        <rect x="10" y="10" width="4" height="10" />
-                                    </svg>
-                                </div>
-                            ))}
-
-                            {/* Wards */}
-                            {showWards && activeWards.map((ward, i) => {
-                                const radiusPercent = (ward.type === "CONTROL_WARD" || ward.type === "BLUE_TRINKET") ? 6.07 : 7.42;
-                                return (
-                                    <React.Fragment key={`ward-${i}`}>
-                                        {/* Vision Radius */}
-                                        <div
-                                            className={clsx(
-                                                "absolute rounded-full pointer-events-none z-0",
-                                                ward.isBlue ? "bg-blue-400/10 border border-blue-400/20" : "bg-red-400/10 border border-red-400/20"
-                                            )}
-                                            style={{
-                                                ...getMapStyle(ward.x, ward.y),
-                                                width: `${radiusPercent}%`,
-                                                height: `${radiusPercent}%`,
-                                                transform: 'translate(-50%, 50%)' // Center on point (bottom-left origin for map style)
-                                            }}
-                                        />
-                                        {/* Ward Icon */}
-                                        <div
-                                            className={clsx(
-                                                "absolute w-3 h-3 -ml-1.5 -mb-1.5 z-10 transition-transform cursor-help",
-                                                ward.isEstimated ? "opacity-50" : "opacity-90 hover:scale-150",
-                                                ward.type === "CONTROL_WARD" ? "text-red-500" :
-                                                    ward.type === "BLUE_TRINKET" ? "text-blue-400" :
-                                                        "text-yellow-400"
-                                            )}
-                                            style={getMapStyle(ward.x, ward.y)}
-                                            title={`${ward.type.replace('_', ' ')} placed by ${match.participants.find(p => p.participantId === ward.creatorId)?.champion_name || 'Unknown'} (${ward.isBlue ? 'Blue' : 'Red'} Team)${ward.isEstimated ? ' (Approximate Location)' : ''}`}
-                                        >
-                                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full drop-shadow-md">
-                                                <circle cx="12" cy="12" r="10" stroke="black" strokeWidth="2" strokeDasharray={ward.isEstimated ? "2 2" : "0"} />
-                                                {ward.type === "CONTROL_WARD" && <path d="M12 6v12M6 12h12" stroke="black" strokeWidth="3" />}
-                                                {ward.type === "BLUE_TRINKET" && <circle cx="12" cy="12" r="4" fill="white" />}
+                                {/* Champions */}
+                                {Object.values(championStates).map((state, i) => (
+                                    <React.Fragment key={i}>
+                                        {state.targetPos && !state.isDead && (
+                                            <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                                                <line
+                                                    x1={`${((state.x - MIN_X) / mapWidth) * 100}%`}
+                                                    y1={`${100 - ((state.y - MIN_Y) / mapHeight) * 100}%`}
+                                                    x2={`${((state.targetPos.x - MIN_X) / mapWidth) * 100}%`}
+                                                    y2={`${100 - ((state.targetPos.y - MIN_Y) / mapHeight) * 100}%`}
+                                                    stroke={state.isBlue ? "rgba(96, 165, 250, 0.4)" : "rgba(248, 113, 113, 0.4)"}
+                                                    strokeWidth="1.5"
+                                                    strokeDasharray="4 4"
+                                                />
                                             </svg>
+                                        )}
+
+                                        <div
+                                            className={clsx(
+                                                "absolute w-10 h-10 -ml-5 -mb-5 transition-all duration-300 z-10",
+                                                state.isDead ? "grayscale opacity-50 scale-90" :
+                                                    state.isKilling ? "scale-125 z-20 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]" : ""
+                                            )}
+                                            style={getMapStyle(state.x, state.y)}
+                                        >
+                                            <div className={clsx(
+                                                "w-full h-full overflow-hidden border-2 rounded-full shadow-lg bg-slate-900",
+                                                state.isDead ? "border-slate-600" :
+                                                    state.isKilling ? "border-yellow-400 animate-pulse" :
+                                                        state.isBlue ? "border-blue-500" : "border-red-500"
+                                            )}>
+                                                <img
+                                                    src={getChampionIconUrl(state.championName)}
+                                                    className="w-full h-full object-cover scale-110" // Slight zoom to remove corners
+                                                />
+                                            </div>
+
+                                            {state.isKilling && (
+                                                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-2xl filter drop-shadow animate-bounce">
+                                                    ⚔️
+                                                </div>
+                                            )}
+                                            {state.isDead && (
+                                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="white" className="w-6 h-6 stroke-[3] drop-shadow-md">
+                                                        <path d="M18 6L6 18M6 6l12 12" />
+                                                    </svg>
+                                                </div>
+                                            )}
                                         </div>
                                     </React.Fragment>
-                                );
-                            })}
+                                ))}
 
-                            {/* Recorded Spots (Visual Feedback) */}
-                            {isRecording && recordedSpots.map((spot, i) => (
-                                <div
-                                    key={`spot-${i}`}
-                                    className={clsx(
-                                        "absolute w-3 h-3 -ml-1.5 -mb-1.5 rounded-full border border-white shadow-[0_0_10px_rgba(255,255,255,0.5)] z-50",
-                                        spot.side === "BLUE" ? "bg-blue-500" : "bg-red-500"
-                                    )}
-                                    style={getMapStyle(spot.x, spot.y)}
-                                    title={`${spot.name} (${spot.side})`}
-                                />
-                            ))}
-                        </div>
-                    </div>
+                                {/* Towers - Polished */}
+                                {activeTowers.map((tower, i) => (
+                                    <div
+                                        key={`tower-${i}`}
+                                        className={clsx(
+                                            "absolute w-4 h-4 -ml-2 -mb-2 z-0",
+                                            tower.teamId === 100 ? "text-blue-500" : "text-red-500"
+                                        )}
+                                        style={getMapStyle(tower.x, tower.y)}
+                                    >
+                                        <div className="w-full h-full bg-current rounded-sm shadow-[0_0_8px_currentColor] opacity-80" />
+                                    </div>
+                                ))}
 
-                    {/* Timeline & Gold Graph */}
-                    <div className="bg-slate-900/90 backdrop-blur p-4 rounded-lg border border-slate-700">
-                        {/* Gold Graph */}
-                        <div className="h-20 w-full mb-4 relative flex items-end px-2">
-                            <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                <defs>
-                                    <linearGradient id={`goldGradient-${puuid}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                                        {gradientStops.map((stop, i) => (
-                                            <stop key={i} offset={`${stop.offset}%`} stopColor={stop.color} />
-                                        ))}
-                                    </linearGradient>
-                                </defs>
-                                {/* Zero Line */}
-                                <line x1="0" y1="50" x2="100" y2="50" stroke="#334155" strokeWidth="0.5" strokeDasharray="2 2" vectorEffect="non-scaling-stroke" />
-
-                                {/* Graph Line */}
-                                <polyline
-                                    points={goldGraphData.map((d, i) => {
-                                        const x = (d.t / duration) * 100;
-                                        const y = 50 - (d.diff / maxAbsLead) * 40; // 50% is center
-                                        return `${x},${Math.max(5, Math.min(95, y))}`;
-                                    }).join(' ')}
-                                    fill="none"
-                                    stroke={`url(#goldGradient-${puuid})`}
-                                    strokeWidth="2"
-                                    vectorEffect="non-scaling-stroke"
-                                />
-
-                                {/* Current Time Dot on Graph */}
-                                {(() => {
-                                    const currentData = goldGraphData.find(d => d.t >= currentTime) || goldGraphData[goldGraphData.length - 1];
-                                    if (currentData) {
-                                        const x = (currentTime / duration) * 100;
-                                        const y = 50 - (currentData.diff / maxAbsLead) * 40;
-                                        return (
-                                            <circle
-                                                cx={x}
-                                                cy={Math.max(5, Math.min(95, y))}
-                                                r="2"
-                                                fill={currentData.diff > 0 ? "#3b82f6" : "#ef4444"}
-                                                stroke="white"
-                                                strokeWidth="1"
-                                                vectorEffect="non-scaling-stroke"
+                                {/* Wards */}
+                                {showWards && activeWards.map((ward, i) => {
+                                    const radiusPercent = (ward.type === "CONTROL_WARD" || ward.type === "BLUE_TRINKET") ? 6.07 : 7.42;
+                                    return (
+                                        <React.Fragment key={`ward-${i}`}>
+                                            {/* Vision Radius */}
+                                            <div
+                                                className={clsx(
+                                                    "absolute rounded-full pointer-events-none z-0",
+                                                    ward.isBlue ? "bg-blue-400/5 border border-blue-400/20 shadow-[0_0_20px_rgba(59,130,246,0.1)]" : "bg-red-400/5 border border-red-400/20 shadow-[0_0_20px_rgba(239,68,68,0.1)]"
+                                                )}
+                                                style={{
+                                                    ...getMapStyle(ward.x, ward.y),
+                                                    width: `${radiusPercent}%`,
+                                                    height: `${radiusPercent}%`,
+                                                    transform: 'translate(-50%, 50%)'
+                                                }}
                                             />
-                                        );
-                                    }
-                                })()}
-                            </svg>
-                        </div>
+                                            {/* Ward Icon */}
+                                            <div
+                                                className={clsx(
+                                                    "absolute w-4 h-4 -ml-2 -mb-2 z-10 transition-transform cursor-help",
+                                                    ward.isEstimated ? "opacity-50" : "opacity-90 hover:scale-125",
+                                                    ward.type === "CONTROL_WARD" ? "text-red-500" :
+                                                        ward.type === "BLUE_TRINKET" ? "text-blue-400" :
+                                                            "text-yellow-400"
+                                                )}
+                                                style={getMapStyle(ward.x, ward.y)}
+                                                title={`${ward.type.replace('_', ' ')} placed by ${match.participants.find(p => p.participantId === ward.creatorId)?.champion_name || 'Unknown'} (${ward.isBlue ? 'Blue' : 'Red'} Team)${ward.isEstimated ? ' (Approximate Location)' : ''}`}
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full drop-shadow-md filter">
+                                                    <circle cx="12" cy="12" r="8" stroke="black" strokeWidth="1" />
+                                                    {ward.type === "CONTROL_WARD" && <circle cx="12" cy="12" r="3" fill="currentColor" />}
+                                                </svg>
+                                            </div>
+                                        </React.Fragment>
+                                    );
+                                })}
 
-                        {/* Slider Controls */}
-                        <div className="flex justify-between text-xs text-slate-400 mb-2 relative">
-                            <span>0:00</span>
-                            <div className="flex flex-col items-center">
-                                <span className="text-white font-bold text-lg">{Math.floor(currentTime)}:{(Math.floor((currentTime % 1) * 60)).toString().padStart(2, '0')}</span>
-                                <span className={clsx("text-xs font-bold", goldAdvantage > 0 ? "text-blue-400" : "text-red-400")}>
-                                    {goldAdvantage > 0 ? "Blue" : "Red"} +{(Math.abs(goldAdvantage) / 1000).toFixed(1)}k
-                                </span>
+
                             </div>
-                            <span>{duration}:00</span>
                         </div>
-                        <div className="relative h-6 flex items-center">
-                            {/* Max Lead Markers */}
-                            {maxBlue.diff > 0 && (
-                                <div
-                                    className="absolute -top-6 -translate-x-1/2 flex flex-col items-center group"
-                                    style={{ left: `${(maxBlue.t / duration) * 100}%` }}
-                                >
-                                    <span className="text-[10px] text-blue-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 px-1 rounded border border-blue-900">
-                                        +{(maxBlue.diff / 1000).toFixed(1)}k
-                                    </span>
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full border border-slate-900" />
-                                </div>
-                            )}
-                            {maxRed.diff < 0 && (
-                                <div
-                                    className="absolute -top-6 -translate-x-1/2 flex flex-col items-center group"
-                                    style={{ left: `${(maxRed.t / duration) * 100}%` }}
-                                >
-                                    <span className="text-[10px] text-red-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 px-1 rounded border border-red-900">
-                                        +{(Math.abs(maxRed.diff) / 1000).toFixed(1)}k
-                                    </span>
-                                    <div className="w-2 h-2 bg-red-500 rounded-full border border-slate-900" />
-                                </div>
-                            )}
 
-                            <input
-                                type="range"
-                                min="0"
-                                max={duration}
-                                step="0.25"
-                                value={currentTime}
-                                onChange={(e) => setCurrentTime(parseFloat(e.target.value))}
-                                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer relative z-10"
-                                style={{
-                                    backgroundImage: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${(currentTime / duration) * 100}%, #1e293b ${(currentTime / duration) * 100}%, #1e293b 100%)`
-                                }}
-                            />
+                        {/* Timeline Controls */}
+                        <div className="bg-slate-950/50 p-4 border-t border-white/5">
+                            {/* Gold Graph as Background */}
+                            <div className="h-16 w-full mb-6 relative flex items-end px-1">
+                                <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id={`goldGradient-${puuid}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                                            {gradientStops.map((stop, i) => (
+                                                <stop key={i} offset={`${stop.offset}%`} stopColor={stop.color} />
+                                            ))}
+                                        </linearGradient>
+                                    </defs>
+                                    {/* Zero Line */}
+                                    <line x1="0" y1="50" x2="100" y2="50" stroke="#334155" strokeWidth="0.5" strokeDasharray="2 2" vectorEffect="non-scaling-stroke" />
+
+                                    {/* Graph Line */}
+                                    <polyline
+                                        points={goldGraphData.map((d, i) => {
+                                            const x = (d.t / duration) * 100;
+                                            const y = 50 - (d.diff / maxAbsLead) * 40;
+                                            return `${x},${Math.max(5, Math.min(95, y))}`;
+                                        }).join(' ')}
+                                        fill="none"
+                                        stroke={`url(#goldGradient-${puuid})`}
+                                        strokeWidth="2"
+                                        vectorEffect="non-scaling-stroke"
+                                    />
+
+                                    {/* Current Time Dot */}
+                                    {(() => {
+                                        const currentData = goldGraphData.find(d => d.t >= currentTime) || goldGraphData[goldGraphData.length - 1];
+                                        if (currentData) {
+                                            const x = (currentTime / duration) * 100;
+                                            const y = 50 - (currentData.diff / maxAbsLead) * 40;
+                                            return (
+                                                <circle
+                                                    cx={x}
+                                                    cy={Math.max(5, Math.min(95, y))}
+                                                    r="3"
+                                                    fill={currentData.diff > 0 ? "#3b82f6" : "#ef4444"}
+                                                    stroke="white"
+                                                    strokeWidth="1.5"
+                                                    vectorEffect="non-scaling-stroke"
+                                                />
+                                            );
+                                        }
+                                    })()}
+                                </svg>
+                            </div>
+
+                            {/* Status Bar */}
+                            <div className="flex justify-between items-center text-xs mb-3 px-1">
+                                <span className="text-slate-500 font-mono">0:00</span>
+                                <div className="flex flex-col items-center">
+                                    <span className={clsx("text-xs font-bold px-2 py-0.5 rounded", goldAdvantage > 0 ? "bg-blue-500/10 text-blue-400" : "bg-red-500/10 text-red-400")}>
+                                        {goldAdvantage > 0 ? "BLUE LEAD" : "RED LEAD"} +{(Math.abs(goldAdvantage) / 1000).toFixed(1)}k
+                                    </span>
+                                </div>
+                                <span className="text-slate-500 font-mono">{duration}:00</span>
+                            </div>
+
+                            {/* Slider */}
+                            <div className="relative h-6 flex items-center group/slider">
+                                {/* Max Lead Markers */}
+                                {maxBlue.diff > 0 && (
+                                    <div
+                                        className="absolute -top-6 -translate-x-1/2 flex flex-col items-center group pointer-events-none"
+                                        style={{ left: `${(maxBlue.t / duration) * 100}%` }}
+                                    >
+                                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
+                                    </div>
+                                )}
+                                {maxRed.diff < 0 && (
+                                    <div
+                                        className="absolute -top-6 -translate-x-1/2 flex flex-col items-center group pointer-events-none"
+                                        style={{ left: `${(maxRed.t / duration) * 100}%` }}
+                                    >
+                                        <div className="w-1.5 h-1.5 bg-red-400 rounded-full shadow-[0_0_8px_rgba(248,113,113,0.8)]" />
+                                    </div>
+                                )}
+
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max={duration}
+                                    step="0.25"
+                                    value={currentTime}
+                                    onChange={(e) => setCurrentTime(parseFloat(e.target.value))}
+                                    className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer relative z-10 hover:h-2 transition-all"
+                                    style={{
+                                        backgroundImage: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${(currentTime / duration) * 100}%, #1e293b ${(currentTime / duration) * 100}%, #1e293b 100%)`
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-4 w-full lg:w-80 shrink-0">
-                    {/* Ward Recorder Panel */}
-                    {isRecording && (
-                        <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-lg p-4 flex flex-col gap-3">
-                            <div className="flex items-center justify-between">
-                                <h3 className="font-bold text-white text-sm">Ward Recorder</h3>
-                                <span className="text-xs text-slate-400">{recordedSpots.length} spots</span>
-                            </div>
-
-                            <div className="flex rounded bg-slate-800 p-1">
-                                <button
-                                    onClick={() => setRecordingSide("BLUE")}
-                                    className={clsx(
-                                        "flex-1 text-xs font-bold py-1 rounded transition-colors",
-                                        recordingSide === "BLUE" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-slate-200"
-                                    )}
-                                >
-                                    Blue Side
-                                </button>
-                                <button
-                                    onClick={() => setRecordingSide("RED")}
-                                    className={clsx(
-                                        "flex-1 text-xs font-bold py-1 rounded transition-colors",
-                                        recordingSide === "RED" ? "bg-red-600 text-white" : "text-slate-400 hover:text-slate-200"
-                                    )}
-                                >
-                                    Red Side
-                                </button>
-                            </div>
-
-                            <div className="text-xs text-slate-400">
-                                Click map to add a <b>{recordingSide}</b> spot.
-                            </div>
-
-                            <div className="flex-1 min-h-[100px] max-h-[300px] overflow-y-auto bg-black/30 rounded p-2 space-y-1">
-                                {recordedSpots.map((spot, i) => (
-                                    <div key={i} className="flex justify-between items-center text-xs group">
-                                        <span className={clsx(
-                                            "font-medium",
-                                            spot.side === "BLUE" ? "text-blue-400" : "text-red-400"
-                                        )}>
-                                            {spot.name}
-                                        </span>
-                                        <button
-                                            onClick={() => setRecordedSpots(recordedSpots.filter((_, idx) => idx !== i))}
-                                            className="text-red-500 opacity-0 group-hover:opacity-100 hover:text-red-400"
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-                                ))}
-                                {recordedSpots.length === 0 && (
-                                    <div className="text-slate-600 italic text-center py-4">No spots yet</div>
-                                )}
-                            </div>
-
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={copyRecordedData}
-                                    disabled={recordedSpots.length === 0}
-                                    className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs py-1.5 rounded font-medium transition-colors"
-                                >
-                                    Copy JSON
-                                </button>
-                                <button
-                                    onClick={() => setRecordedSpots([])}
-                                    disabled={recordedSpots.length === 0}
-                                    className="px-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 text-white text-xs rounded transition-colors"
-                                >
-                                    Clear
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
+                {/* Right Column: Event Log & Scoreboard */}
+                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
                     {/* Event Feed */}
                     <div
-                        className="w-full bg-slate-900 rounded-lg border border-slate-700 flex flex-col"
-                        style={{ height: isRecording ? '480px' : '780px' }}
+                        className="w-full bg-slate-900 rounded-lg border border-slate-700 flex flex-col h-[670px]"
                     >
                         <div className="p-3 border-b border-slate-700 font-bold text-slate-300">
                             Event Log
@@ -896,80 +778,83 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                             ))}
                         </div>
                     </div>
+
+                    {/* Scoreboard moved here */}
+                    <div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden h-[670px] flex flex-col">
+                        <div className="p-4 border-b border-slate-700 bg-slate-800/50">
+                            <h3 className="text-sm font-bold text-slate-300 uppercase">Scoreboard</h3>
+                        </div>
+                        <div className="flex-1 overflow-auto">
+                            <table className="w-full text-left text-xs">
+                                <thead className="text-slate-500 bg-slate-900/50 border-b border-slate-700 sticky top-0 z-10 backdrop-blur-md">
+                                    <tr>
+                                        <th className="px-4 py-3">Champion</th>
+                                        <th className="px-4 py-3 text-center">KDA</th>
+                                        <th className="px-4 py-3 text-center">CS</th>
+                                        <th className="px-4 py-3 text-center">Gold</th>
+                                        <th className="px-4 py-3">Items</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-800">
+                                    {match.participants.map(p => {
+                                        const stats = currentStats[p.puuid];
+                                        const isDead = championStates[p.puuid]?.isDead;
+                                        const isBlue = isBlueTeam(p);
+
+                                        return (
+                                            <tr key={p.puuid} className={clsx(
+                                                "transition-colors",
+                                                isDead ? "bg-red-900/20 grayscale opacity-70" : "hover:bg-slate-800/30"
+                                            )}>
+                                                <td className="px-4 py-2">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={clsx(
+                                                            "w-8 h-8 rounded-sm border",
+                                                            isDead ? "border-slate-600" :
+                                                                isBlue ? "border-blue-500" : "border-red-500"
+                                                        )}>
+                                                            <img src={getChampionIconUrl(p.champion_name)} className="w-full h-full" />
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className={clsx("font-bold", isBlue ? "text-blue-400" : "text-red-400")}>
+                                                                {p.champion_name}
+                                                            </span>
+                                                            <span className="text-slate-500 text-[10px]">{p.riot_id.split('#')[0]}</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-2 text-center font-mono text-slate-300">
+                                                    {stats.kills}/{stats.deaths}/{stats.assists}
+                                                </td>
+                                                <td className="px-4 py-2 text-center text-slate-400">
+                                                    {stats.cs}
+                                                </td>
+                                                <td className="px-4 py-2 text-center text-yellow-600">
+                                                    {(stats.gold / 1000).toFixed(1)}k
+                                                </td>
+                                                <td className="px-4 py-2">
+                                                    <div className="flex gap-1">
+                                                        {stats.items.map((itemId, i) => (
+                                                            itemId > 0 ? (
+                                                                <img key={i} src={getItemIconUrl(itemId)} className="w-6 h-6 rounded border border-slate-700" />
+                                                            ) : (
+                                                                <div key={i} className="w-6 h-6 rounded border border-slate-800 bg-slate-900/50" />
+                                                            )
+                                                        ))}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div >
+
                 </div>
             </div>
 
-            {/* Scoreboard */}
-            <div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
-                <div className="p-4 border-b border-slate-700 bg-slate-800/50">
-                    <h3 className="text-sm font-bold text-slate-300 uppercase">Scoreboard</h3>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                        <thead className="text-slate-500 bg-slate-900/50 border-b border-slate-700">
-                            <tr>
-                                <th className="px-4 py-3">Champion</th>
-                                <th className="px-4 py-3 text-center">KDA</th>
-                                <th className="px-4 py-3 text-center">CS</th>
-                                <th className="px-4 py-3 text-center">Gold</th>
-                                <th className="px-4 py-3">Items</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-800">
-                            {match.participants.map(p => {
-                                const stats = currentStats[p.puuid];
-                                const isDead = championStates[p.puuid]?.isDead;
-                                const isBlue = isBlueTeam(p);
 
-                                return (
-                                    <tr key={p.puuid} className={clsx(
-                                        "transition-colors",
-                                        isDead ? "bg-red-900/20 grayscale opacity-70" : "hover:bg-slate-800/30"
-                                    )}>
-                                        <td className="px-4 py-2">
-                                            <div className="flex items-center gap-3">
-                                                <div className={clsx(
-                                                    "w-8 h-8 rounded-sm border",
-                                                    isDead ? "border-slate-600" :
-                                                        isBlue ? "border-blue-500" : "border-red-500"
-                                                )}>
-                                                    <img src={getChampionIconUrl(p.champion_name)} className="w-full h-full" />
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className={clsx("font-bold", isBlue ? "text-blue-400" : "text-red-400")}>
-                                                        {p.champion_name}
-                                                    </span>
-                                                    <span className="text-slate-500 text-[10px]">{p.riot_id.split('#')[0]}</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-2 text-center font-mono text-slate-300">
-                                            {stats.kills}/{stats.deaths}/{stats.assists}
-                                        </td>
-                                        <td className="px-4 py-2 text-center text-slate-400">
-                                            {stats.cs}
-                                        </td>
-                                        <td className="px-4 py-2 text-center text-yellow-600">
-                                            {(stats.gold / 1000).toFixed(1)}k
-                                        </td>
-                                        <td className="px-4 py-2">
-                                            <div className="flex gap-1">
-                                                {stats.items.map((itemId, i) => (
-                                                    itemId > 0 ? (
-                                                        <img key={i} src={getItemIconUrl(itemId)} className="w-6 h-6 rounded border border-slate-700" />
-                                                    ) : (
-                                                        <div key={i} className="w-6 h-6 rounded border border-slate-800 bg-slate-900/50" />
-                                                    )
-                                                ))}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div >
         </div >
     );
 }

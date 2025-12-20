@@ -1275,6 +1275,7 @@ def analyze_timeline_movement(
         "ward_events": ward_events,
         "building_events": building_events,
         "gold_xp_series": gold_xp_series,
+        "all_gold_xp_series": _extract_all_gold_xp_series(timeline),
         "team_gold_diff": team_gold_diff
     }
 
@@ -1330,3 +1331,28 @@ def _extract_gold_xp_series(timeline: Dict[str, Any], pid: int) -> List[Dict[str
         })
         
     return series
+
+def _extract_all_gold_xp_series(timeline: Dict[str, Any]) -> Dict[int, List[Dict[str, Any]]]:
+    """Extract minute-by-minute gold and XP for ALL players."""
+    frames = timeline.get("info", {}).get("frames", [])
+    all_data = defaultdict(list)
+    
+    for frame in frames:
+        ts_ms = frame.get("timestamp", 0)
+        time_min = ts_ms / 60000.0
+        pf = frame.get("participantFrames", {})
+        
+        for pid_str, p_data in pf.items():
+            try:
+                pid = int(pid_str)
+                all_data[pid].append({
+                    "time_min": time_min,
+                    "total_gold": p_data.get("totalGold", 0),
+                    "xp": p_data.get("xp", 0),
+                    "level": p_data.get("level", 1),
+                    "minions_killed": p_data.get("minionsKilled", 0) + p_data.get("jungleMinionsKilled", 0)
+                })
+            except ValueError:
+                continue
+                
+    return dict(all_data)
