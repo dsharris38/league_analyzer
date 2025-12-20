@@ -78,26 +78,60 @@ export const getChampionIconUrl = (championName) => {
 
     const key = findChampionKey(championName);
 
-    // 1. Try to find ID from map (Reliable for CDragon)
-    // championDataMap keys are Names (e.g. "Aatrox"), values have .key (ID, e.g. "266")
-    if (championDataMap[key] && championDataMap[key].key) {
-        return `https://cdn.communitydragon.org/latest/champion/${championDataMap[key].key}/square`;
+    // 1. Preferred: Use standard Data Dragon from metadata (cached, no redirects)
+    // Meraki data might not have image.full, so we check carefully.
+    if (championDataMap[key] && championDataMap[key].image && championDataMap[key].image.full) {
+        return `${DD_BASE_URL}/cdn/${currentVersion}/img/champion/${championDataMap[key].image.full}`;
     }
 
-    // 2. Fallback: Use name directly (CDragon handles most casings)
-    // We try to capitalize first letter just in case it came in lower, but preserve the rest (CamelCase)
-    const name = key.charAt(0).toUpperCase() + key.slice(1);
-    return `https://cdn.communitydragon.org/latest/champion/${name}/square`;
+    // 2. Intelligent Construction (Heuristic)
+    // If metadata is missing, we try to guess the DDragon ID from the name/key.
+    // DDragon Keys are usually alphanumeric with no spaces (e.g. "DrMundo", "LeeSin").
+
+    // Start with the key we found (which might be "Dr. Mundo" or "Lee Sin" if they came from Meraki keys)
+    let ddragonId = key;
+
+    // If we have an ID string in the map, use that
+    if (championDataMap[key] && championDataMap[key].id && typeof championDataMap[key].id === 'string') {
+        ddragonId = championDataMap[key].id;
+    }
+
+    // Sanitize: Remove all non-alphanumeric characters (matches DDragon convention)
+    let cleanId = ddragonId.replace(/[^a-zA-Z0-9]/g, '');
+
+    // Handle Specifc Edge Cases (DDragon Quirks)
+    if (cleanId === "Wukong") cleanId = "MonkeyKing";
+    if (cleanId === "RenataGlasc") cleanId = "Renata"; // DDragon uses just "Renata"
+    if (cleanId === "FiddleSticks") cleanId = "Fiddlesticks"; // Case sensitivity safety
+
+    // Capitalize first letter (just in case)
+    if (cleanId.length > 0) {
+        cleanId = cleanId.charAt(0).toUpperCase() + cleanId.slice(1);
+    }
+
+    // 3. Return Direct DDragon URL
+    if (currentVersion) {
+        return `${DD_BASE_URL}/cdn/${currentVersion}/img/champion/${cleanId}.png`;
+    }
+
+    // 4. Last Resort: CDragon (Slow Redirects)
+    return `https://cdn.communitydragon.org/latest/champion/${cleanId}/square`;
 };
 
 export const getItemIconUrl = (itemId) => {
     if (!itemId || itemId === 0) return "";
-    // If we have data, use the specific icon link (which handles different versions/paths)
+
+    // 1. Preferred: Standard Data Dragon (Fastest, consistency)
+    if (currentVersion) {
+        return `${DD_BASE_URL}/cdn/${currentVersion}/img/item/${itemId}.png`;
+    }
+
+    // 2. Fallback: Meraki Data (if available)
     if (itemDataMap[itemId] && itemDataMap[itemId].icon) {
-        // Meraki uses HTTP, force HTTPS to avoid mixed content
         return itemDataMap[itemId].icon.replace("http://", "https://");
     }
-    // Fallback ID-based CDragon link
+
+    // 3. Fallback: CDragon
     return `https://cdn.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/items/icons2d/${itemId}.png`;
 };
 
@@ -114,15 +148,50 @@ export const getSpellIconUrl = (spellId) => {
 };
 
 // Get ability icon URL
+let championSpellMap = {}; // Maps CleanName -> { Q: 'File.png', W: '...', ... }
+
 export const getAbilityIconUrl = (championName, abilityKey) => {
     if (!championName || !abilityKey) return "";
     const cleanName = findChampionKey(championName);
+
+    // 1. Preferred: Direct DDragon (Fastest)
+    if (championSpellMap[cleanName] && championSpellMap[cleanName][abilityKey]) {
+        return `${DD_BASE_URL}/cdn/${currentVersion}/img/spell/${championSpellMap[cleanName][abilityKey]}`;
+    }
+
+    // 2. Meraki Fallback
     const champ = championDataMap[cleanName];
     if (champ && champ.abilities && champ.abilities[abilityKey] && champ.abilities[abilityKey][0]) {
+        // Meraki icon URLs are often absolute or CDragon ref
         return champ.abilities[abilityKey][0].icon;
     }
-    // Fallback CDragon construction
+
+    // 3. Fallback CDragon construction (Slowest)
     return `https://cdn.communitydragon.org/latest/champion/${cleanName}/ability-icon/${abilityKey.toLowerCase()}`;
+};
+
+// Fetch official DDragon data to get consistent spell filenames
+export const fetchChampionSpellFilenames = async () => {
+    if (Object.keys(championSpellMap).length > 0) return;
+    try {
+        // We need championFull.json to get spell images for all champs efficiently
+        const response = await fetch(`${DD_BASE_URL}/cdn/${currentVersion}/data/en_US/championFull.json`);
+        const data = await response.json();
+
+        Object.values(data.data).forEach(champ => {
+            // Map spells [0,1,2,3] to [Q,W,E,R]
+            const key = champ.id; // "MonkeyKing", "Renata" etc.
+            championSpellMap[key] = {
+                Q: champ.spells[0].image.full,
+                W: champ.spells[1].image.full,
+                E: champ.spells[2].image.full,
+                R: champ.spells[3].image.full,
+                P: champ.passive.image.full // Passive often useful too
+            };
+        });
+    } catch (e) {
+        console.error("Failed to fetch champion spell filenames", e);
+    }
 };
 
 // Get ability data with description
@@ -295,6 +364,10 @@ export const fetchChampionData = async (championName) => {
 
         // Meraki returns { "Aatrox": { ... }, "Ahri": { ... } }
         championDataMap = await response.json();
+
+        // Trigger spell filename fetch in background to upgrade icons
+        fetchChampionSpellFilenames();
+
     } catch (e) {
         console.warn("Failed to fetch champions from local backend, falling back to CDN", e);
         try {

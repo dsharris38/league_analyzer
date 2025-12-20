@@ -4,18 +4,84 @@ import { getItemIconUrl } from '../utils/dataDragon';
 
 export default function Tooltip({ content, children, className = '' }) {
     const [isVisible, setIsVisible] = useState(false);
-    const [position, setPosition] = useState({ top: 0, left: 0 });
+    const [style, setStyle] = useState({ wrapper: {}, inner: {} });
     const wrapperRef = useRef(null);
+    const timeoutRef = useRef(null); // Ref for close delay
+
+    const showTooltip = () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        setIsVisible(true);
+    };
+
+    const hideTooltip = () => {
+        timeoutRef.current = setTimeout(() => {
+            setIsVisible(false);
+        }, 150); // 150ms grace period to move mouse to tooltip
+    };
 
     useEffect(() => {
         if (isVisible && wrapperRef.current) {
             const rect = wrapperRef.current.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
 
-            // Calculate position to keep tooltip on screen
-            let top = rect.top;
-            let left = rect.left + rect.width / 2;
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
 
-            setPosition({ top, left });
+            let top, left, transform;
+
+            // --- Horizontal Logic ---
+            // If strictly on the Left Edge (< 200px), align Left
+            if (centerX < 200) {
+                left = rect.left;
+                transform = 'translate(0, '; // Start of transform
+            }
+            // If strictly on the Right Edge (> width - 200px), align Right
+            else if (centerX > windowWidth - 200) {
+                left = rect.right;
+                transform = 'translate(-100%, '; // Move back 100%
+            }
+            // Default: Center
+            else {
+                left = centerX;
+                transform = 'translate(-50%, ';
+            }
+
+            // --- Vertical Logic ---
+            // Determine available space
+            const spaceAbove = rect.top; // Gap to top of screen
+            const spaceBelow = windowHeight - rect.bottom; // Gap to bottom of screen
+
+            let maxHeight;
+
+            // Prefer larger space, but bias towards Bottom (natural reading order) if similar
+            // Or stick to the "Top Half -> Below" logic but enforce limit
+            if (centerY < windowHeight / 2) {
+                // Show Below
+                top = rect.bottom + 12;
+                transform += '0)';
+                maxHeight = spaceBelow - 24; // Leave 24px safety margin
+            } else {
+                // Show Above
+                top = rect.top - 12;
+                transform += '-100%)';
+                maxHeight = spaceAbove - 24; // Leave 24px safety margin
+            }
+
+            // Arrow Logic (Optional: Hide arrow if not centered, or adjust it. 
+            // For now simplest is to rely on the box and maybe hide arrow if cornered)
+
+            setStyle({
+                wrapper: {
+                    top: `${top}px`,
+                    left: `${left}px`,
+                    transform: transform,
+                    zIndex: 99999,
+                },
+                inner: {
+                    maxHeight: `${maxHeight}px`
+                }
+            });
         }
     }, [isVisible]);
 
@@ -28,22 +94,22 @@ export default function Tooltip({ content, children, className = '' }) {
             <div
                 ref={wrapperRef}
                 className={`inline-block ${className}`}
-                onMouseEnter={() => setIsVisible(true)}
-                onMouseLeave={() => setIsVisible(false)}
+                onMouseEnter={showTooltip}
+                onMouseLeave={hideTooltip}
             >
                 {children}
             </div>
             {isVisible && createPortal(
                 <div
-                    className="fixed pointer-events-none"
-                    style={{
-                        top: `${position.top}px`,
-                        left: `${position.left}px`,
-                        transform: 'translate(-50%, calc(-100% - 12px))',
-                        zIndex: 99999
-                    }}
+                    className="fixed transition-opacity duration-200"
+                    style={style.wrapper}
+                    onMouseEnter={showTooltip} // Keep open when hovering the tooltip itself
+                    onMouseLeave={hideTooltip}
                 >
-                    <div className="bg-slate-900 border border-slate-600 rounded-sm shadow-[0_0_10px_rgba(0,0,0,0.8)] p-0 min-w-[300px] max-w-[350px] text-[#f0e6d2]">
+                    <div
+                        className="bg-slate-900 border border-slate-600 rounded-sm shadow-[0_0_10px_rgba(0,0,0,0.8)] p-0 min-w-[300px] max-w-[350px] overflow-y-auto overscroll-contain text-[#f0e6d2] pointer-events-auto box-border"
+                        style={style.inner}
+                    >
                         {/* Header Border Line */}
                         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#c8aa6e] to-transparent opacity-50 mb-1"></div>
 
@@ -53,12 +119,6 @@ export default function Tooltip({ content, children, className = '' }) {
 
                         {/* Footer Border Line */}
                         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#c8aa6e] to-transparent opacity-50 mt-1"></div>
-                    </div>
-
-                    {/* Arrow */}
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px]">
-                        <div className="border-[6px] border-transparent border-t-[#785a28]"></div>
-                        <div className="border-[6px] border-transparent border-t-[#010a13] -mt-[13px]"></div>
                     </div>
                 </div>,
                 document.body

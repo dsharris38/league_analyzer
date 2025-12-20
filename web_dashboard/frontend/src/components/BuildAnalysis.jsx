@@ -4,7 +4,8 @@ import Tooltip, { TooltipContent, ItemTooltip, AbilityTooltip, RuneTooltip, Stat
 import clsx from 'clsx';
 
 export default function BuildAnalysis({ match, puuid }) {
-    const self = match?.participants?.find(p => p.is_self);
+    // Robustly find self: Try puuid match first, then fallback to is_self flag
+    const self = match?.participants?.find(p => p.puuid === puuid) || match?.participants?.find(p => p.is_self);
 
     // Safety check: if self is not found, don't render
     if (!self) return null;
@@ -21,8 +22,42 @@ export default function BuildAnalysis({ match, puuid }) {
     // Sort items by time
     const sortedItems = [...itemBuild].sort((a, b) => a.timestamp - b.timestamp);
 
-    // Filter for purchases only
-    const purchases = sortedItems.filter(i => i.type === "ITEM_PURCHASED");
+    // Filter logic: Robust "Undo" handling for Riot API
+    // Riot API sends ITEM_UNDO with itemId: 0. This implies it undoes the *most recent* action.
+    // Algorithm: Iterate backwards. Keep a "pendingUndos" counter.
+    // - If we see an UNDO, increment counter.
+    // - If we see a PURCHASE/SELL and counter > 0, duplicate logic: mark this event as undone, decrement counter.
+    // - If we see a PURCHASE/SELL and counter == 0, keep it.
+
+    const validEvents = [];
+    const keptIndices = new Set();
+    let pendingUndos = 0;
+
+    for (let i = sortedItems.length - 1; i >= 0; i--) {
+        const event = sortedItems[i];
+
+        if (event.type === "ITEM_UNDO") {
+            pendingUndos++;
+        } else if (event.type === "ITEM_PURCHASED" || event.type === "ITEM_SOLD") {
+            if (pendingUndos > 0) {
+                // This event is undone by a future undo action
+                pendingUndos--;
+                // Do NOT add to valid events (effectively removing it)
+            } else {
+                // This is a valid, confirmed event
+                keptIndices.add(i);
+            }
+        }
+    }
+
+    // Pass 2: Build the final list (forward order)
+    sortedItems.forEach((event, index) => {
+        if (keptIndices.has(index)) {
+            validEvents.push(event);
+        }
+    });
+
+    const buildEvents = validEvents;
 
     // Skill mapping
     const skillMap = { 1: 'Q', 2: 'W', 3: 'E', 4: 'R' };
@@ -86,14 +121,14 @@ export default function BuildAnalysis({ match, puuid }) {
                 </h3>
 
                 <div className="flex flex-col gap-3">
-                    {purchases.length === 0 && <span className="text-slate-500 text-xs italic">No item data available</span>}
+                    {buildEvents.length === 0 && <span className="text-slate-500 text-xs italic">No item data available</span>}
                     {(() => {
                         const groups = [];
                         let currentGroup = [];
-                        purchases.forEach((item, i) => {
+                        buildEvents.forEach((item, i) => {
                             if (i === 0) { currentGroup.push(item); }
                             else {
-                                const prevItem = purchases[i - 1];
+                                const prevItem = buildEvents[i - 1];
                                 if (item.timestamp - prevItem.timestamp <= 45000) { currentGroup.push(item); }
                                 else { groups.push(currentGroup); currentGroup = [item]; }
                             }
@@ -112,10 +147,24 @@ export default function BuildAnalysis({ match, puuid }) {
                                             <div className="flex flex-wrap gap-2">
                                                 {group.map((item, itemIdx) => {
                                                     const itemData = getItemData(item.itemId);
+                                                    const isSold = item.type === "ITEM_SOLD";
+
                                                     return (
                                                         <Tooltip key={itemIdx} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
-                                                            <div className="w-9 h-9 bg-slate-950 rounded border border-slate-700 overflow-hidden relative group/icon cursor-help hover:border-blue-400 transition-colors shadow-lg">
+                                                            <div className={clsx(
+                                                                "w-9 h-9 rounded border overflow-hidden relative group/icon cursor-help transition-all shadow-lg",
+                                                                isSold
+                                                                    ? "bg-slate-950/50 border-red-500/40 grayscale hover:grayscale-0 opacity-80"
+                                                                    : "bg-slate-950 border-slate-700 hover:border-blue-400",
+                                                            )}>
                                                                 <img src={getItemIconUrl(item.itemId)} className="w-full h-full" alt={itemData?.name || 'Item'} />
+
+                                                                {/* Sold Badge */}
+                                                                {isSold && (
+                                                                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                                                                        <div className="text-[8px] font-bold text-red-200 bg-red-900/80 px-1 rounded-sm border border-red-500/50">SOLD</div>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </Tooltip>
                                                     );
@@ -130,8 +179,14 @@ export default function BuildAnalysis({ match, puuid }) {
                 </div>
             </div>
 
-            {/* 2. Runes (League Client Grid Layout) */}
-            <div className="bg-slate-900/40 p-6 rounded-xl border border-white/5 backdrop-blur-md shadow-lg flex flex-col hover:border-white/10 transition-colors">
+            {/* 2. Runes (Leage Client Style - Polished) */}
+            <div className="bg-gradient-to-b from-slate-900/80 to-slate-900/40 p-5 rounded-xl border border-white/10 backdrop-blur-md shadow-xl flex flex-col relative overflow-hidden group">
+                <div className="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+
+                <h3 className="text-xs font-bold text-purple-300 uppercase mb-6 tracking-widest flex items-center gap-2 border-b border-white/5 pb-2">
+                    <div className="w-1.5 h-1.5 bg-purple-400 rounded-full shadow-[0_0_8px_rgba(192,132,252,0.8)]"></div>
+                    Runes & Stats
+                </h3>
 
                 {(() => {
                     const allRunes = getAllRunes();
@@ -152,19 +207,23 @@ export default function BuildAnalysis({ match, puuid }) {
                     const userShards = [self.perks?.statPerks?.offense, self.perks?.statPerks?.flex, self.perks?.statPerks?.defense];
 
                     const renderRune = (runeId, isSelected, size = "normal", isKeystone = false) => {
+                        let containerClass = "w-[44px] h-[44px]"; // Unified size for Primary/Secondary/Shards (approx 10% smaller than previous 48px)
+                        if (isKeystone) containerClass = "w-16 h-16"; // Keystone (Big)
+
                         return (
                             <Tooltip key={runeId} content={<RuneTooltip runeData={getRuneData(runeId)} />}>
                                 <div className={clsx(
                                     "transition-all duration-300 relative rounded-full cursor-help flex items-center justify-center",
-                                    isSelected ? "opacity-100 z-10" : "opacity-20 grayscale hover:opacity-100 hover:grayscale-0"
+                                    isSelected ? "opacity-100 z-10" : "opacity-30 grayscale hover:opacity-100 hover:grayscale-0",
+                                    containerClass
                                 )}>
                                     <img
                                         src={getRuneIconUrl(runeId)}
                                         className={clsx(
-                                            "rounded-full bg-slate-950 transition-all border",
-                                            isKeystone ? "w-12 h-12 p-0.5" : (size === "small" ? "w-8 h-8 p-0.5" : "w-10 h-10 p-1"),
+                                            "rounded-full bg-slate-950 transition-all border w-full h-full object-cover",
+                                            isKeystone ? "p-0.5" : "p-1",
                                             isSelected
-                                                ? "border-slate-400 shadow-md scale-105"
+                                                ? "border-purple-400/50 shadow-[0_0_12px_rgba(168,85,247,0.4)] scale-110"
                                                 : "border-transparent bg-transparent scale-90"
                                         )}
                                         alt=""
@@ -180,23 +239,26 @@ export default function BuildAnalysis({ match, puuid }) {
                     };
 
                     return (
-                        <div className="flex flex-col md:flex-row gap-8 min-h-[300px]">
+                        <div className="flex flex-col md:flex-row gap-8">
                             {/* LEFT: PRIMARY TREE */}
                             <div className="flex-[1.2] flex flex-col">
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/5">
+                                <div className="flex items-center gap-3 mb-4">
                                     <div className="w-8 h-8 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center opacity-80 shadow-inner">
                                         <img src={getRuneIconUrl(primaryTree.id)} className="w-5 h-5" alt="" />
                                     </div>
-                                    <span className="text-sm font-bold text-slate-200 tracking-wide font-sans">{primaryTree.name}</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-bold text-slate-200 tracking-wide font-sans">{primaryTree.name}</span>
+                                        <span className="text-[10px] text-slate-500 uppercase tracking-wider">Primary Path</span>
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-col justify-between flex-1 py-2 gap-4">
+                                <div className="flex flex-col justify-between flex-1 py-2 gap-5 pl-2 border-l border-white/5 ml-4">
                                     {/* Keystone & Slots */}
                                     {primaryTree.slots.map((slot, rowIdx) => (
                                         <div key={rowIdx} className="flex items-center justify-center gap-6">
                                             {slot.runes.map(rune => {
                                                 const isSelected = selectedRunes1.includes(rune.id);
-                                                return renderRune(rune.id, isSelected, "normal", rowIdx === 0);
+                                                return renderRune(rune.id, isSelected, "primary", rowIdx === 0);
                                             })}
                                         </div>
                                     ))}
@@ -204,31 +266,33 @@ export default function BuildAnalysis({ match, puuid }) {
                             </div>
 
                             {/* DIVIDER */}
-                            <div className="w-px bg-white/5 hidden md:block my-2"></div>
+                            <div className="w-px bg-gradient-to-b from-transparent via-white/10 to-transparent hidden md:block"></div>
 
                             {/* RIGHT: SECONDARY & STATS */}
                             <div className="flex-1 flex flex-col">
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/5">
+                                <div className="flex items-center gap-3 mb-4">
                                     <div className="w-6 h-6 flex items-center justify-center opacity-60">
                                         {secondaryTree && <img src={getRuneIconUrl(secondaryTree.id)} className="w-full h-full" alt="" />}
                                     </div>
-                                    <span className="text-xs font-bold text-slate-400 font-sans tracking-wide uppercase">{secondaryTree?.name || 'Secondary'}</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-xs font-bold text-slate-300 font-sans tracking-wide uppercase">{secondaryTree?.name || 'Secondary'}</span>
+                                        <span className="text-[10px] text-slate-500 uppercase tracking-wider">Secondary & Stat Mods</span>
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-col justify-between flex-1 gap-6">
+                                <div className="flex flex-col justify-between flex-1 gap-4 pl-2 border-l border-white/5 ml-3">
                                     {/* Secondary Tree Rows (Skipping Keystone) */}
                                     {secondaryTree && secondaryTree.slots.slice(1).map((slot, rowIdx) => (
                                         <div key={rowIdx} className="flex items-center justify-start gap-5 pl-2">
                                             {slot.runes.map(rune => {
                                                 const isSelected = selectedRunes2.includes(rune.id);
-                                                // FIXED: Use normal size for secondary runes too
                                                 return renderRune(rune.id, isSelected, "normal", false);
                                             })}
                                         </div>
                                     ))}
 
                                     {/* Shards Grid */}
-                                    <div className="mt-4 pt-4 border-t border-white/5 flex flex-col gap-3 pl-2">
+                                    <div className="mt-2 pt-4 border-t border-dashed border-white/5 flex flex-col gap-2 pl-2">
                                         {shardRows.map((row, rowIdx) => {
                                             const selectedShardId = userShards[rowIdx];
                                             return (
@@ -238,17 +302,17 @@ export default function BuildAnalysis({ match, puuid }) {
                                                         const isSelected = showId === selectedShardId;
                                                         const icon = getStatIcon(showId);
 
-                                                        if (!icon) return <div key={i} className="w-10 h-10" />; // spacer
+                                                        if (!icon) return <div key={i} className="w-[44px] h-[44px]" />;
 
                                                         return (
                                                             <Tooltip key={i} content={<StatModTooltip statData={getStatModData(showId)} />}>
                                                                 <div className={clsx(
-                                                                    "w-10 h-10 rounded-full border flex items-center justify-center transition-all p-1",
+                                                                    "w-[44px] h-[44px] rounded-full border flex items-center justify-center transition-all p-1",
                                                                     isSelected
-                                                                        ? "bg-slate-700 border-slate-400 opacity-100 scale-105 shadow-sm"
+                                                                        ? "bg-slate-800 border-slate-500 opacity-100 scale-105 shadow-sm"
                                                                         : "bg-transparent border-slate-800 opacity-20 grayscale border-transparent hover:opacity-100 hover:grayscale-0"
                                                                 )}>
-                                                                    <img src={icon} className="w-6 h-6" alt="" />
+                                                                    <img src={icon} className="w-5 h-5" alt="" />
                                                                 </div>
                                                             </Tooltip>
                                                         )

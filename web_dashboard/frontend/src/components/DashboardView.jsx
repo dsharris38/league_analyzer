@@ -300,7 +300,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
                 <div className="space-y-6">
 
                     {/* TOP DECK: Key Stats Grid (4 Cols) */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
                         {/* 1. Rank Card (Scrollable for history) */}
                         <div className="col-span-1 h-64 lg:h-72">
                             <RankCard rankInfo={data.rank_info} pastRanks={data.past_ranks} />

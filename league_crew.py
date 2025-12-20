@@ -248,6 +248,128 @@ def _build_crew_prompt(agent_payload: Dict[str, Any], match_id: str | None = Non
     per_game_items = analysis.get("per_game_items", [])
 
     primary_role = analysis.get("primary_role", "UNKNOWN")
+    
+    # --- RUNE AGGREGATION LOGIC (Prevent Hallucinations) ---
+    # We iterate through detailed_matches to find what Keystones the player ACTUALLY uses.
+    detailed_matches = agent_payload.get("analysis", {}).get("detailed_matches", [])
+    
+    # Map: Champion -> { RuneName: count }
+    champ_rune_counts = {}
+    
+    # Helper to resolve rune name from ID (using basic known map or just ID if fetch fails)
+    # We'll use a local map for common keystones since fetching external data in this loop is risky/slow
+    keystone_map = {
+        8005: "Press the Attack", 8008: "Lethal Tempo", 8021: "Fleet Footwork", 8010: "Conqueror",
+        8112: "Electrocute", 8124: "Predator", 8128: "Dark Harvest", 9923: "Hail of Blades",
+        8214: "Summon Aery", 8229: "Arcane Comet", 8230: "Phase Rush",
+        8437: "Grasp of the Undying", 8439: "Aftershock", 8465: "Guardian",
+        8351: "Glacial Augment", 8360: "Unsealed Spellbook", 8369: "First Strike"
+    }
+
+    for dm in detailed_matches:
+        self_p = next((p for p in dm.get("participants", []) if p.get("is_self")), None)
+        if self_p:
+            champ = self_p.get("champion_name", "Unknown")
+            # Extract Keystone (Perk 0)
+            styles = self_p.get("perks", {}).get("styles", [])
+            if styles:
+                # Primary Style -> First Selection -> Perk ID
+                try:
+                    keystone_id = styles[0]["selections"][0]["perk"]
+                    keystone_name = keystone_map.get(keystone_id, f"Keystone {keystone_id}")
+                    
+                    if champ not in champ_rune_counts:
+                        champ_rune_counts[champ] = {}
+                    
+                    champ_rune_counts[champ][keystone_name] = champ_rune_counts[champ].get(keystone_name, 0) + 1
+                except (KeyError, IndexError):
+                    pass
+    
+    # Format "Rune Profile" string
+    rune_profile_lines = []
+    for champ, counts in champ_rune_counts.items():
+        # Find most common
+        top_rune = max(counts, key=counts.get)
+        count = counts[top_rune]
+        total = sum(counts.values())
+        pct = int((count / total) * 100)
+        rune_profile_lines.append(f"- **{champ}**: Prefers **{top_rune}** in {pct}% of games.")
+        
+    rune_context = "\n".join(rune_profile_lines)
+    
+    # --- ITEM & MATCHUP AGGREGATION LOGIC ---
+    champ_items = {} # Champ -> { ItemName: count }
+    champ_matchups = {} # Champ -> { VsChamp: [wins, losses] }
+    
+    for dm in detailed_matches:
+        participants = dm.get("participants", [])
+        self_p = next((p for p in participants if p.get("is_self")), None)
+        
+        if not self_p: continue
+        
+        my_champ = self_p.get("champion_name", "Unknown")
+        my_role = self_p.get("teamPosition", "UNKNOWN")
+        win = self_p.get("win", False)
+        
+        # 1. Item Counting
+        # We only care about completed items, but scraping all non-boot/starter items is a good proxy.
+        # We'll rely on our _get_item_name helper.
+        if my_champ not in champ_items: champ_items[my_champ] = {}
+        
+        # Riot API returns separate "item0"..."item6" or "item_build" list if enriched.
+        # Check standard Riot fields first
+        items_found = []
+        for i in range(7):
+            iid = self_p.get(f"item{i}", 0)
+            if iid and iid > 0:
+                name = _get_item_name(iid)
+                # Filter out obvious non-core items (Boots, Potions, Wards)
+                # Keep it simple: valid names only. Coach can filter context.
+                if "Potion" not in name and "Ward" not in name and "Biscuit" not in name:
+                    items_found.append(name)
+        
+        for iname in items_found:
+            champ_items[my_champ][iname] = champ_items[my_champ].get(iname, 0) + 1
+
+        # 2. Matchup Tracking
+        if my_role and my_role != "UTILITY": # Skip support matchups for now (too chaotic)
+             opponent = next((p for p in participants 
+                              if p.get("teamPosition") == my_role 
+                              and p.get("teamId") != self_p.get("teamId")), None)
+             
+             if opponent:
+                 vs_champ = opponent.get("champion_name", "Unknown")
+                 if my_champ not in champ_matchups: champ_matchups[my_champ] = {}
+                 if vs_champ not in champ_matchups[my_champ]: champ_matchups[my_champ][vs_champ] = [0, 0] # [W, L]
+                 
+                 if win: champ_matchups[my_champ][vs_champ][0] += 1
+                 else: champ_matchups[my_champ][vs_champ][1] += 1
+
+    # Format Item Profile
+    item_profile_lines = []
+    for champ, item_counts in champ_items.items():
+        # Get top 5 most frequent items
+        sorted_items = sorted(item_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+        top_items_str = ", ".join([f"{name} ({count})" for name, count in sorted_items])
+        item_profile_lines.append(f"- **{champ}** Core: {top_items_str}")
+    item_context = "\n".join(item_profile_lines)
+    
+    # Format Matchup Profile (Only significant data: >0 games)
+    matchup_profile_lines = []
+    for champ, opponents in champ_matchups.items():
+        significant_opps = []
+        for opp, record in opponents.items():
+            wins, losses = record
+            total = wins + losses
+            if total >= 1: # Log all for context, AI can filter
+                wr = int((wins / total) * 100)
+                significant_opps.append(f"vs {opp} ({wins}W-{losses}L, {wr}%)")
+        
+        if significant_opps:
+            matchup_profile_lines.append(f"- **{champ}**: {', '.join(significant_opps)}")
+            
+    matchup_context = "\n".join(matchup_profile_lines)
+    # -------------------------------------------------------
 
     timeline_diag = agent_payload.get("timeline_loss_diagnostics", [])
     movement = agent_payload.get("movement_summaries", [])
@@ -361,6 +483,21 @@ You vs Team:
 {json.dumps(patch_summary, ensure_ascii=False)}
 ```
 
+9. Actual Item Preference (DO NOT HALLUCINATE):
+```text
+{item_context}
+```
+
+10. Actual Matchup Data (Win/Loss vs Specific Champs):
+```text
+{matchup_context}
+```
+
+11. Actual Rune Preference (DO NOT HALLUCINATE):
+```text
+{rune_context}
+```
+
 ---
 
 ## Required JSON Output
@@ -368,9 +505,9 @@ Start response with {{{{ and end with }}}}. Output ONLY valid JSON.
 format:
 {{{{
   "overview": "**The Diagnosis**.\n\n1. **Your Archetype**: [Name]. Explain who they are as a player based on the data.\n2. **The Root Cause**: Explain the underlying habit or mindset issue causing their losses.\n3. **The 'One Big Thing'**: The single most critical focus area.",
-  "champion_feedback": "**Champion-Specific Adjustments**. Use '### ChampionName' headers for each group. Focus on specific identity shifts.",
-  "itemization_tips": "**Build Efficiency**. Point out static build errors or rune mistakes seen in the data.",
-  "goals": "**Top 5 Strategic Priorities**. A ranked list of 5 concrete, actionable habits to fix the Root Cause. No fluff."
+  "champion_feedback": "**Champion-Specific Adjustments**\n\n(Identify specific identity shifts or mechanical corrections for their top champions. Use '### ChampionName' headers.)",
+  "itemization_tips": "**Build Efficiency**\n\n(Analyze static build path errors or rune mistakes. Be specific.)",
+  "goals": "**Top 5 Strategic Priorities**\n\n(A ranked list of 5 concrete, actionable habits.)"
 }}}}
 """
     return prompt.strip()
