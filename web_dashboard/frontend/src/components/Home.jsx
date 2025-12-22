@@ -15,10 +15,14 @@ export default function Home({ onSelect, onAnalyze }) {
     const searchRef = useRef(null);
 
     useEffect(() => {
-        // Fetch recent analyses for the dropdown
-        axios.get(`${config.API_URL}/api/analyses/`)
-            .then(res => setRecentAnalyses(res.data))
-            .catch(err => console.error("Failed to load recent analyses", err));
+        // Fetch local history for the dropdown
+        try {
+            const raw = localStorage.getItem('searchHistory');
+            const history = raw ? JSON.parse(raw) : [];
+            setRecentAnalyses(history);
+        } catch (e) {
+            console.error("Failed to load local history", e);
+        }
 
         // Click outside handler
         function handleClickOutside(event) {
@@ -46,7 +50,27 @@ export default function Home({ onSelect, onAnalyze }) {
         setAnalyzeError(null);
 
         try {
+            // Save to Local History immediately (Optimistic UI) 
+            // OR wait for success? Let's do optimistic to feel responsive, or success to clear trash.
+            // Let's do success to avoid saving typos.
             await onAnalyze(targetId, matchCount, region);
+
+            // Add to history if successful (onAnalyze throws if navigation fails)
+            const newEntry = {
+                riot_id: targetId,
+                region: region,
+                created: Date.now() / 1000, // Matches backend timestamp format (seconds)
+                timestamp: Date.now() // For sorting locally if needed
+            };
+
+            setRecentAnalyses(prev => {
+                // Remove duplicates
+                const filtered = prev.filter(p => p.riot_id.toLowerCase() !== targetId.toLowerCase());
+                const updated = [newEntry, ...filtered].slice(0, 10); // Keep top 10
+                localStorage.setItem('searchHistory', JSON.stringify(updated));
+                return updated;
+            });
+
         } catch (error) {
             console.error('Analysis failed:', error);
             const errorMsg = error.response?.data?.error || error.message || "Unknown error occurred";

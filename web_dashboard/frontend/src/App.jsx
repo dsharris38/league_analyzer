@@ -63,26 +63,58 @@ function App() {
         return;
       }
 
-      // 2. If not found, trigger new analysis
-      await axios.post(`${config.API_URL}/api/analyze/`, {
+      // 2. STAGE 1: Stats Only (Fastest) -> Get user into dashboard ASAP
+      // call_ai: false
+      const postRes = await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
         match_count: matchCount,
-        region: region
+        region: region,
+        call_ai: false // Key change: Disabled for first pass
       });
 
-      // 3. Fetch list again to find the new file
+      // 3. Load Stage 1 Result
+      // Re-fetch files list
       const res2 = await axios.get(`${config.API_URL}/api/analyses/?_t=${Date.now()}`);
       const files2 = res2.data;
-      // Fallback to latest but try to match first
       const match2 = files2.find(f =>
         f.riot_id.toLowerCase().replace(/#/g, '').replace(/\s/g, '') === targetId
-      ) || (files2.length > 0 ? files2[0] : null);
+      );
 
       if (match2) {
-        handleSelect(match2.filename);
+        // Load the dashboard with stats immediately
+        await handleSelect(match2.filename);
+        setLoading(false); // Validating success -> Unblock UI
+
+        // 4. STAGE 2: AI Coach (Background)
+        // Verify if we need AI (if cached file was old? no, we know it's new)
+        // Just always call Stage 2 to hydrate AI. Smart Resume in backend handles data reuse.
+        console.log("Triggering Background AI Analysis...");
+        try {
+          // Note: Backend 'Smart Resume' will see existing stats and skip fetching matches
+          await axios.post(`${config.API_URL}/api/analyze/`, {
+            riot_id: riotId,
+            match_count: matchCount,
+            region: region,
+            call_ai: true,
+            force_refresh: false // Use existing stats
+          });
+
+          console.log("AI Analysis Complete. Refreshing data...");
+          // Reload the analysis file silently to get the new 'agent_payload.coaching_report'
+          const refreshRes = await axios.get(`${config.API_URL}/api/analyses/${match2.filename}/?_t=${Date.now()}`);
+          setAnalysisData(refreshRes.data);
+
+        } catch (aiErr) {
+          console.error("Background AI failed:", aiErr);
+          // Optional: Show toast error? For now silent failure is okay, user sees stats.
+        }
+
       } else {
         setLoading(false);
-        alert("Analysis completed but file not found.");
+        const postDebug = postRes.data.debug || {};
+
+        // Standard error with debug info for verification
+        alert(`Analysis completed but file not found.\nDebug: DB=${postDebug.db_connected}, Verified=${postDebug.save_verified}, Count=${postDebug.db_doc_count}, SavedID=${postDebug.saved_id}`);
       }
     } catch (err) {
       console.error("Navigation error:", err);

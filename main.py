@@ -230,6 +230,60 @@ def run_analysis_pipeline(
         except Exception:
             pass
 
+    # --- SMART RESUME START ---
+    # If we are asked to call AI, check if we already have the raw stats in DB.
+    # This allows the frontend to split the request: 
+    # 1. Get Stats (Fast) 
+    # 2. Get AI (Slow, but resumes from step 1)
+    if call_ai:
+        from database import Database
+        db = Database()
+        existing_doc = db.get_analysis(riot_id)
+        
+        # We resume if:
+        # 1. We have a doc
+        # 2. It has 'analysis' (stats computed)
+        # 3. It DOES NOT have 'coaching_report' (or we want to re-run AI?)
+        # For now, we assume if call_ai=True and doc exists, we want to add AI to it.
+        if existing_doc and "analysis" in existing_doc:
+            console.print(f"[bold green]SMART RESUME: Found existing stats for {riot_id}. Skipping match fetch, jumping to AI.[/bold green]")
+            agent_payload = existing_doc
+            
+            # Ensure AI loading flag is set
+            agent_payload["ai_loading"] = True
+            
+            # --- JUMP TO AI EXECUTION ---
+            # Code structure makes jumping hard without refactoring.
+            # We will return early by running the AI part here and returning.
+            # Ideally we refactor `call_league_crew` block into a function, but for now we copy the block pattern.
+            
+            console.print("Contacting League Coach Crew (Gemini - may take 10-30s)...")
+            try:
+                coaching_report = call_league_crew(agent_payload)
+                
+                if isinstance(coaching_report, dict):
+                    console.print("\n[bold]Coaching Overview:[/bold]")
+                    console.print(coaching_report.get("overview", "No overview provided."))
+                else:
+                    console.print(coaching_report)
+
+                # Embed the coaching report into the payload
+                agent_payload["coaching_report"] = coaching_report
+                if isinstance(coaching_report, str):
+                    agent_payload["coaching_report_markdown"] = coaching_report
+            except Exception as e:
+                console.print(f"[red]Failed to call League Coach Crew: {e}[/red]")
+                
+            agent_payload["ai_loading"] = False
+            
+            # Final Save
+            if save_json:
+                db.save_analysis(agent_payload)
+                console.print(f"[green]STAGE 2: Saved Smart Resume Analysis to MongoDB[/green]")
+                
+            return agent_payload
+    # --- SMART RESUME END ---
+
     # If missing, fetch fresh
     if not account or not summoner:
         console.print(f"[bold]Looking up account on {region_key} (Routing: {client.region})...[/bold]")
@@ -533,12 +587,23 @@ def run_analysis_pipeline(
     if save_json:
         # safe_riot_id computed above or here
         from database import Database
+        print(f"[DEBUG] Initializing Database for Final Save...")
         db = Database()
+        print(f"[DEBUG] DB Connected: {db.is_connected}")
         try:
+            print(f"[DEBUG] Saving analysis for {agent_payload.get('riot_id')}...")
+            # Validate Payload
+            if "analysis" not in agent_payload:
+                print(f"[ERROR] 'analysis' KEY MISSING FROM PAYLOAD! Keys: {list(agent_payload.keys())}")
+            else:
+                print(f"[DEBUG] 'analysis' key present. Subkeys: {list(agent_payload['analysis'].keys())}")
+
             db.save_analysis(agent_payload)
-            console.print(f"[green]STAGE 2: Saved Final Analysis with AI to MongoDB[/green]")
+            print(f"[green]STAGE 2: Saved Final Analysis with AI to MongoDB[/green]")
         except Exception as e:
             console.print(f"[red]Failed to save Stage 2 Analysis to DB: {e}[/red]")
+            import traceback
+            traceback.print_exc()
 
             if open_dashboard:
                 import webbrowser

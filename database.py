@@ -18,6 +18,13 @@ class Database:
         return cls._instance
 
     def _initialize(self):
+        # Ensure .env is loaded for scripts/CLI usage
+        try:
+            from dotenv import load_dotenv
+            load_dotenv()
+        except ImportError:
+            pass
+
         # Default to local if no URI provided (dev mode safe fallback)
         uri = os.environ.get("MONGO_URI")
         if not uri:
@@ -47,24 +54,24 @@ class Database:
 
     def get_match(self, match_id: str) -> Optional[Dict[str, Any]]:
         col = self._get_collection("matches")
-        if not col: return None
+        if col is None: return None
         return col.find_one({"metadata.matchId": match_id}, {"_id": 0})
 
     def save_match(self, match_data: Dict[str, Any]):
         col = self._get_collection("matches")
-        if not col or not match_data: return
+        if col is None or not match_data: return
         match_id = match_data.get("metadata", {}).get("matchId")
         if match_id:
             col.replace_one({"metadata.matchId": match_id}, match_data, upsert=True)
 
     def get_timeline(self, match_id: str) -> Optional[Dict[str, Any]]:
         col = self._get_collection("timelines")
-        if not col: return None
+        if col is None: return None
         return col.find_one({"metadata.matchId": match_id}, {"_id": 0})
 
     def save_timeline(self, match_id: str, timeline_data: Dict[str, Any]):
         col = self._get_collection("timelines")
-        if not col or not timeline_data: return
+        if col is None or not timeline_data: return
         # Ensure ID is searchable
         timeline_data["metadata"] = timeline_data.get("metadata", {})
         timeline_data["metadata"]["matchId"] = match_id
@@ -72,31 +79,63 @@ class Database:
 
     # --- Analysis Storage ---
 
+    def _sanitize_document(self, doc: Any) -> Any:
+        """Recursively replace dots in dictionary keys with underscores for MongoDB compatibility."""
+        if isinstance(doc, dict):
+            new_doc = {}
+            for k, v in doc.items():
+                clean_k = str(k).replace(".", "_")
+                new_doc[clean_k] = self._sanitize_document(v)
+            return new_doc
+        elif isinstance(doc, list):
+            return [self._sanitize_document(item) for item in doc]
+        else:
+            return doc
+
     def save_analysis(self, analysis_data: Dict[str, Any]):
         col = self._get_collection("analyses")
-        if not col or not analysis_data: return
+        if col is None or not analysis_data: return
         
+        # Sanitize data to remove dots from keys (e.g. "15.8" -> "15_8")
+        analysis_data = self._sanitize_document(analysis_data)
+        
+        if "created" not in analysis_data:
+            import time
+            analysis_data["created"] = time.time()
+            
         riot_id = analysis_data.get("riot_id", "Unknown")
         # Identify by Riot ID
-        # Note: We might want a unique run ID or just overwrite the user's "latest"?
-        # Current logic: One active analysis per Riot ID (to match file system behavior)
-        col.replace_one({"riot_id": riot_id}, analysis_data, upsert=True)
+        try:
+            col.replace_one({"riot_id": riot_id}, analysis_data, upsert=True)
+            print(f"[DB-DEBUG] Saved analysis for {riot_id}")
+        except Exception as e:
+            msg = f"[DB-ERROR] Failed to save analysis for {riot_id}: {e}"
+            print(msg)
+            import traceback
+            traceback.print_exc()
+            try:
+                with open("db_error.log", "w") as f:
+                    f.write(msg + "\n")
+                    traceback.print_exc(file=f)
+            except:
+                pass
 
     def get_analysis(self, riot_id: str) -> Optional[Dict[str, Any]]:
         col = self._get_collection("analyses")
-        if not col: return None
+        if col is None: return None
         return col.find_one({"riot_id": riot_id}, {"_id": 0})
 
     def list_analyses(self) -> List[Dict[str, Any]]:
         col = self._get_collection("analyses")
-        if not col: return []
+        if col is None: return []
         
         cursor = col.find({}, {
             "riot_id": 1, 
             "region": 1, 
             "summary": 1, 
             "match_count_requested": 1,
-            "meta": 1, 
+            "meta": 1,
+            "created": 1, 
             "_id": 0
         })
         
@@ -106,7 +145,7 @@ class Database:
             results.append({
                 "riot_id": doc.get("riot_id"),
                 "filename": f"league_analysis_{doc.get('riot_id').replace('#','_')}.json", # Virtual filename for frontend compat
-                "created": time.time(), # TODO: Add timestamps to DB save
+                "created": doc.get("created", time.time()), # Timestamp from DB
                 "primary_role": doc.get("summary", {}).get("primary_role", "Unknown"),
                 "match_count": doc.get("match_count_requested", 0)
             })

@@ -33,6 +33,8 @@ class AnalysisListView(APIView):
             files.sort(key=lambda x: x.get('created', 0), reverse=True)
             return Response(files)
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(f"Error listing analyses: {e}")
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -84,7 +86,11 @@ class AnalysisDetailView(APIView):
                 for doc in all_docs:
                     # Reconstruct what the filename would be
                     r_id = doc.get('riot_id', '')
-                    safe_r = r_id.replace('#', '_')
+                    # Match frontend: replace # AND spaces with _
+                    safe_r = r_id.replace('#', '_').replace(' ', '_')
+                    
+                    # Case-insensitive comparison? Filesystem was case-sensitive on Linux but not Windows.
+                    # Let's try exact first.
                     if safe_r == core:
                         # Found it, fetch full doc
                         target_doc = db.get_analysis(r_id)
@@ -224,20 +230,24 @@ class RunAnalysisView(APIView):
         # Note: This is case-sensitive on Linux, but usually files are saved with original casing or normalized?
         # main.py uses the riot_id as passed or from account data. 
         # To be safe, we might miss if case differs, but accurate inputs will hit cache.
-        safe_id = riot_id.replace('#', '_').replace(' ', '_')
-        expected_filename = f"league_analysis_{safe_id}.json"
-        expected_path = SAVES_DIR / expected_filename
+        # Check for existing analysis in MongoDB
+        from database import Database
+        db = Database()
+        existing_doc = db.get_analysis(riot_id)
         
-        # If file exists and is recent (< 2 hours), skip re-run
-        # Or just return it if it exists for now to satisfy "save tokens" request strongly.
-        if expected_path.exists() and not force_refresh:
-            # Check age? 
-            # stats = expected_path.stat()
-            # if time.time() - stats.st_mtime < 7200: ...
-            # For now, simply return success. The user can delete the file if they want a force-fresh run (not exposed yet)
-            # or we can add a 'force' param later.
-            print(f"CACHE HIT: Found existing analysis for {riot_id}, skipping pipeline.")
-            return Response({'status': 'success', 'riot_id': riot_id, 'cached': True})
+        if existing_doc and not force_refresh:
+            print(f"CACHE HIT (DB): Found existing analysis for {riot_id}, skipping pipeline.")
+            return Response({
+                'status': 'success', 
+                'riot_id': riot_id, 
+                'cached': True,
+                'debug': {
+                    'db_connected': db.is_connected,
+                    'save_verified': True,
+                    'saved_id': existing_doc.get('riot_id'),
+                    'db_doc_count': len(db.list_analyses())
+                }
+            })
             
         try:
             # Run the pipeline
@@ -263,7 +273,29 @@ class RunAnalysisView(APIView):
             if "error" in analysis_result:
                 return Response({'error': analysis_result['error']}, status=status.HTTP_400_BAD_REQUEST)
             
-            return Response({'status': 'success', 'riot_id': riot_id})
+            # Verify save immediately
+            from database import Database
+            db = Database()
+            saved_doc = db.get_analysis(riot_id)
+            print(f"[DEBUG-VIEW] Run Complete. DB Connected: {db.is_connected}. Analysis found in DB? {bool(saved_doc)}")
+            if saved_doc:
+                print(f"[DEBUG-VIEW] Saved ID: {saved_doc.get('riot_id')}")
+            else:
+                print(f"[DEBUG-VIEW] ANALYSIS MISSING FROM DB! Riot ID: {riot_id}")
+                # Try list all to see what's there
+                all_docs = db.list_analyses()
+                print(f"[DEBUG-VIEW] Current DB entries ({len(all_docs)}): {[d.get('riot_id') for d in all_docs]}")
+
+            return Response({
+                'status': 'success', 
+                'riot_id': riot_id,
+                'debug': {
+                    'db_connected': db.is_connected,
+                    'save_verified': bool(saved_doc),
+                    'saved_id': saved_doc.get('riot_id') if saved_doc else None,
+                    'db_doc_count': len(db.list_analyses())
+                }
+            })
             
         except Exception as e:
             import traceback
