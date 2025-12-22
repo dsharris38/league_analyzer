@@ -237,27 +237,27 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
                 <div className="flex items-center justify-between mb-8">
                     <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
                         <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-                        <span className="text-sm font-medium">Find Summoner</span>
+                        <span className="text-sm font-medium hidden md:inline">Find Summoner</span>
                     </button>
 
                     {/* Identity (Icon + Name + History) */}
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 md:gap-6">
+                        <div className="flex items-center gap-3 md:gap-4">
                             <div className="relative group">
                                 <img
                                     src={`https://ddragon.leagueoflegends.com/cdn/${version || '14.23.1'}/img/profileicon/${data.summoner_info?.profileIconId || 29}.png`}
                                     alt="Summoner Icon"
-                                    className="w-16 h-16 rounded-2xl border-2 border-violet-400/50 shadow-[0_0_15px_rgba(139,92,246,0.3)] group-hover:border-violet-400 transition-all"
+                                    className="w-12 h-12 md:w-16 md:h-16 rounded-2xl border-2 border-violet-400/50 shadow-[0_0_15px_rgba(139,92,246,0.3)] group-hover:border-violet-400 transition-all"
                                 />
-                                <div className="absolute -bottom-1 -right-1 bg-[#0b0c2a] text-xs font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-300">
+                                <div className="absolute -bottom-1 -right-1 bg-[#0b0c2a] text-[10px] md:text-xs font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-300">
                                     {data.summoner_info?.summonerLevel || "30"}
                                 </div>
                             </div>
                             <div className="flex flex-col">
-                                <h1 className="text-4xl font-black text-white tracking-tight">
+                                <h1 className="text-2xl md:text-4xl font-black text-white tracking-tight">
                                     {data.game_name}
                                 </h1>
-                                <div className="text-slate-400 text-sm font-mono tracking-widest">#{data.tag_line}</div>
+                                <div className="text-slate-400 text-xs md:text-sm font-mono tracking-widest">#{data.tag_line}</div>
                             </div>
                         </div>
 
@@ -288,11 +288,12 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
                         {isUpdating ? (
                             <>
                                 <span className="w-3 h-3 border-2 border-violet-400 border-t-transparent rounded-full animate-spin"></span>
-                                Updating...
+                                <span className="hidden md:inline">Updating...</span>
                             </>
                         ) : (
-                            "Update Data"
+                            <span className="hidden md:inline">Update Data</span>
                         )}
+                        {!isUpdating && <span className="md:hidden text-xs">Update</span>}
                     </button>
                 </div>
 

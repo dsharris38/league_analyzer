@@ -112,7 +112,7 @@ export default function Home({ onSelect, onAnalyze }) {
                             }}
                             onFocus={() => setShowRecent(true)}
                             placeholder="Search Riot ID (e.g. Faker#KR1)"
-                            className="block w-full pl-14 pr-72 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-slate-400 rounded-xl shadow-2xl focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 text-lg font-medium outline-none transition-all"
+                            className="block w-full pl-14 pr-32 md:pr-64 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-slate-400 rounded-xl shadow-2xl focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 text-lg font-medium outline-none transition-all"
                         />
 
                         <div className="absolute inset-y-2 right-2 flex items-center gap-2">
@@ -154,7 +154,14 @@ export default function Home({ onSelect, onAnalyze }) {
                                 disabled={analyzing}
                                 className="bg-violet-600 hover:bg-violet-500 text-white border border-white/20 p-3 rounded-lg font-bold transition-all shadow-lg shadow-violet-500/20"
                             >
-                                {analyzing ? <Loader2 className="animate-spin" /> : "Analyze"}
+                                {analyzing ? (
+                                    <Loader2 className="animate-spin" />
+                                ) : (
+                                    <>
+                                        <span className="hidden md:inline">Analyze</span>
+                                        <Search className="md:hidden" size={20} />
+                                    </>
+                                )}
                             </button>
                         </div>
                     </form>

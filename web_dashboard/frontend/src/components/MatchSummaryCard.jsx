@@ -40,7 +40,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                 </div>
             )}
             <div className={clsx(
-                "flex flex-col md:flex-row items-stretch border shadow-lg transition-all hover:shadow-xl hover:border-white/20 h-auto md:min-h-28 relative backdrop-blur-md overflow-hidden",
+                "flex flex-row items-stretch border shadow-lg transition-all hover:shadow-xl hover:border-white/20 h-auto md:min-h-28 relative backdrop-blur-md overflow-hidden",
                 isExpanded ? "rounded-t-xl rounded-b-none border-b-0" : "rounded-xl mb-2",
                 win
                     ? "bg-slate-900/40 border-l-4 border-l-blue-500 hover:border-l-blue-500 border-y-white/5 border-r-transparent shadow-blue-900/10"
@@ -49,7 +49,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                 match.tags?.includes("Weak Link") && "ring-1 ring-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.2)]"
             )}>
                 {/* Game Info */}
-                <div className="w-full md:w-28 p-2 flex flex-col justify-center text-xs text-slate-400 shrink-0 border-b md:border-b-0 md:border-r border-slate-700">
+                <div className="w-24 md:w-28 p-2 flex flex-col justify-center text-[10px] md:text-xs text-slate-400 shrink-0 border-r border-slate-700">
                     <div className={clsx("font-bold mb-0.5", win ? "text-blue-400" : "text-red-400")}>
                         {(() => {
                             const q = match.queue_id;
