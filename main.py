@@ -425,7 +425,7 @@ def run_analysis_pipeline(
         "analysis": analysis,
         "timeline_loss_diagnostics": timeline_loss_diagnostics,
         "movement_summaries": movement_summaries,
-        "champion_mastery": client.get_champion_mastery(puuid)[:10], # Top 10 mastery
+        "champion_mastery": client.get_champion_mastery(puuid)[:100], # Top 100 mastery
         "meta": {
             "intended_role_focus": summary.get("primary_role", "FLEX"),
             "player_self_reported_rank": summary.get(

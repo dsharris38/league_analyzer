@@ -6,7 +6,7 @@ import heroBg from '../assets/hero_bg.jpg';
 
 export default function Home({ onSelect, onAnalyze }) {
     const [riotId, setRiotId] = useState('');
-    const [matchCount, setMatchCount] = useState(20);
+    const [matchCount, setMatchCount] = useState(50);
     const [region, setRegion] = useState('NA');
     const [recentAnalyses, setRecentAnalyses] = useState([]);
     const [showRecent, setShowRecent] = useState(false);
