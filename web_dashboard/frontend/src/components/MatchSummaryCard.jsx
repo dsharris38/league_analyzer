@@ -105,10 +105,10 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                 </div>
 
                 {/* Player Stats */}
-                <div className="flex-1 flex flex-col md:flex-row items-center px-1 md:px-2 xl:px-4 gap-2 md:gap-0 min-w-0">
+                <div className="flex-1 flex flex-row flex-wrap md:flex-nowrap items-center px-1 md:px-2 xl:px-4 gap-2 md:gap-0 min-w-0">
 
                     {/* Champion & Spells - Fixed Width */}
-                    <div className="flex gap-2 items-center w-full md:w-auto shrink-0 justify-center md:justify-start">
+                    <div className="flex gap-2 items-center w-auto shrink-0 justify-start">
                         <div className="relative">
                             <img
                                 src={getChampionIconUrl(self.champion_name)}
@@ -140,7 +140,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                     </div>
 
                     {/* KDA - Compact */}
-                    <div className="flex flex-col items-center md:items-start w-full md:w-24 shrink-0 justify-center ml-2">
+                    <div className="flex flex-col items-start w-auto md:w-24 shrink-0 justify-center ml-2">
                         <div className="text-base font-bold text-white font-mono tracking-tight">
                             <span>{self.kills}</span>
                             <span className="text-slate-500 mx-1">/</span>
@@ -154,7 +154,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                     </div>
 
                     {/* CS & Vision - Compact */}
-                    <div className="text-xs text-slate-400 text-center md:text-left w-full md:w-24 shrink-0 flex flex-col justify-center">
+                    <div className="text-xs text-slate-400 text-left w-auto md:w-24 shrink-0 flex flex-col justify-center">
                         <div className="text-slate-300">CS {self.cs} ({self.cs_per_min})</div>
                         <div className="text-red-400">P/Kill {Math.round(((self.kills + self.assists) / Math.max(1, team100.includes(self) ? team100.reduce((a, b) => a + b.kills, 0) : team200.reduce((a, b) => a + b.kills, 0))) * 100)}%</div>
                         <div>Vis {self.vision_score}</div>
@@ -163,7 +163,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
 
 
                     {/* Items - Flexible Fill (Wrap enabled to prevent overlap) */}
-                    <div className="flex gap-1 items-center justify-center md:justify-start flex-1 min-w-0 flex-wrap pr-2">
+                    <div className="flex gap-1 items-center justify-start flex-1 min-w-0 flex-wrap pr-2 w-full md:w-auto mt-2 md:mt-0 border-t border-white/5 md:border-none pt-2 md:pt-0">
                         {[self.item0, self.item1, self.item2, self.item3, self.item4, self.item5].map((item, i) => {
                             const itemData = getItemData(item);
                             return (

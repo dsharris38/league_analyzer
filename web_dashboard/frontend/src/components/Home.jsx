@@ -111,15 +111,15 @@ export default function Home({ onSelect, onAnalyze }) {
                                 setShowRecent(true);
                             }}
                             onFocus={() => setShowRecent(true)}
-                            placeholder="Search Riot ID (e.g. Faker#KR1)"
-                            className="block w-full pl-14 pr-32 md:pr-64 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-slate-400 rounded-xl shadow-2xl focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 text-lg font-medium outline-none transition-all"
+                            placeholder="Search Name#Tag"
+                            className="block w-full pl-14 pr-40 md:pr-64 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white placeholder:text-slate-400 rounded-xl shadow-2xl focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 text-lg font-medium outline-none transition-all"
                         />
 
                         <div className="absolute inset-y-2 right-2 flex items-center gap-2">
                             <select
                                 value={region}
                                 onChange={(e) => setRegion(e.target.value)}
-                                className="bg-slate-900/50 border border-white/10 text-slate-300 text-sm font-medium rounded-lg px-2 py-2 outline-none hover:bg-violet-500/10 hover:text-white cursor-pointer transition-colors"
+                                className="bg-slate-900 border border-white/10 text-slate-300 text-sm font-medium rounded-lg px-2 py-2 outline-none hover:bg-violet-500/10 hover:text-white cursor-pointer transition-colors focus:ring-2 focus:ring-violet-500/50 [color-scheme:dark]"
                             >
                                 <option value="NA">NA</option>
                                 <option value="EUW">EUW</option>
@@ -142,7 +142,7 @@ export default function Home({ onSelect, onAnalyze }) {
                             <select
                                 value={matchCount}
                                 onChange={(e) => setMatchCount(Number(e.target.value))}
-                                className="bg-slate-900/50 border border-white/10 text-slate-300 text-sm font-medium rounded-lg px-3 py-2 outline-none hover:bg-violet-500/10 hover:text-white cursor-pointer hidden sm:block transition-colors"
+                                className="bg-slate-900 border border-white/10 text-slate-300 text-sm font-medium rounded-lg px-3 py-2 outline-none hover:bg-violet-500/10 hover:text-white cursor-pointer hidden sm:block transition-colors focus:ring-2 focus:ring-violet-500/50 [color-scheme:dark]"
                             >
                                 <option value={10}>10 Games</option>
                                 <option value={20}>20 Games</option>
