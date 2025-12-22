@@ -141,12 +141,12 @@ export default function AnalysisList({ onSelect }) {
                                 <select
                                     value={matchCount}
                                     onChange={(e) => setMatchCount(Number(e.target.value))}
-                                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none [color-scheme:dark]"
+                                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none [color-scheme:dark] focus:bg-slate-900"
                                 >
-                                    <option value={10}>10 Games</option>
-                                    <option value={20}>20 Games</option>
-                                    <option value={30}>30 Games</option>
-                                    <option value={50}>50 Games</option>
+                                    <option value={10} className="bg-slate-900 text-slate-300">10 Games</option>
+                                    <option value={20} className="bg-slate-900 text-slate-300">20 Games</option>
+                                    <option value={30} className="bg-slate-900 text-slate-300">30 Games</option>
+                                    <option value={50} className="bg-slate-900 text-slate-300">50 Games</option>
                                 </select>
                             </div>
 

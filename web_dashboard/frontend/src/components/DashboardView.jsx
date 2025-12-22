@@ -354,9 +354,9 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
                                         onChange={(e) => setFilters({ ...filters, result: e.target.value })}
                                         className="bg-slate-900 border border-slate-700/50 rounded-md px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 [color-scheme:dark] cursor-pointer hover:bg-slate-800 transition-colors"
                                     >
-                                        <option value="ALL">All Matches</option>
-                                        <option value="WIN">Wins</option>
-                                        <option value="LOSS">Losses</option>
+                                        <option value="ALL" className="bg-slate-900 text-slate-300">All Matches</option>
+                                        <option value="WIN" className="bg-slate-900 text-slate-300">Wins</option>
+                                        <option value="LOSS" className="bg-slate-900 text-slate-300">Losses</option>
                                     </select>
                                 </div>
                             </div>

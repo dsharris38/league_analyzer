@@ -119,35 +119,27 @@ export default function Home({ onSelect, onAnalyze }) {
                             <select
                                 value={region}
                                 onChange={(e) => setRegion(e.target.value)}
-                                className="bg-slate-900 border border-white/10 text-slate-300 text-sm font-medium rounded-lg px-2 py-2 outline-none hover:bg-violet-500/10 hover:text-white cursor-pointer transition-colors focus:ring-2 focus:ring-violet-500/50 [color-scheme:dark]"
+                                className="bg-slate-900 border border-white/10 text-slate-300 text-sm font-medium rounded-lg px-2 py-2 outline-none hover:bg-violet-500/10 hover:text-white cursor-pointer transition-colors focus:ring-2 focus:ring-violet-500/50 [color-scheme:dark] focus:bg-slate-900"
                             >
-                                <option value="NA">NA</option>
-                                <option value="EUW">EUW</option>
-                                <option value="EUNE">EUNE</option>
-                                <option value="KR">KR</option>
-                                <option value="BR">BR</option>
-                                <option value="LAN">LAN</option>
-                                <option value="LAS">LAS</option>
-                                <option value="OCE">OCE</option>
-                                <option value="TR">TR</option>
-                                <option value="RU">RU</option>
-                                <option value="JP">JP</option>
-                                <option value="PH">PH</option>
-                                <option value="SG">SG</option>
-                                <option value="TH">TH</option>
-                                <option value="TW">TW</option>
-                                <option value="VN">VN</option>
+                                <option value="NA" className="bg-slate-900 text-slate-300">NA</option>
+                                <option value="EUW" className="bg-slate-900 text-slate-300">EUW</option>
+                                <option value="EUNE" className="bg-slate-900 text-slate-300">EUNE</option>
+                                <option value="KR" className="bg-slate-900 text-slate-300">KR</option>
+                                <option value="BR" className="bg-slate-900 text-slate-300">BR</option>
+                                <option value="LAN" className="bg-slate-900 text-slate-300">LAN</option>
+                                <option value="LAS" className="bg-slate-900 text-slate-300">LAS</option>
+                                <option value="OCE" className="bg-slate-900 text-slate-300">OCE</option>
+                                <option value="TR" className="bg-slate-900 text-slate-300">TR</option>
+                                <option value="RU" className="bg-slate-900 text-slate-300">RU</option>
+                                <option value="JP" className="bg-slate-900 text-slate-300">JP</option>
+                                <option value="PH" className="bg-slate-900 text-slate-300">PH</option>
+                                <option value="SG" className="bg-slate-900 text-slate-300">SG</option>
+                                <option value="TH" className="bg-slate-900 text-slate-300">TH</option>
+                                <option value="TW" className="bg-slate-900 text-slate-300">TW</option>
+                                <option value="VN" className="bg-slate-900 text-slate-300">VN</option>
                             </select>
 
-                            <select
-                                value={matchCount}
-                                onChange={(e) => setMatchCount(Number(e.target.value))}
-                                className="bg-slate-900 border border-white/10 text-slate-300 text-sm font-medium rounded-lg px-3 py-2 outline-none hover:bg-violet-500/10 hover:text-white cursor-pointer hidden sm:block transition-colors focus:ring-2 focus:ring-violet-500/50 [color-scheme:dark]"
-                            >
-                                <option value={10}>10 Games</option>
-                                <option value={20}>20 Games</option>
-                                <option value={30}>30 Games</option>
-                            </select>
+
 
                             <button
                                 type="submit"
