@@ -478,10 +478,7 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                 </div>
             </div>
 
-            <div className="flex flex-col 2xl:flex-row gap-6 items-start relative">
-
-
-
+            <div className="flex flex-col xl:flex-row gap-6 items-start relative">
                 {/* Left Column: Map + Timeline */}
                 <div className="flex-none flex flex-col gap-4 w-full xl:w-auto">
 
@@ -491,7 +488,7 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                         <div className="flex flex-col items-center gap-4 p-4">
                             {/* Map Itself */}
                             <div
-                                className="relative w-[512px] h-[512px] bg-slate-950 shadow-2xl rounded-lg overflow-hidden border border-white/10 select-none"
+                                className="relative w-full max-w-[420px] xl:w-[420px] aspect-square bg-slate-950 shadow-2xl rounded-lg overflow-hidden border border-white/10 select-none"
                             >
                                 <img
                                     src="/map_background_v2.jpg"
@@ -708,11 +705,11 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                     </div>
                 </div>
 
-                {/* Right Column: Event Log & Scoreboard */}
-                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+                {/* Right Column: Event Log */}
+                <div className="flex-1 w-full">
                     {/* Event Feed */}
                     <div
-                        className="w-full bg-slate-900 rounded-lg border border-slate-700 flex flex-col h-[670px]"
+                        className="w-full bg-slate-900 rounded-lg border border-slate-700 flex flex-col h-[580px]"
                     >
                         <div className="p-3 border-b border-slate-700 font-bold text-slate-300">
                             Event Log
@@ -779,80 +776,81 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
                         </div>
                     </div>
 
-                    {/* Scoreboard moved here */}
-                    <div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden h-[670px] flex flex-col">
-                        <div className="p-4 border-b border-slate-700 bg-slate-800/50">
-                            <h3 className="text-sm font-bold text-slate-300 uppercase">Scoreboard</h3>
-                        </div>
-                        <div className="flex-1 overflow-auto">
-                            <table className="w-full text-left text-xs">
-                                <thead className="text-slate-500 bg-slate-900/50 border-b border-slate-700 sticky top-0 z-10 backdrop-blur-md">
-                                    <tr>
-                                        <th className="px-4 py-3">Champion</th>
-                                        <th className="px-4 py-3 text-center">KDA</th>
-                                        <th className="px-4 py-3 text-center">CS</th>
-                                        <th className="px-4 py-3 text-center">Gold</th>
-                                        <th className="px-4 py-3">Items</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-800">
-                                    {match.participants.map(p => {
-                                        const stats = currentStats[p.puuid];
-                                        const isDead = championStates[p.puuid]?.isDead;
-                                        const isBlue = isBlueTeam(p);
-
-                                        return (
-                                            <tr key={p.puuid} className={clsx(
-                                                "transition-colors",
-                                                isDead ? "bg-red-900/20 grayscale opacity-70" : "hover:bg-slate-800/30"
-                                            )}>
-                                                <td className="px-4 py-2">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className={clsx(
-                                                            "w-8 h-8 rounded-sm border",
-                                                            isDead ? "border-slate-600" :
-                                                                isBlue ? "border-blue-500" : "border-red-500"
-                                                        )}>
-                                                            <img src={getChampionIconUrl(p.champion_name)} className="w-full h-full" />
-                                                        </div>
-                                                        <div className="flex flex-col">
-                                                            <span className={clsx("font-bold", isBlue ? "text-blue-400" : "text-red-400")}>
-                                                                {p.champion_name}
-                                                            </span>
-                                                            <span className="text-slate-500 text-[10px]">{p.riot_id.split('#')[0]}</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-4 py-2 text-center font-mono text-slate-300">
-                                                    {stats.kills}/{stats.deaths}/{stats.assists}
-                                                </td>
-                                                <td className="px-4 py-2 text-center text-slate-400">
-                                                    {stats.cs}
-                                                </td>
-                                                <td className="px-4 py-2 text-center text-yellow-600">
-                                                    {(stats.gold / 1000).toFixed(1)}k
-                                                </td>
-                                                <td className="px-4 py-2">
-                                                    <div className="flex gap-1">
-                                                        {stats.items.map((itemId, i) => (
-                                                            itemId > 0 ? (
-                                                                <img key={i} src={getItemIconUrl(itemId)} className="w-6 h-6 rounded border border-slate-700" />
-                                                            ) : (
-                                                                <div key={i} className="w-6 h-6 rounded border border-slate-800 bg-slate-900/50" />
-                                                            )
-                                                        ))}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div >
-
                 </div>
             </div>
+
+
+            {/* Scoreboard Full Width */}
+            <div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden flex flex-col">
+                <div className="p-2 border-b border-slate-700 bg-slate-800/50">
+                    <h3 className="text-sm font-bold text-slate-300 uppercase">Scoreboard</h3>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                        <thead className="text-slate-500 bg-slate-900/50 border-b border-slate-700 sticky top-0 z-10 backdrop-blur-md">
+                            <tr>
+                                <th className="px-4 py-2">Champion</th>
+                                <th className="px-4 py-2 text-center">KDA</th>
+                                <th className="px-4 py-2 text-center">CS</th>
+                                <th className="px-4 py-2 text-center">Gold</th>
+                                <th className="px-4 py-2">Items</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800">
+                            {match.participants.map(p => {
+                                const stats = currentStats[p.puuid];
+                                const isDead = championStates[p.puuid]?.isDead;
+                                const isBlue = isBlueTeam(p);
+
+                                return (
+                                    <tr key={p.puuid} className={clsx(
+                                        "transition-colors",
+                                        isDead ? "bg-red-900/20 grayscale opacity-70" : "hover:bg-slate-800/30"
+                                    )}>
+                                        <td className="px-4 py-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className={clsx(
+                                                    "w-6 h-6 rounded-sm border",
+                                                    isDead ? "border-slate-600" :
+                                                        isBlue ? "border-blue-500" : "border-red-500"
+                                                )}>
+                                                    <img src={getChampionIconUrl(p.champion_name)} className="w-full h-full" />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className={clsx("font-bold", isBlue ? "text-blue-400" : "text-red-400")}>
+                                                        {p.champion_name}
+                                                    </span>
+                                                    <span className="text-slate-500 text-[10px]">{p.riot_id.split('#')[0]}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-1 text-center font-mono text-slate-300">
+                                            {stats.kills}/{stats.deaths}/{stats.assists}
+                                        </td>
+                                        <td className="px-4 py-1 text-center text-slate-400">
+                                            {stats.cs}
+                                        </td>
+                                        <td className="px-4 py-1 text-center text-yellow-600">
+                                            {(stats.gold / 1000).toFixed(1)}k
+                                        </td>
+                                        <td className="px-4 py-1">
+                                            <div className="flex gap-1">
+                                                {stats.items.map((itemId, i) => (
+                                                    itemId > 0 ? (
+                                                        <img key={i} src={getItemIconUrl(itemId)} className="w-6 h-6 rounded border border-slate-700" />
+                                                    ) : (
+                                                        <div key={i} className="w-6 h-6 rounded border border-slate-800 bg-slate-900/50" />
+                                                    )
+                                                ))}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </div >
 
 
         </div >

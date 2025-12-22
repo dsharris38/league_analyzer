@@ -11,18 +11,18 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
 
     return (
 
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4">
-            <div className="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-6xl max-h-[95vh] flex flex-col shadow-2xl shadow-blue-500/10">
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-slate-950/80 backdrop-blur-md p-0 md:p-4 transition-all duration-300">
+            <div className="bg-slate-900/90 border-t md:border border-white/10 rounded-t-2xl md:rounded-2xl w-full max-w-7xl h-[90vh] md:max-h-[85vh] flex flex-col shadow-2xl shadow-blue-500/5 backdrop-blur-xl">
 
                 {/* Header */}
-                <div className="p-6 border-b border-white/10 flex justify-between items-center bg-slate-800/50 rounded-t-2xl">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-violet-500/20 rounded-lg text-violet-400">
+                <div className="p-4 md:p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-slate-900 via-slate-900/50 to-transparent rounded-t-2xl flex-shrink-0">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-violet-500/10 rounded-xl text-violet-400 border border-violet-500/20 shadow-[0_0_15px_rgba(139,92,246,0.1)]">
                             <Microscope size={24} />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">Deep Dive Analysis</h2>
-                            <p className="text-sm text-slate-400">AI-Powered Game Review</p>
+                            <h2 className="text-xl font-bold text-slate-100 tracking-wide uppercase">Deep Dive Analysis</h2>
+                            <p className="text-sm text-slate-400 font-medium">AI-Powered Game Review</p>
                         </div>
                     </div>
 
@@ -61,7 +61,7 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-slate-900/95">
+                <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar bg-slate-900/95">
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center h-64 gap-4">
                             <div className="w-12 h-12 border-4 border-violet-500/30 border-t-violet-500 rounded-full animate-spin"></div>
@@ -75,12 +75,12 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                     {typeof report === 'object' && report.story ? (
                                         <>
                                             {/* Row 1: Context (Draft, Pick, Story) */}
-                                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                                                 {/* Draft Analysis */}
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
-                                                    <div className="p-3 border-b border-slate-700/50 bg-blue-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-5 bg-blue-500 rounded-full"></div>
-                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Draft & Win Con</h3>
+                                                <div className="rounded-xl border border-white/5 bg-slate-900/40 backdrop-blur-sm overflow-hidden shadow-lg flex flex-col">
+                                                    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-gradient-to-r from-blue-900/20 to-transparent">
+                                                        <div className="w-1 h-5 bg-blue-500 rounded-full shadow-[0_0_12px_rgba(59,130,246,0.6)]"></div>
+                                                        <h3 className="text-sm font-bold text-slate-200 tracking-wider uppercase">Draft & Win Con</h3>
                                                     </div>
                                                     <div className="p-4 prose-coaching flex-1 overflow-auto">
                                                         <ReactMarkdown>{report.draft_analysis || "No draft analysis."}</ReactMarkdown>
@@ -88,10 +88,10 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                 </div>
 
                                                 {/* Pick Critique */}
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
-                                                    <div className="p-3 border-b border-slate-700/50 bg-purple-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-5 bg-purple-500 rounded-full"></div>
-                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Pick Identity</h3>
+                                                <div className="rounded-xl border border-white/5 bg-slate-900/40 backdrop-blur-sm overflow-hidden shadow-lg flex flex-col">
+                                                    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-gradient-to-r from-purple-900/20 to-transparent">
+                                                        <div className="w-1 h-5 bg-purple-500 rounded-full shadow-[0_0_12px_rgba(168,85,247,0.6)]"></div>
+                                                        <h3 className="text-sm font-bold text-slate-200 tracking-wider uppercase">Pick Identity</h3>
                                                     </div>
                                                     <div className="p-4 prose-coaching flex-1 overflow-auto">
                                                         <ReactMarkdown>{report.pick_quality || "No pick critique."}</ReactMarkdown>
@@ -99,10 +99,10 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                 </div>
 
                                                 {/* Story */}
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
-                                                    <div className="p-3 border-b border-slate-700/50 bg-violet-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-5 bg-violet-500 rounded-full"></div>
-                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">The Turning Point</h3>
+                                                <div className="rounded-xl border border-white/5 bg-slate-900/40 backdrop-blur-sm overflow-hidden shadow-lg flex flex-col">
+                                                    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-gradient-to-r from-violet-900/20 to-transparent">
+                                                        <div className="w-1 h-5 bg-violet-500 rounded-full shadow-[0_0_12px_rgba(139,92,246,0.6)]"></div>
+                                                        <h3 className="text-sm font-bold text-slate-200 tracking-wider uppercase">The Turning Point</h3>
                                                     </div>
                                                     <div className="p-4 prose-coaching flex-1 overflow-auto">
                                                         <ReactMarkdown>{report.story}</ReactMarkdown>
@@ -111,12 +111,12 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                             </div>
 
                                             {/* Row 2: Execution (Builds & Mistakes) */}
-                                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                                                 {/* Ideal Build */}
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
-                                                    <div className="p-3 border-b border-slate-700/50 bg-emerald-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-5 bg-emerald-500 rounded-full"></div>
-                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Objective Build</h3>
+                                                <div className="rounded-xl border border-white/5 bg-slate-900/40 backdrop-blur-sm overflow-hidden shadow-lg flex flex-col">
+                                                    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-gradient-to-r from-emerald-900/20 to-transparent">
+                                                        <div className="w-1 h-5 bg-emerald-500 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.6)]"></div>
+                                                        <h3 className="text-sm font-bold text-slate-200 tracking-wider uppercase">Objective Build</h3>
                                                     </div>
                                                     <div className="p-4 prose-coaching flex-1 overflow-auto">
                                                         <ReactMarkdown>{report.ideal_build || "No build data."}</ReactMarkdown>
@@ -124,10 +124,10 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                 </div>
 
                                                 {/* Build Critique */}
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
-                                                    <div className="p-3 border-b border-slate-700/50 bg-yellow-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-5 bg-yellow-500 rounded-full"></div>
-                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Build Critique</h3>
+                                                <div className="rounded-xl border border-white/5 bg-slate-900/40 backdrop-blur-sm overflow-hidden shadow-lg flex flex-col">
+                                                    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-gradient-to-r from-yellow-900/20 to-transparent">
+                                                        <div className="w-1 h-5 bg-yellow-500 rounded-full shadow-[0_0_12px_rgba(234,179,8,0.6)]"></div>
+                                                        <h3 className="text-sm font-bold text-slate-200 tracking-wider uppercase">Build Critique</h3>
                                                     </div>
                                                     <div className="p-4 prose-coaching flex-1 overflow-auto">
                                                         <ReactMarkdown>{report.build_vision}</ReactMarkdown>
@@ -135,10 +135,10 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                                 </div>
 
                                                 {/* Mistakes */}
-                                                <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm flex flex-col">
-                                                    <div className="p-3 border-b border-slate-700/50 bg-red-500/10 flex items-center gap-2">
-                                                        <div className="w-1 h-5 bg-red-500 rounded-full"></div>
-                                                        <h3 className="text-sm font-bold text-white uppercase tracking-wide">Critical Errors</h3>
+                                                <div className="rounded-xl border border-white/5 bg-slate-900/40 backdrop-blur-sm overflow-hidden shadow-lg flex flex-col">
+                                                    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-gradient-to-r from-red-900/20 to-transparent">
+                                                        <div className="w-1 h-5 bg-red-500 rounded-full shadow-[0_0_12px_rgba(239,68,68,0.6)]"></div>
+                                                        <h3 className="text-sm font-bold text-slate-200 tracking-wider uppercase">Critical Errors</h3>
                                                     </div>
                                                     <div className="p-4 prose-coaching flex-1 overflow-auto">
                                                         <ReactMarkdown>{report.mistakes}</ReactMarkdown>
@@ -147,10 +147,10 @@ export default function DeepDiveView({ report, matchData, puuid, onClose, isLoad
                                             </div>
 
                                             {/* Verdict Card (Compact) */}
-                                            <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden backdrop-blur-sm">
-                                                <div className="p-3 border-b border-slate-700/50 bg-emerald-500/10 flex items-center gap-2">
-                                                    <div className="w-1 h-5 bg-emerald-500 rounded-full"></div>
-                                                    <h3 className="text-sm font-bold text-white uppercase tracking-wide">Final Verdict</h3>
+                                            <div className="rounded-xl border border-white/5 bg-slate-900/40 backdrop-blur-sm overflow-hidden shadow-lg">
+                                                <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-gradient-to-r from-emerald-900/20 to-transparent">
+                                                    <div className="w-1 h-5 bg-emerald-500 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.6)]"></div>
+                                                    <h3 className="text-sm font-bold text-slate-200 tracking-wider uppercase">Final Verdict</h3>
                                                 </div>
                                                 <div className="p-4 prose-coaching">
                                                     <ReactMarkdown>{report.verdict}</ReactMarkdown>
