@@ -16,53 +16,87 @@ SAVES_DIR = settings.BASE_DIR.parent.parent / 'saves'
 
 class AnalysisListView(APIView):
     def get(self, request):
-        print(f"Listing files in {SAVES_DIR}")
-        files = []
-        if SAVES_DIR.exists():
-            for f in SAVES_DIR.glob('league_analysis_*.json'):
-                try:
-                    stats = f.stat()
-                    # Read the file to get metadata
-                    with open(f, 'r', encoding='utf-8') as json_file:
-                        data = json.load(json_file)
-                        
-                    summary = data.get('analysis', {}).get('summary', {})
-                    
-                    files.append({
-                        'filename': f.name,
-                        'created': stats.st_mtime,
-                        'size': stats.st_size,
-                        'riot_id': data.get('riot_id', 'Unknown'),
-                        'primary_role': data.get('analysis', {}).get('primary_role', 'Unknown'),
-                        'match_count': data.get('match_count_requested', 0)
-                    })
-                except Exception as e:
-                    print(f"Error reading {f.name}: {e}")
-                    # Still add it with basic info if read fails
-                    files.append({
-                        'filename': f.name,
-                        'created': f.stat().st_mtime,
-                        'size': f.stat().st_size,
-                        'riot_id': 'Error',
-                        'primary_role': 'Error',
-                        'match_count': 0
-                    })
-        
-        # Sort by created desc
-        files.sort(key=lambda x: x['created'], reverse=True)
-        return Response(files)
+        print("Listing analyses from MongoDB")
+        try:
+            from database import Database
+            db = Database()
+            
+            # If DB not connected, fallback to empty or implement strict FS fallback?
+            # For migration, we assume DB is primary.
+            if not db.is_connected:
+                print("MongoDB not connected, returning empty list.")
+                return Response([])
+                
+            files = db.list_analyses()
+            
+            # Sort by created desc (db.list_analyses doesn't sort yet, or we sort here)
+            files.sort(key=lambda x: x.get('created', 0), reverse=True)
+            return Response(files)
+        except Exception as e:
+            print(f"Error listing analyses: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AnalysisDetailView(APIView):
     def get(self, request, filename):
         filename = unquote(filename)
-        file_path = SAVES_DIR / filename
-        if not file_path.exists():
-            return Response({'error': 'File not found'}, status=status.HTTP_404_NOT_FOUND)
-            
+        # Parse Riot ID from virtual filename: league_analysis_Name_Tag.json
+        # Format: league_analysis_{safe_id}.json where safe_id has _ instead of #
+        # But wait, original code saved as Name_TAG.json.
+        # Ideally we stored the exact Riot ID in the DB.
+        # Frontend passes "league_analysis_Name_TAG.json".
+        
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            return Response(data)
+            from database import Database
+            db = Database()
+            
+            # Simple parsing: remove prefix and extension
+            if filename.startswith("league_analysis_") and filename.endswith(".json"):
+                core = filename[len("league_analysis_"):-5] # "Name_TAG"
+                # This is "safe_id". We need "Name#TAG".
+                # Problem: We don't know where the # was.
+                # Solution: The DB is keyed by `riot_id`. 
+                # Either we fuzzy match OR we change `list_analyses` to return the real Riot ID as the ID, 
+                # and Frontend passes just the ID? 
+                # For compatibility, `list_analyses` returns filenames that map to this view.
+                # Let's try to query by the `riot_id` if we can reconstruct it, OR scan.
+                # BETTER: `save_analysis` keys by `riot_id`. `list_analyses` creates a filename.
+                # Ideally, we should just query `db.analyses` where `riot_id.replace('#', '_') == core`.
+                # But that requires a scan or a stored "safe_id" field.
+                
+                # Let's fix this properly: 
+                # 1. `list_analyses` should provide the riot_id. 
+                # 2. Frontend probably uses `filename` as the key.
+                # 3. We can iterate DB or normalize?
+                # Quick fix: The DB key is `riot_id`. We can try to find a doc where `riot_id` matches "Name#TAG" 
+                # derived from "Name_TAG". But "_" is ambiguous (Name_With_Underscore#TAG).
+                
+                # Fallback: Query where `riot_id` approximately matches?
+                # Or simply add a `safe_id` field to the DB on save?
+                # Actually, in `main.py` we used `safe_riot_id = riot_id.replace("#", "_")`.
+                # Let's assume we can loop through the limited number of analyses to find the match? 
+                # OR, just fix the View to accept `riot_id`? Front end relies on filename.
+                
+                # Let's search the DB for the document where `riot_id` transforms to this `core`.
+                # This is safer than guessing.
+                
+                all_docs = db.list_analyses()
+                target_doc = None
+                for doc in all_docs:
+                    # Reconstruct what the filename would be
+                    r_id = doc.get('riot_id', '')
+                    safe_r = r_id.replace('#', '_')
+                    if safe_r == core:
+                        # Found it, fetch full doc
+                        target_doc = db.get_analysis(r_id)
+                        break
+                
+                if target_doc:
+                    return Response(target_doc)
+                else:
+                    return Response({'error': 'Analysis not found in DB'}, status=status.HTTP_404_NOT_FOUND)
+
+            return Response({'error': 'Invalid filename format'}, status=status.HTTP_400_BAD_REQUEST)
+
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

@@ -499,11 +499,12 @@ def run_analysis_pipeline(
         agent_payload["ai_loading"] = True
         
         try:
-            with open(filename, "w", encoding="utf-8") as f:
-                json.dump(agent_payload, f, indent=2)
-            console.print(f"[green]STAGE 1: Saved Base Stats to {filename} (UI Updated)[/green]")
+            from database import Database
+            db = Database()
+            db.save_analysis(agent_payload)
+            console.print(f"[green]STAGE 1: Saved Base Stats to MongoDB (UI Updated)[/green]")
         except Exception as e:
-            console.print(f"[red]Failed to save Stage 1 JSON: {e}[/red]")
+            console.print(f"[red]Failed to save Stage 1 Analysis to DB: {e}[/red]")
 
     # Optional: call the multi-agent League Coach crew (Gemini)
     if call_ai:
@@ -531,12 +532,13 @@ def run_analysis_pipeline(
     # --- STAGE 2: FINAL SAVE (With AI) ---
     if save_json:
         # safe_riot_id computed above or here
-        safe_riot_id = riot_id.replace("#", "_") 
-        filename = SAVE_DIR / f"league_analysis_{safe_riot_id}.json"
+        from database import Database
+        db = Database()
         try:
-            with open(filename, "w", encoding="utf-8") as f:
-                json.dump(agent_payload, f, indent=2)
-            console.print(f"[green]STAGE 2: Saved Final Analysis with AI to {filename}[/green]")
+            db.save_analysis(agent_payload)
+            console.print(f"[green]STAGE 2: Saved Final Analysis with AI to MongoDB[/green]")
+        except Exception as e:
+            console.print(f"[red]Failed to save Stage 2 Analysis to DB: {e}[/red]")
 
             if open_dashboard:
                 import webbrowser

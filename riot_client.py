@@ -191,62 +191,42 @@ class RiotClient:
         return all_ids
 
     def get_match(self, match_id: str) -> Dict[str, Any]:
-        """Fetch full match-v5 payload for a given match ID (Cached)."""
-        # Cache Check
-        from pathlib import Path
-        import json
+        """Fetch full match-v5 payload for a given match ID (Cached via MongoDB)."""
+        from database import Database
+        db = Database()
         
-        cache_dir = Path(__file__).parent / "saves" / "cache" / "matches"
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_file = cache_dir / f"{match_id}.json"
-        
-        if cache_file.exists():
-            try:
-                with open(cache_file, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception:
-                pass # Corrupt? Fetch fresh.
+        # 1. Try DB Cache
+        cached = db.get_match(match_id)
+        if cached:
+            return cached
 
+        # 2. Fetch Fresh
         url = f"{self.base_match_url}/lol/match/v5/matches/{match_id}"
         r = self._get(url, timeout=15)
         data = r.json()
         
-        # Save to Cache
-        try:
-            with open(cache_file, "w", encoding="utf-8") as f:
-                json.dump(data, f)
-        except Exception as e:
-            print(f"[RiotClient] Failed to cache match {match_id}: {e}")
+        # 3. Save to DB
+        db.save_match(data)
             
         return data
 
     def get_match_timeline(self, match_id: str) -> Dict[str, Any]:
-        """Fetch match timeline for deeper analysis (Cached)."""
-        # Cache Check
-        from pathlib import Path
-        import json
-        
-        cache_dir = Path(__file__).parent / "saves" / "cache" / "timelines"
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_file = cache_dir / f"{match_id}_timeline.json"
-        
-        if cache_file.exists():
-            try:
-                with open(cache_file, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception:
-                pass 
+        """Fetch match timeline for deeper analysis (Cached via MongoDB)."""
+        from database import Database
+        db = Database()
 
+        # 1. Try DB Cache
+        cached = db.get_timeline(match_id)
+        if cached:
+            return cached
+
+        # 2. Fetch Fresh
         url = f"{self.base_match_url}/lol/match/v5/matches/{match_id}/timeline"
         r = self._get(url, timeout=15)
         data = r.json()
         
-        # Save to Cache
-        try:
-            with open(cache_file, "w", encoding="utf-8") as f:
-                json.dump(data, f)
-        except Exception as e:
-            print(f"[RiotClient] Failed to cache timeline {match_id}: {e}")
+        # 3. Save to DB
+        db.save_timeline(match_id, data)
             
         return data
 
