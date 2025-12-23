@@ -24,7 +24,7 @@ function App() {
     setSelectedFile(filename);
     localStorage.setItem('lastAnalysisFile', filename); // Persist
     setLoading(true);
-    axios.get(`${config.API_URL}/api/analyses/${filename}/`)
+    axios.get(`${config.API_URL}/api/analyses/${encodeURIComponent(filename)}/`)
       .then(res => {
         setAnalysisData(res.data);
         setLoading(false);

@@ -102,8 +102,11 @@ class Database:
                 col.replace_one({"metadata.matchId": match_id}, doc, upsert=True)
             except Exception as e:
                 print(f"Error compressing match {match_id}: {e}")
-                # Fallback
-                col.replace_one({"metadata.matchId": match_id}, match_data, upsert=True)
+                import traceback
+                traceback.print_exc()
+                # Fallback: Sanitize allows int keys to be stringified
+                sanitized = self._sanitize_document(match_data)
+                col.replace_one({"metadata.matchId": match_id}, sanitized, upsert=True)
 
     def cleanup_old_matches(self, puuid: str, limit: int = 250):
         """Delete matches exceeding the limit for a specific player."""
@@ -182,10 +185,14 @@ class Database:
             col.replace_one({"metadata.matchId": match_id}, doc, upsert=True)
         except Exception as e:
             print(f"Error compressing timeline {match_id}, saving raw: {e}")
-            # Fallback to raw save
-            timeline_data["metadata"] = timeline_data.get("metadata", {})
-            timeline_data["metadata"]["matchId"] = match_id
-            col.replace_one({"metadata.matchId": match_id}, timeline_data, upsert=True)
+            import traceback
+            traceback.print_exc()
+            # Fallback
+            # Sanitize fallback too!
+            sanitized = self._sanitize_document(timeline_data)
+            sanitized["metadata"] = sanitized.get("metadata", {})
+            sanitized["metadata"]["matchId"] = match_id
+            col.replace_one({"metadata.matchId": match_id}, sanitized, upsert=True)
 
     # --- Analysis Storage ---
 
