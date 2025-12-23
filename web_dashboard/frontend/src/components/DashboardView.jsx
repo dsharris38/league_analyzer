@@ -83,7 +83,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 20;
+    const ITEMS_PER_PAGE = 15;
 
     // Reset pagination when filters change
     useEffect(() => {
@@ -222,13 +222,15 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
     return (
         <div className="min-h-screen bg-[#0b0c2a] text-slate-200 font-sans relative pb-20">
             {/* Background Image with Overlay */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
+            <div className="fixed inset-0 z-0 pointer-events-none bg-[#0b0c2a]">
+                {/* Simplified background: Just color, no expensive image blending if user has perf issues */}
+                {/* Note: Keeping image but reducing composite cost by making overlay opaque if needed? 
+                    Actually, just lowering image opacity is cheapest. */}
                 <img
                     src={heroBg}
                     alt="Background"
-                    className="w-full h-full object-cover object-top opacity-20"
+                    className="w-full h-full object-cover object-top opacity-10"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0b0c2a]/80 via-[#0b0c2a]/90 to-[#0b0c2a]"></div>
             </div>
 
             <div className="relative z-10 max-w-[1600px] mx-auto p-4 lg:p-6">

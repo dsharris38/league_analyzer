@@ -14,7 +14,7 @@ const formatReason = (reason) => {
     return reason.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 };
 
-export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidate, reviewReason, onPlayerClick, isExpanded }) {
+function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidate, reviewReason, onPlayerClick, isExpanded }) {
     const self = match.participants.find(p => p.is_self);
     const win = self.win;
     const durationMin = Math.floor(match.game_duration / 60);
@@ -40,11 +40,11 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                 </div>
             )}
             <div className={clsx(
-                "flex flex-row items-stretch border shadow-lg transition-all hover:shadow-xl hover:border-white/20 h-auto md:min-h-28 relative backdrop-blur-md overflow-hidden",
+                "flex flex-row items-stretch border shadow-md transition-all hover:shadow-lg hover:border-white/20 h-auto md:min-h-28 relative overflow-hidden",
                 isExpanded ? "rounded-t-xl rounded-b-none border-b-0" : "rounded-xl mb-2",
                 win
-                    ? "bg-slate-900/40 border-l-4 border-l-blue-500 hover:border-l-blue-500 border-y-white/5 border-r-transparent shadow-blue-900/10"
-                    : "bg-slate-900/40 border-l-4 border-l-red-500 hover:border-l-red-500 border-y-white/5 border-r-transparent shadow-red-900/10",
+                    ? "bg-slate-900/90 border-l-4 border-l-blue-500 hover:border-l-blue-500 border-y-white/5 border-r-transparent"
+                    : "bg-slate-900/90 border-l-4 border-l-red-500 hover:border-l-red-500 border-y-white/5 border-r-transparent",
                 isReviewCandidate && "ring-1 ring-purple-500/30",
                 match.tags?.includes("Weak Link") && "ring-1 ring-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.2)]"
             )}>
@@ -122,18 +122,18 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                         <div className="flex flex-col gap-0.5">
                             <div className="flex gap-0.5">
                                 <Tooltip content={<SummonerSpellTooltip spellData={getSummonerSpellData(self.summoner1Id)} />}>
-                                    {getSpellIconUrl(self.summoner1Id) && <img src={getSpellIconUrl(self.summoner1Id)} className="w-5 h-5 rounded cursor-help text-transparent" alt="Summoner 1" loading="lazy" />}
+                                    {getSpellIconUrl(self.summoner1Id) && <img src={getSpellIconUrl(self.summoner1Id)} className="w-5 h-5 rounded cursor-help text-transparent" alt="Summoner 1" loading="lazy" decoding="async" />}
                                 </Tooltip>
                                 <Tooltip content={<SummonerSpellTooltip spellData={getSummonerSpellData(self.summoner2Id)} />}>
-                                    {getSpellIconUrl(self.summoner2Id) && <img src={getSpellIconUrl(self.summoner2Id)} className="w-5 h-5 rounded cursor-help text-transparent" alt="Summoner 2" loading="lazy" />}
+                                    {getSpellIconUrl(self.summoner2Id) && <img src={getSpellIconUrl(self.summoner2Id)} className="w-5 h-5 rounded cursor-help text-transparent" alt="Summoner 2" loading="lazy" decoding="async" />}
                                 </Tooltip>
                             </div>
                             <div className="flex gap-0.5">
                                 <Tooltip content={<RuneTooltip runeData={getRuneData(self.perks.keystone)} />}>
-                                    <img src={getRuneIconUrl(self.perks.keystone)} className="w-5 h-5 rounded-full bg-black cursor-help text-transparent" alt="Keystone" loading="lazy" />
+                                    <img src={getRuneIconUrl(self.perks.keystone)} className="w-5 h-5 rounded-full bg-black cursor-help text-transparent" alt="Keystone" loading="lazy" decoding="async" />
                                 </Tooltip>
                                 <Tooltip content={<RuneTooltip runeData={getRuneData(self.perks.sub_style)} />}>
-                                    <img src={getRuneIconUrl(self.perks.sub_style)} className="w-5 h-5 rounded-full bg-black p-0.5 cursor-help text-transparent" alt="Secondary" loading="lazy" />
+                                    <img src={getRuneIconUrl(self.perks.sub_style)} className="w-5 h-5 rounded-full bg-black p-0.5 cursor-help text-transparent" alt="Secondary" loading="lazy" decoding="async" />
                                 </Tooltip>
                             </div>
                         </div>
@@ -169,14 +169,14 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                             return (
                                 <Tooltip key={i} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
                                     <div className="w-7 h-7 bg-slate-800/80 rounded overflow-hidden border border-rose-vale/20 shrink-0 cursor-help relative xl:w-8 xl:h-8">
-                                        {item > 0 && <img src={getItemIconUrl(item)} alt={itemData?.name || ''} className="w-full h-full object-cover text-transparent" loading="lazy" />}
+                                        {item > 0 && <img src={getItemIconUrl(item)} alt={itemData?.name || ''} className="w-full h-full object-cover text-transparent" loading="lazy" decoding="async" />}
                                     </div>
                                 </Tooltip>
                             );
                         })}
                         <Tooltip content={getItemData(self.item6) ? <ItemTooltip itemData={getItemData(self.item6)} /> : null}>
                             <div className="w-7 h-7 bg-slate-800/80 rounded-full overflow-hidden border border-rose-vale/20 ml-1 shrink-0 cursor-help relative xl:w-8 xl:h-8">
-                                {self.item6 > 0 && <img src={getItemIconUrl(self.item6)} alt="Trinket" className="w-full h-full object-cover text-transparent" loading="lazy" />}
+                                {self.item6 > 0 && <img src={getItemIconUrl(self.item6)} alt="Trinket" className="w-full h-full object-cover text-transparent" loading="lazy" decoding="async" />}
                             </div>
                         </Tooltip>
                     </div>
@@ -194,7 +194,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                                         e.stopPropagation();
                                         onPlayerClick && onPlayerClick(p.riot_id);
                                     }}
-                                    loading="lazy"
+                                    loading="lazy" decoding="async"
                                 />
                                 <span
                                     className={clsx(
@@ -222,7 +222,7 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
                                         e.stopPropagation();
                                         onPlayerClick && onPlayerClick(p.riot_id);
                                     }}
-                                    loading="lazy"
+                                    loading="lazy" decoding="async"
                                 />
                                 <span
                                     className={clsx(
@@ -280,3 +280,17 @@ export default function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, i
         </div>
     );
 }
+
+// Memoize specifically to prevent re-renders when parent DashboardView touches pagination/filters
+export default React.memo(MatchSummaryCard, (prev, next) => {
+    return (
+        prev.match.match_id === next.match.match_id &&
+        prev.isExpanded === next.isExpanded &&
+        prev.isReviewCandidate === next.isReviewCandidate &&
+        prev.reviewReason === next.reviewReason &&
+        // If props are functions, we ignore them in comparison if they are recreated but functionally same?
+        // Ideally we assume functions are stable logic.
+        // We really only care about data changes.
+        prev.match === next.match // Shallow check for match object (usually stable from list)
+    );
+});

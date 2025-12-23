@@ -703,7 +703,16 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
             # Passenger: Low KDA/KP AND Low Damage (Exempts split pushers)
             elif kda < 1.8 and kp < 0.40 and dmg_share < 0.15:
                 tags.append("Passenger") # You got carried
-            elif max_lead > 5000 and d_match.get("game_duration", 0) < 1500: # < 25 min
+            # Stomp Logic (Enhanced): Check gold diff if timeline missing
+            gold_diff = 0
+            if max_lead == 0: # Timeline missing
+                 my_team_gold = sum(p.get("goldEarned", 0) for p in d_match["participants"] if p.get("teamId") == self_p.get("teamId"))
+                 enemy_team_gold = sum(p.get("goldEarned", 0) for p in d_match["participants"] if p.get("teamId") != self_p.get("teamId"))
+                 gold_diff = my_team_gold - enemy_team_gold
+                 # Estimate max lead as final lead (conservative)
+                 max_lead = gold_diff
+
+            if (max_lead > 7000) or (max_lead > 5000 and d_match.get("gameDuration", 0) < 1500):
                 tags.append("Stomp")
             else:
                 tags.append("Solid Win")
@@ -744,9 +753,15 @@ def classify_matches_and_identify_candidates(analysis: Dict[str, Any]) -> tuple[
             
             # Feeding Check (Nuanced: High dmg/kp exempts you)
             # Relaxed thresholds to avoid flagging players who are trading kills or dealing average damage
-            if deaths >= 7 and kda < 1.45 and dmg_share < 0.19 and kp < 0.40:
+            # Feeding Check (Revised)
+            # 1. Hard Feed: Simply dying too much, regardless of damage.
+            if deaths >= 9 and kda < 1.0:
                 tags.append("Feeding")
-                reasons.append(f"High Deaths ({int(deaths)}) with low impact")
+                reasons.append(f"Excessive Deaths ({int(deaths)})")
+            # 2. Soft Feed: Dying a lot AND having low impact (Both Dmg AND KP must be bad)
+            elif deaths >= 7 and kda < 1.5 and (dmg_share < 0.20 and kp < 0.35):
+                 tags.append("Feeding")
+                 reasons.append(f"High Deaths ({int(deaths)}) with low impact")
             
             # Invisible Check
             # Supports allowed lower damage, but need decent KP

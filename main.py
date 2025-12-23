@@ -51,6 +51,25 @@ def get_cached_past_ranks(puuid: str, game_name: str, tag_line: str, region: str
             
     return ranks
 
+def cleanup_local_cache_files(days: int = 90):
+    """Delete local cache files (AI prompts) older than X days."""
+    import time
+    cache_dir = SCRIPT_DIR / "saves" / "cache"
+    if not cache_dir.exists():
+        return
+        
+    cutoff = time.time() - (days * 86400)
+    count = 0
+    try:
+        for f in cache_dir.glob("*.json"):
+            if f.stat().st_mtime < cutoff:
+                f.unlink()
+                count += 1
+        if count > 0:
+            console.print(f"[dim]Cleaned up {count} old AI cache files.[/dim]")
+    except Exception as e:
+        console.print(f"[yellow]Warning: Cache cleanup failed: {e}[/yellow]")
+
 
 
 def print_human_summary(
@@ -332,10 +351,27 @@ def run_analysis_pipeline(
     # Parallel Fetching of Matches
     matches: List[Dict[str, Any]] = [None] * len(match_ids)
     
+    # Initialize DB for caching matches
+    from database import Database
+    db = Database()
+    
     def fetch_match_safe(idx, m_id):
         try:
-            return idx, client.get_match(m_id)
+            # 1. Check DB Cache
+            cached = db.get_match(m_id)
+            if cached:
+                return idx, cached
+                
+            # 2. Fetch from API
+            match_data = client.get_match(m_id)
+            
+            # 3. Save to DB
+            if match_data:
+                db.save_match(match_data)
+                
+            return idx, match_data
         except Exception as e:
+            # console.print(f"[yellow]Failed to fetch/cache match {m_id}: {e}[/yellow]")
             return idx, None
 
     # Use ThreadPoolExecutor for parallel fetching
@@ -345,7 +381,10 @@ def run_analysis_pipeline(
         for future in as_completed(futures):
             idx, match_data = future.result()
             matches[idx] = match_data
-            console.print(f"Fetched match {idx+1}/{len(match_ids)}")
+            
+            # Only print every 5th or 10th to reduce noise if many
+            if (idx+1) % 5 == 0 or (idx+1) == len(match_ids):
+                console.print(f"Fetched match {idx+1}/{len(match_ids)}")
 
     # Filter out failed fetches
     matches = [m for m in matches if m is not None]
@@ -374,7 +413,15 @@ def run_analysis_pipeline(
         def process_timeline(idx, m_id, m_data):
             # Fetch timeline
             try:
-                tl = client.get_match_timeline(m_id)
+                # 1. Check DB Cache
+                tl = db.get_timeline(m_id)
+                
+                # 2. Fetch Fresh if missing
+                if not tl:
+                    tl = client.get_match_timeline(m_id)
+                    if tl:
+                        db.save_timeline(m_id, tl)
+                        
             except Exception as e:
                 console.print(f"[yellow]Failed to fetch timeline for {m_id}: {e}[/yellow]")
                 return None, None
@@ -413,12 +460,41 @@ def run_analysis_pipeline(
                 mid = m['metadata']['matchId']
                 valid_tasks.append((mid, m))
             
-            # OPTIMIZATION: For large batches (250 games), only fetch timelines for the most recent 20.
-            # Timelines are expensive (1 API call per game) and mostly used for "Review Candidates" 
-            # and "Recent Loss Patterns". Older games contribute to stats (KDA/CS) without needing timeline.
-            if len(valid_tasks) > 50:
-                console.print(f"[dim]Optimization: Fetching timelines for recent 20 games only (saving {len(valid_tasks)-20} API calls)...[/dim]")
-                valid_tasks = valid_tasks[:20]
+            # HYBRID ANALYSIS STRATEGY:
+            # We want stats for ALL games (for AI trends), but Timelines are expensive (1 API call).
+            # To stay under rate limits (100 req/2m), we cap timelines to a "High Value" subset.
+            # Priority: 
+            # 1. Most recent 3 games (Instant feedback)
+            # 2. Recent Losses (Where coaching is needed most)
+            # 3. Cap total at 15 timelines.
+            
+            TIMELINE_CAP = 15
+            hybrid_tasks = []
+            
+            # valid_tasks contains (mid, match_dto)
+            for i, (mid, m_data) in enumerate(valid_tasks):
+                if len(hybrid_tasks) >= TIMELINE_CAP:
+                    break
+                
+                # Always take the freshest 3 games
+                if i < 3:
+                    hybrid_tasks.append((mid, m_data))
+                    continue
+                
+                # For older games, only deep-analyze LOSSES
+                try:
+                    # Find self
+                    parts = m_data.get('info', {}).get('participants', [])
+                    self_part = next((p for p in parts if p['puuid'] == puuid), None)
+                    
+                    if self_part and not self_part['win']:
+                        hybrid_tasks.append((mid, m_data))
+                except Exception:
+                    pass
+            
+            if len(valid_tasks) > len(hybrid_tasks):
+                console.print(f"[dim]Hybrid Optimization: Selected {len(hybrid_tasks)} high-value timelines (Recent + Losses) from {len(valid_tasks)} games.[/dim]")
+                valid_tasks = hybrid_tasks
 
             futures = [executor.submit(process_timeline, i, mid, m) for i, (mid, m) in enumerate(valid_tasks)]
             
@@ -602,6 +678,25 @@ def run_analysis_pipeline(
             print(f"[green]STAGE 2: Saved Final Analysis with AI to MongoDB[/green]")
         except Exception as e:
             console.print(f"[red]Failed to save Stage 2 Analysis to DB: {e}[/red]")
+            import traceback
+            traceback.print_exc()
+
+    # --- AUTO CLEANUP ---
+    try:
+        # 1. Clean up old matches for this user (Keep top 1000 to cover full seasons)
+        # 1000 compressed games = ~3MB. Safe to keep.
+        p_puuid = agent_payload.get("summoner_info", {}).get("puuid")
+        if p_puuid:
+            db.cleanup_old_matches(p_puuid, limit=1000)
+        
+        # 2. Clean up old AI cache files (older than 90 days)
+        cleanup_local_cache_files(days=90)
+        
+    except Exception as e:
+        console.print(f"[yellow]Cleanup warning: {e}[/yellow]")
+
+    if open_dashboard:
+        # ... logic ...
             import traceback
             traceback.print_exc()
 

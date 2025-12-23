@@ -41,6 +41,7 @@ class AnalysisListView(APIView):
 class AnalysisDetailView(APIView):
     def get(self, request, filename):
         filename = unquote(filename)
+        
         # Parse Riot ID from virtual filename: league_analysis_Name_Tag.json
         # Format: league_analysis_{safe_id}.json where safe_id has _ instead of #
         # But wait, original code saved as Name_TAG.json.
@@ -81,20 +82,8 @@ class AnalysisDetailView(APIView):
                 # Let's search the DB for the document where `riot_id` transforms to this `core`.
                 # This is safer than guessing.
                 
-                all_docs = db.list_analyses()
-                target_doc = None
-                for doc in all_docs:
-                    # Reconstruct what the filename would be
-                    r_id = doc.get('riot_id', '')
-                    # Match frontend: replace # AND spaces with _
-                    safe_r = r_id.replace('#', '_').replace(' ', '_')
-                    
-                    # Case-insensitive comparison? Filesystem was case-sensitive on Linux but not Windows.
-                    # Let's try exact first.
-                    if safe_r == core:
-                        # Found it, fetch full doc
-                        target_doc = db.get_analysis(r_id)
-                        break
+                # Let's search the DB for the document using optimized fuzzy match
+                target_doc = db.find_analysis_by_fuzzy_filename(core)
                 
                 if target_doc:
                     return Response(target_doc)

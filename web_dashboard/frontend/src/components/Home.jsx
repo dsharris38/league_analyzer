@@ -6,7 +6,7 @@ import heroBg from '../assets/hero_bg.jpg';
 
 export default function Home({ onSelect, onAnalyze }) {
     const [riotId, setRiotId] = useState('');
-    const [matchCount, setMatchCount] = useState(150);
+    const [matchCount, setMatchCount] = useState(50);
     const [region, setRegion] = useState('NA');
     const [recentAnalyses, setRecentAnalyses] = useState([]);
     const [showRecent, setShowRecent] = useState(false);
@@ -50,27 +50,7 @@ export default function Home({ onSelect, onAnalyze }) {
         setAnalyzeError(null);
 
         try {
-            // Save to Local History immediately (Optimistic UI) 
-            // OR wait for success? Let's do optimistic to feel responsive, or success to clear trash.
-            // Let's do success to avoid saving typos.
             await onAnalyze(targetId, matchCount, region);
-
-            // Add to history if successful (onAnalyze throws if navigation fails)
-            const newEntry = {
-                riot_id: targetId,
-                region: region,
-                created: Date.now() / 1000, // Matches backend timestamp format (seconds)
-                timestamp: Date.now() // For sorting locally if needed
-            };
-
-            setRecentAnalyses(prev => {
-                // Remove duplicates
-                const filtered = prev.filter(p => p.riot_id.toLowerCase() !== targetId.toLowerCase());
-                const updated = [newEntry, ...filtered].slice(0, 10); // Keep top 10
-                localStorage.setItem('searchHistory', JSON.stringify(updated));
-                return updated;
-            });
-
         } catch (error) {
             console.error('Analysis failed:', error);
             const errorMsg = error.response?.data?.error || error.message || "Unknown error occurred";
@@ -165,6 +145,8 @@ export default function Home({ onSelect, onAnalyze }) {
 
 
 
+
+
                             <button
                                 type="submit"
                                 disabled={analyzing}
@@ -191,7 +173,7 @@ export default function Home({ onSelect, onAnalyze }) {
                             {filteredRecents.slice(0, 5).map((file) => (
                                 <button
                                     key={file.filename}
-                                    onClick={() => onSelect(file.filename)}
+                                    onClick={() => onSelect(file.filename || `league_analysis_${file.riot_id.replace(/#/g, '_').replace(/\s/g, '_')}.json`)}
                                     className="w-full flex items-center justify-between px-5 py-4 hover:bg-violet-500/10 transition-colors border-b border-white/5 last:border-0 group text-left"
                                 >
                                     <div className="flex items-center gap-4">

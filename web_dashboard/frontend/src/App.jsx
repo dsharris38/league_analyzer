@@ -57,8 +57,28 @@ function App() {
         f.riot_id.toLowerCase().replace(/#/g, '').replace(/\s/g, '') === targetId
       );
 
+      const saveToHistory = (entryRiotId, entryRegion, entryFilename) => {
+        try {
+          const newEntry = {
+            riot_id: entryRiotId,
+            filename: entryFilename,
+            region: entryRegion,
+            created: Date.now() / 1000,
+            timestamp: Date.now()
+          };
+          const raw = localStorage.getItem('searchHistory');
+          const prev = raw ? JSON.parse(raw) : [];
+          const filtered = prev.filter(p => p.riot_id.toLowerCase().replace(/#/g, '').replace(/\s/g, '') !== entryRiotId.toLowerCase().replace(/#/g, '').replace(/\s/g, ''));
+          const updated = [newEntry, ...filtered].slice(0, 10);
+          localStorage.setItem('searchHistory', JSON.stringify(updated));
+        } catch (storageErr) {
+          console.error("Failed to save history", storageErr);
+        }
+      };
+
       if (match) {
         console.log("Found existing analysis, loading:", match.filename);
+        saveToHistory(match.riot_id, match.region || region, match.filename);
         handleSelect(match.filename);
         return;
       }
@@ -82,6 +102,7 @@ function App() {
 
       if (match2) {
         // Load the dashboard with stats immediately
+        saveToHistory(match2.riot_id, match2.region || region, match2.filename);
         await handleSelect(match2.filename);
         setLoading(false); // Validating success -> Unblock UI
 
@@ -150,14 +171,25 @@ function App() {
     // Do NOT set full screen loading. We want the dashboard to stay visible.
     // The DashboardView can show its own local loading state if needed.
     try {
+      // STAGE 1: Update Matches instantly (No AI)
       await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
         match_count: matchCount,
         region: region,
-        force_refresh: true
+        force_refresh: true,
+        call_ai: false
       });
-      // Refresh data silently
-      refreshData(selectedFile);
+      refreshData(selectedFile); // Show new matches immediately
+
+      // STAGE 2: Run AI in background
+      await axios.post(`${config.API_URL}/api/analyze/`, {
+        riot_id: riotId,
+        match_count: matchCount,
+        region: region,
+        force_refresh: false, // Don't re-fetch matches, just run AI
+        call_ai: true
+      });
+      refreshData(selectedFile); // Show new AI report
     } catch (err) {
       console.error(err);
       alert('Update failed');
