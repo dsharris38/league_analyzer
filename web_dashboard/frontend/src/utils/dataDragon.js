@@ -312,39 +312,74 @@ export const fetchItems = async () => {
 function patchItemStats(data) {
     if (!data) return;
 
-    // Spellslinger's Shoes (3175)
-    // Riot API only returns Move Speed. Description says 18 Pen + 8% Pen.
-    if (data["3175"]) {
-        data["3175"].stats = {
-            ...data["3175"].stats,
-            "magicPenetration": 18,
-            "percentMagicPenetration": 0.08
+    // --- S16 TIER 3 BOOTS PATCHES ---
+    // Source: In-game descriptions (verified via item_dump.txt)
+
+    // 3170: Swiftmarch
+    // Desc: 65 Move Speed
+    if (data["3170"]) {
+        data["3170"].stats = {
+            "flatMovementSpeedMod": 65
         };
     }
 
-    // Crimson Lucidity (3171)
-    // Description: 20 AH, 45 MS. Stats usually miss AH.
+    // 3171: Crimson Lucidity
+    // Desc: 20 Ability Haste, 45 Move Speed
     if (data["3171"]) {
         data["3171"].stats = {
-            ...data["3171"].stats,
-            "abilityHaste": 20
+            "abilityHaste": 20,
+            "flatMovementSpeedMod": 45
         };
     }
 
-    // Chainlaced Crushers (3173)
-    // Description: 30 MR, 45 MS, 30% Tenacity. Stats often miss Tenacity.
+    // 3172: Gunmetal Greaves
+    // Desc: 40% Attack Speed, 45 Move Speed, 5% Life Steal
+    if (data["3172"]) {
+        data["3172"].stats = {
+            "percentAttackSpeedMod": 0.40,
+            "flatMovementSpeedMod": 45,
+            "percentLifeStealMod": 0.05
+        };
+    }
+
+    // 3173: Chainlaced Crushers
+    // Desc: 30 Magic Resist, 45 Move Speed, 30% Tenacity
     if (data["3173"]) {
         data["3173"].stats = {
-            ...data["3173"].stats,
+            "flatSpellBlockMod": 30,
+            "flatMovementSpeedMod": 45,
             "tenacity": 0.30
         };
     }
 
-    // Gunmetal Greaves (3172) -> 40% AS, 45 MS, 5% LS. (Usually OK but safety check)
-    // Armored Advance (3174) -> 35 Armor, 45 MS. (Usually OK)
-    // Swiftmarch (3170) -> 65 MS. (OK)
+    // 3174: Armored Advance
+    // Desc: 35 Armor, 45 Move Speed
+    if (data["3174"]) {
+        data["3174"].stats = {
+            "flatArmorMod": 35,
+            "flatMovementSpeedMod": 45
+        };
+    }
 
-    console.log("Applied S16 Boot Stat Patches");
+    // 3175: Spellslinger's Shoes
+    // Desc: 18 Magic Pen, 8% Magic Pen, 45 Move Speed
+    if (data["3175"]) {
+        data["3175"].stats = {
+            "magicPenetration": 18, // Flat
+            "percentMagicPenetration": 0.08,
+            "flatMovementSpeedMod": 45
+        };
+    }
+
+    // 3176: Forever Forward
+    // Desc: 55 Move Speed (Plus passives)
+    if (data["3176"]) {
+        data["3176"].stats = {
+            "flatMovementSpeedMod": 55
+        };
+    }
+
+    console.log("Applied S16 Boot Stat Patches (All T3)");
 }
 
 // Helper: Merge DDragon descriptions into Meraki data where missing
