@@ -3,14 +3,15 @@ import re
 from typing import Optional, List
 
 class LolalyticsData:
-    def __init__(self, tier: str, win_rate: str, popular_build: List[int], keystone: Optional[str] = None):
+    def __init__(self, tier: str, win_rate: str, popular_build: List[int], winning_build: List[int], keystone: Optional[str] = None):
         self.tier = tier
         self.win_rate = win_rate
         self.popular_build = popular_build
+        self.winning_build = winning_build
         self.keystone = keystone
     
     def __repr__(self):
-        return f"LolalyticsData(tier='{self.tier}', win_rate='{self.win_rate}', build={self.popular_build}, keystone='{self.keystone}')"
+        return f"LolalyticsData(tier='{self.tier}', win_rate='{self.win_rate}', pop_build={self.popular_build}, win_build={self.winning_build}, keystone='{self.keystone}')"
 
 class Lolalytics:
     KEYSTONE_MAP = {
@@ -101,14 +102,22 @@ class Lolalytics:
             # 3. Popular Build (Core Items)
             # Pattern: "6655_3020_4645" or similar inside JSON-like structures
             # We look for 3 or more 4-digit numbers separated by underscores
-            build_match = re.search(r'"(\d{4}_\d{4}_\d{4}(?:_\d{4})?)"', html)
+            # 3. Builds: Look for multiple build patterns.
+            # Lolalytics typically lists Most Popular first, then Highest Win Rate.
+            # We capture ALL valid item chains.
+            build_matches = re.findall(r'"(\d{4}_\d{4}_\d{4}(?:_\d{4})?)"', html)
             
             popular_build = []
-            if build_match:
-                # Extract IDs
-                ids_str = build_match.group(1)
-                popular_build = [int(x) for x in ids_str.split("_")]
-
+            winning_build = []
+            
+            if build_matches:
+                # 1st Match = Most Popular (Generic assumption holds for their structure)
+                popular_build = [int(x) for x in build_matches[0].split("_")]
+                
+                # 2nd Match = Highest Win Rate (if distinct and present)
+                if len(build_matches) > 1:
+                     winning_build = [int(x) for x in build_matches[1].split("_")]
+            
             # 4. Extract Keystone
             keystone = None
             # Scan all 4-digit IDs in the HTML, check against MAP
@@ -118,6 +127,8 @@ class Lolalytics:
                 if fid in Lolalytics.KEYSTONE_MAP:
                     keystone = Lolalytics.KEYSTONE_MAP[fid]
                     break
+            
+            return LolalyticsData(tier=tier, win_rate=win_rate, popular_build=popular_build, winning_build=winning_build, keystone=keystone)
             
             return LolalyticsData(tier=tier, win_rate=win_rate, popular_build=popular_build, keystone=keystone)
             

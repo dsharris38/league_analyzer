@@ -308,9 +308,22 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
                         <div className="col-span-1 h-64 lg:h-72">
                             <RankCard rankInfo={data.rank_info} pastRanks={data.past_ranks} />
                         </div>
-                        {/* 2. Season Performance (Scrollable) */}
+                        {/* 2. Season Performance (Tier 3 Stats) */}
                         <div className="col-span-1 h-64 lg:h-72">
-                            <RecentPerformanceCard stats={analysis.per_champion} />
+                            {/* Prefer Season Stats (Tier 3) if available, else fallback to Recent (Tier 2) */}
+                            <RecentPerformanceCard
+                                stats={
+                                    data.season_stats?.champions
+                                        ? data.season_stats.champions.map(c => ({
+                                            champion: c.name,
+                                            games: c.games,
+                                            winrate: c.winrate / 100, // Convert 55.0 -> 0.55
+                                            kda: c.kda
+                                        }))
+                                        : analysis.per_champion
+                                }
+                                title={data.season_stats ? "Season Performance" : "Recent Performance"}
+                            />
                         </div>
                         {/* 3. Teammates */}
                         <div className="col-span-1 h-64 lg:h-72">

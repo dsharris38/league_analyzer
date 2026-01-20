@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // import AnalysisList from './components/AnalysisList'; // Deprecated
 import Home from './components/Home';
@@ -13,10 +13,25 @@ function App() {
 
   // Load persistent session
   useEffect(() => {
-    const savedFile = localStorage.getItem('lastAnalysisFile');
-    if (savedFile) {
-      handleSelect(savedFile);
-    }
+    // Check for saved analysis but DO NOT auto-load it.
+    // User prefers landing on the search page first.
+    // const savedFile = localStorage.getItem('lastAnalysisFile');
+    // if (savedFile) {
+    //    // Add timeout to prevent infinite loading
+    //    const timeoutId = setTimeout(() => {
+    //      console.warn('Auto-load timeout - clearing cache');
+    //      localStorage.removeItem('lastAnalysisFile');
+    //      setLoading(false);
+    //      setSelectedFile(null);
+    //    }, 30000); // 30 second timeout
+
+    //    // Clear timeout if load succeeds
+    //    const originalHandleSelect = handleSelect;
+    //    handleSelect(savedFile);
+
+    //    // Clean up timeout on unmount
+    //    return () => clearTimeout(timeoutId);
+    // }
   }, []);
 
   // Load existing analysis from cache/file
@@ -37,7 +52,8 @@ function App() {
           localStorage.removeItem('lastAnalysisFile');
           setSelectedFile(null);
         } else {
-          alert('Failed to load analysis');
+          // Don't alert on auto-load failures, just clear
+          localStorage.removeItem('lastAnalysisFile');
           setSelectedFile(null);
         }
       });
@@ -100,18 +116,26 @@ function App() {
         f.riot_id.toLowerCase().replace(/#/g, '').replace(/\s/g, '') === targetId
       );
 
+      let filenameToLoad = null;
+
       if (match2) {
-        // Load the dashboard with stats immediately
+        filenameToLoad = match2.filename;
         saveToHistory(match2.riot_id, match2.region || region, match2.filename);
-        await handleSelect(match2.filename);
+      } else {
+        // Fallback: Manually construct filename
+        console.warn("Analysis file not found in list, attempting manual fallback...");
+        filenameToLoad = `league_analysis_${riotId.replace('#', '_')}.json`;
+        saveToHistory(riotId, region, filenameToLoad);
+      }
+
+      if (filenameToLoad) {
+        // Load the dashboard with stats immediately
+        await handleSelect(filenameToLoad);
         setLoading(false); // Validating success -> Unblock UI
 
         // 4. STAGE 2: AI Coach (Background)
-        // Verify if we need AI (if cached file was old? no, we know it's new)
-        // Just always call Stage 2 to hydrate AI. Smart Resume in backend handles data reuse.
         console.log("Triggering Background AI Analysis...");
         try {
-          // Note: Backend 'Smart Resume' will see existing stats and skip fetching matches
           await axios.post(`${config.API_URL}/api/analyze/`, {
             riot_id: riotId,
             match_count: matchCount,
@@ -121,26 +145,27 @@ function App() {
           });
 
           console.log("AI Analysis Complete. Refreshing data...");
-          // Reload the analysis file silently to get the new 'agent_payload.coaching_report'
-          const refreshRes = await axios.get(`${config.API_URL}/api/analyses/${match2.filename}/?_t=${Date.now()}`);
+          // Reload the analysis file silently
+          const refreshRes = await axios.get(`${config.API_URL}/api/analyses/${encodeURIComponent(filenameToLoad)}/?_t=${Date.now()}`);
           setAnalysisData(refreshRes.data);
 
         } catch (aiErr) {
           console.error("Background AI failed:", aiErr);
-          // Optional: Show toast error? For now silent failure is okay, user sees stats.
         }
-
       } else {
-        setLoading(false);
-        const postDebug = postRes.data.debug || {};
-
-        // Standard error with debug info for verification
-        alert(`Analysis completed but file not found.\nDebug: DB=${postDebug.db_connected}, Verified=${postDebug.save_verified}, Count=${postDebug.db_doc_count}, SavedID=${postDebug.saved_id}`);
+        throw new Error("Could not resolve filename for analysis.");
       }
+
     } catch (err) {
       console.error("Navigation error:", err);
       setLoading(false);
-      alert("Failed to load player analysis.");
+
+      // Detailed error alert check
+      if (err.response && err.response.data && err.response.data.error) {
+        alert(`Analysis Failed: ${err.response.data.error}`);
+      } else {
+        alert("Failed to load player analysis. Please try again or check console.");
+      }
     }
   };
 
@@ -152,7 +177,7 @@ function App() {
 
   // Silent refresh for updates
   const refreshData = (filename) => {
-    axios.get(`${config.API_URL}/api/analyses/${filename}/`)
+    axios.get(`${config.API_URL}/api/analyses/${encodeURIComponent(filename)}/?_t=${Date.now()}`)
       .then(res => {
         setAnalysisData(res.data);
       })
@@ -163,36 +188,70 @@ function App() {
 
   const handleUpdate = async () => {
     // Re-run analysis for the current user
-    if (!analysisData) return;
-    const riotId = `${analysisData.game_name}#${analysisData.tag_line}`;
-    const matchCount = analysisData.match_count_requested || 20;
+    if (!analysisData) {
+      console.error("handleUpdate: No analysisData available");
+      return;
+    }
+
+    // Fix: Prefer 'riot_id' property if available, fallback to composition only if needed.
+    // Use optional chaining to prevent 'undefined#undefined'
+    const riotId = analysisData.riot_id ||
+      (analysisData.game_name && analysisData.tag_line ? `${analysisData.game_name}#${analysisData.tag_line}` : null);
+
+    if (!riotId) {
+      alert("Error: Invalid Analysis Data (Missing Riot ID). Cannot update.");
+      return;
+    }
+
+    // Force 50 matches per user requirement (Dashboard size)
+    // Backend handles historical backfill for stats separately
+    const matchCount = 50;
     const region = analysisData.region || 'NA';
+
+    console.log("handleUpdate: Starting update", { riotId, matchCount, region, selectedFile });
 
     // Do NOT set full screen loading. We want the dashboard to stay visible.
     // The DashboardView can show its own local loading state if needed.
     try {
       // STAGE 1: Update Matches instantly (No AI)
-      await axios.post(`${config.API_URL}/api/analyze/`, {
+      console.log("handleUpdate: Stage 1 - Fetching matches (call_ai=false, use_timeline=true)");
+      const stage1Response = await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
         match_count: matchCount,
         region: region,
         force_refresh: true,
-        call_ai: false
+        call_ai: false,
+        use_timeline: true // Re-enabled: User wants full data
       });
+      console.log("handleUpdate: Stage 1 response:", stage1Response.status, stage1Response.data);
+
+      console.log("handleUpdate: Refreshing data after Stage 1");
       refreshData(selectedFile); // Show new matches immediately
 
-      // STAGE 2: Run AI in background
-      await axios.post(`${config.API_URL}/api/analyze/`, {
-        riot_id: riotId,
-        match_count: matchCount,
-        region: region,
-        force_refresh: false, // Don't re-fetch matches, just run AI
-        call_ai: true
-      });
+      // STAGE 2: Full Analysis (AI + Timelines)
+      if (analysisData.game_name && analysisData.tag_line) {
+        console.log("handleUpdate: Stage 2 - Running AI Analysis (call_ai=true)");
+        const res = await axios.post(`${config.API_URL}/api/analyze/`, {
+          riot_id: riotId,
+          match_count: matchCount,
+          region: region,
+          force_refresh: true,
+          call_ai: true,
+          use_timeline: true
+        }, { timeout: 300000 }); // 5 Minute Timeout (prevent "Taking Forever" failure)
+
+        console.log("handleUpdate: Stage 2 complete", res.status, res.data);
+      }
+
+      console.log("handleUpdate: Refreshing data after Stage 2");
       refreshData(selectedFile); // Show new AI report
+
+      console.log("handleUpdate: Update completed successfully");
     } catch (err) {
-      console.error(err);
-      alert('Update failed');
+      console.error("handleUpdate: Error occurred", err);
+      console.error("handleUpdate: Error response:", err.response?.status, err.response?.data);
+      console.error("handleUpdate: Error message:", err.message);
+      alert(`Update failed: ${err.response?.data?.error || err.message}`);
     }
   };
 
@@ -212,20 +271,74 @@ function App() {
     </div>
   );
 
+  // Global Error Boundary to catch "Blank Page" crashes
+  class ErrorBoundary extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { hasError: false, error: null, errorInfo: null };
+    }
+
+    static getDerivedStateFromError(error) {
+      return { hasError: true, error };
+    }
+
+    componentDidCatch(error, errorInfo) {
+      console.error("Uncaught Error:", error, errorInfo);
+      this.setState({ errorInfo });
+    }
+
+    render() {
+      if (this.state.hasError) {
+        return (
+          <div className="min-h-screen bg-[#0b0c2a] flex items-center justify-center p-8 text-white font-mono">
+            <div className="bg-slate-900 border border-red-500/50 rounded-xl p-8 max-w-2xl shadow-2xl">
+              <h1 className="text-2xl font-bold text-red-500 mb-4 flex items-center gap-2">
+                <span className="text-3xl">☠️</span> Dashboard Crashed
+              </h1>
+              <p className="text-slate-300 mb-6">
+                Something went wrong while rendering the interface.
+                <br />
+                Please share the error below with the developer.
+              </p>
+
+              <div className="bg-black/50 p-4 rounded-lg border border-red-500/20 overflow-auto max-h-64 mb-6">
+                <div className="text-red-400 font-bold mb-2">{this.state.error && this.state.error.toString()}</div>
+                <div className="text-slate-500 text-xs whitespace-pre-wrap">
+                  {this.state.errorInfo && this.state.errorInfo.componentStack}
+                </div>
+              </div>
+
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg font-bold transition-colors"
+              >
+                Reload Page
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      return this.props.children;
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#0b0c2a] text-slate-100 font-sans">
       <BackendStatus />
-      {!analysisData ? (
-        <Home onSelect={handleSelect} onAnalyze={handleAnalyze} />
-      ) : (
-        <DashboardView
-          data={analysisData}
-          filename={selectedFile}
-          onBack={handleBack}
-          onUpdate={handleUpdate}
-          onPlayerClick={handlePlayerClick}
-        />
-      )}
+      <ErrorBoundary>
+        {!analysisData ? (
+          <Home onSelect={handleSelect} onAnalyze={handleAnalyze} />
+        ) : (
+          <DashboardView
+            data={analysisData}
+            filename={selectedFile}
+            onBack={handleBack}
+            onUpdate={handleUpdate}
+            onPlayerClick={handlePlayerClick}
+          />
+        )}
+      </ErrorBoundary>
     </div>
   );
 }

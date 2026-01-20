@@ -11,7 +11,7 @@ Usage (from your project root, with requests installed):
 
     python data_dragon_sync.py
 
-You can optionally set PATCH manually (e.g. "14.10.1") inside this file if you
+You can optionally set PATCH manually (e.g. "16.1.1") inside this file if you
 want to lock to a specific patch instead of "latest".
 """
 
@@ -28,7 +28,7 @@ import requests
 # ----------------------
 
 # If PATCH is None, the script will query Data Dragon for the latest patch.
-# You can hardcode something like "14.10.1" here if you prefer.
+# You can hardcode something like "16.1.1" here if you prefer.
 PATCH: Optional[str] = None
 
 # Default language

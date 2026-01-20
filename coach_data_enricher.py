@@ -47,11 +47,18 @@ def _get_cached_meraki_items() -> Dict[str, Any]:
             except Exception:
                 pass # Corrupt cache, refetch
     
-    # Fetch fresh
+    # Try Data Dragon first (More reliable)
     try:
-        resp = requests.get(MERAKI_ITEMS_URL, timeout=10)
+        version = _safe_get_latest_dd_version() or "16.1.1"
+        dd_url = f"https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/item.json"
+        
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Fetching items from DataDragon ({version})...\n")
+        resp = requests.get(dd_url, timeout=3)
         resp.raise_for_status()
-        data = resp.json()
+        full_data = resp.json()
+        data = full_data.get("data", {}) # DDragon structure is {"data": {id: ...}}
+        
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] DDragon fetch successful. Items: {len(data)}\n")
         
         # Save to cache
         try:
@@ -61,8 +68,9 @@ def _get_cached_meraki_items() -> Dict[str, Any]:
             pass
             
         return data
-    except Exception:
-        return {} # Fallback
+    except Exception as e:
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] DDragon fetch failed: {e}\n")
+        return {} # Fallback to empty if both fail
 
 def _safe_get_latest_dd_version() -> Optional[str]:
     """Best-effort: fetch latest Data Dragon version string.
@@ -77,7 +85,7 @@ def _safe_get_latest_dd_version() -> Optional[str]:
             return None
         return versions[0]
     except Exception:
-        return "14.23.1" # Fallback
+        return "16.1.1" # Fallback
 
 def _safe_get_item_names(version: Optional[str] = None) -> Dict[int, str]:
     """Best-effort: fetch item ID -> item name mapping from Meraki Analytics (Cached)."""
@@ -264,6 +272,7 @@ def build_detailed_match_info(
                 "item4": p.get("item4", 0),
                 "item5": p.get("item5", 0),
                 "item6": p.get("item6", 0),
+                "item7": p.get("item7", 0), # Season 16 "Boots Slot" (Potential)
                 "summoner1Id": p.get("summoner1Id", 0),
                 "summoner2Id": p.get("summoner2Id", 0),
                 "perks": {
@@ -387,9 +396,9 @@ def build_per_game_items(
 
     # Optimization: If very large batch (>50), strictly filter item build analysis
     # to the CURRENT season matches only. This prevents AI from analyzing ancient builds.
-    current_season_prefix = "15" # Default
+    current_season_prefix = "16" # Default
     if matches:
-        latest_ver = matches[0].get("info", {}).get("gameVersion", "15.1")
+        latest_ver = matches[0].get("info", {}).get("gameVersion", "16.1")
         current_season_prefix = _get_season_from_version(latest_ver)
 
     should_filter_season = len(matches) > 50
@@ -415,6 +424,7 @@ def build_per_game_items(
             p.get("item4", 0),
             p.get("item5", 0),
             p.get("item6", 0),
+            p.get("item7", 0), # S16 Boots Slot
         ]
         item_ids = [int(i) for i in items if isinstance(i, int) and i > 0]
         item_names = [item_name_map.get(i, str(i)) for i in item_ids]
@@ -467,11 +477,14 @@ def enrich_coaching_data(
 
     Returns a *new* analysis dict (shallow copy) with extra keys.
     """
+    with open("backend_debug.txt", "a") as f: f.write("[DEBUG] Starting enrich_coaching_data...\n")
     new_analysis = dict(analysis)
 
     macro_profile = build_macro_profile(analysis, timeline_loss_diagnostics)
     per_game_comp = build_per_game_comp(matches, match_ids, puuid)
+    with open("backend_debug.txt", "a") as f: f.write("[DEBUG] Building per_game_items...\n")
     items_data = build_per_game_items(matches, match_ids, puuid)
+    with open("backend_debug.txt", "a") as f: f.write("[DEBUG] Building detailed_matches...\n")
     detailed_matches = build_detailed_match_info(matches, match_ids, puuid)
 
     # Merge timeline data into detailed_matches

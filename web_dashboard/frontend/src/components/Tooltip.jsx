@@ -239,32 +239,73 @@ function filterStatsFromDescription(description, stats) {
         const cleanLine = line.replace(/<[^>]+>/g, '').trim();
         if (!cleanLine) return false;
 
-        // Check if this line matches any known stat we are already displaying
-        // Normalize checking against Meraki camelCase keys too
-        if (cleanLine.includes('Attack Damage') && (stats.FlatPhysicalDamageMod || stats.flatPhysicalDamageMod)) return false;
-        if (cleanLine.includes('Critical Strike Chance') && (stats.FlatCritChanceMod || stats.flatCritChanceMod)) return false;
-        if (cleanLine.includes('Ability Power') && (stats.FlatMagicDamageMod || stats.flatMagicDamageMod)) return false;
-        if (cleanLine.match(/Health(?! Regen)/) && (stats.FlatHPPoolMod || stats.flatHPPoolMod)) return false;
-        if (cleanLine.match(/Mana(?! Regen)/) && (stats.FlatMPPoolMod || stats.flatMPPoolMod)) return false;
-        if (cleanLine.includes('Armor') && (stats.FlatArmorMod || stats.flatArmorMod)) return false;
-        if (cleanLine.includes('Magic Resist') && (stats.FlatSpellBlockMod || stats.flatSpellBlockMod)) return false;
-        if (cleanLine.includes('Attack Speed') && (stats.PercentAttackSpeedMod || stats.percentAttackSpeedMod)) return false;
-        if ((cleanLine.includes('Move Speed') || cleanLine.includes('Movement Speed')) && (stats.PercentMovementSpeedMod || stats.FlatMovementSpeedMod || stats.flatMovementSpeedMod)) return false;
-        if (cleanLine.includes('Health Regen') && (stats.FlatHPRegenMod || stats.flatHPRegenMod)) return false;
-        if (cleanLine.includes('Mana Regen') && (stats.FlatMPRegenMod || stats.flatMPRegenMod)) return false;
-        if (cleanLine.includes('Life Steal') && (stats.PercentLifeStealMod || stats.percentLifeStealMod)) return false;
-        if (cleanLine.includes('Ability Haste') && (stats.AbilityHaste || stats.abilityHaste)) return false;
-        if (cleanLine.includes('Omnivamp') && (stats.Omnivamp || stats.omnivamp)) return false;
-        if (cleanLine.includes('Lethality') && (stats.Lethality || stats.lethality)) return false;
+        // Protections: Always keep lines that explicitly say "Passive", "Active", or "Unique"
+        if (cleanLine.match(/\b(Passive|Active|Unique)\b/i)) return true;
+        // Protection: Keep long lines (stats are typically short, e.g. "+45 Move Speed" is ~16 chars)
+        if (cleanLine.length > 40) return true;
 
-        return true; // Keep unique stats (e.g. Crit Damage, Tenacity)
+        // SMART FILTERING (Check against actual keys present in header)
+
+        // Basic Stats
+        if (cleanLine.match(/Attack Damage|AD\b/i) && (stats.FlatPhysicalDamageMod || stats.flatPhysicalDamageMod || stats.attackDamage)) return false;
+        if (cleanLine.match(/Ability Power|AP\b/i) && (stats.FlatMagicDamageMod || stats.flatMagicDamageMod || stats.abilityPower)) return false;
+        if (cleanLine.match(/Armor/i) && !cleanLine.match(/Penetration/i) && (stats.FlatArmorMod || stats.flatArmorMod || stats.armor)) return false;
+        if (cleanLine.match(/Magic Resist|MR\b/i) && (stats.FlatSpellBlockMod || stats.flatSpellBlockMod || stats.magicResistance)) return false;
+        if (cleanLine.match(/Health(?! Regen)/i) && (stats.FlatHPPoolMod || stats.flatHPPoolMod || stats.health)) return false;
+        if (cleanLine.match(/Mana(?! Regen)/i) && (stats.FlatMPPoolMod || stats.flatMPPoolMod || stats.mana)) return false;
+
+        // Speed
+        if ((cleanLine.match(/Move Speed|Movement Speed|MS\b/i)) && (stats.PercentMovementSpeedMod || stats.FlatMovementSpeedMod || stats.flatMovementSpeedMod || stats.movespeed)) return false;
+        if (cleanLine.match(/Attack Speed|AS\b/i) && (stats.PercentAttackSpeedMod || stats.percentAttackSpeedMod || stats.attackSpeed)) return false;
+
+        // Crit / Lifesteal
+        if (cleanLine.match(/Critical Strike|Crit /i) && (stats.FlatCritChanceMod || stats.flatCritChanceMod || stats.criticalStrikeChance)) return false;
+        if (cleanLine.match(/Life Steal/i) && (stats.PercentLifeStealMod || stats.percentLifeStealMod || stats.lifesteal)) return false;
+
+        // Regen
+        if (cleanLine.match(/Health Regen/i) && (stats.FlatHPRegenMod || stats.flatHPRegenMod || stats.healthRegen)) return false;
+        if (cleanLine.match(/Mana Regen/i) && (stats.FlatMPRegenMod || stats.flatMPRegenMod || stats.manaRegen)) return false;
+        if (cleanLine.match(/Omnivamp/i) && (stats.Omnivamp || stats.omnivamp)) return false;
+        if (cleanLine.match(/Ability Haste|AH\b/i) && (stats.AbilityHaste || stats.abilityHaste)) return false;
+
+        // --- PENETRATION HANDLING (Flat vs Percent) ---
+        // Magic Penetration
+        if (cleanLine.match(/Magic Penetration|Magic Pen/i)) {
+            const isPercentLine = cleanLine.includes('%');
+            // Header Keys: 'magicPenetration' (could be flat or percent in Riot API? Usually flat is 'flatMagicPenetration')
+            // Heuristic: If stats has generic 'magicPenetration', we assume it covers the line unless distinct.
+            // But usually Riot separates them. Meraki might use 'magicPenetration' for both?
+            // Let's check specific known keys.
+
+            // If header has ANY magic pen, and the values are essentially the same, filter it.
+            // But here we have 7% vs 8%. 
+            // If we have a stat key, we generally want to hide the text version.
+            // BUT we must not hide Flat if Header is Percent.
+
+            // If Header has 'magicPenetration' (7), and Line has '%' -> Filter (It's the percent stat)
+            if (isPercentLine && (stats.magicPenetration || stats.percentMagicPenetration)) return false;
+
+            // If Header has 'magicPenetration' (7), and Line is FLAT (18) -> Keep (Unique stat)
+            // (Unless stats also has flatMagicPenetration)
+            if (!isPercentLine && (stats.flatMagicPenetration)) return false;
+        }
+
+        // Lethality / Armor Pen
+        if (cleanLine.match(/Lethality/i) && (stats.Lethality || stats.lethality)) return false;
+        if (cleanLine.match(/Armor Penetration/i)) {
+            const isPercentLine = cleanLine.includes('%');
+            if (isPercentLine && (stats.armorPenetration || stats.percentArmorPenetration)) return false;
+        }
+
+        return true;
     });
 
     // 3. Reconstruct
     if (lines.length === 0) {
         return description.replace(/<stats>[\s\S]*?<\/stats>/i, '');
     } else {
-        const newStatsBlock = `<stats>${lines.join('<br>')}</stats>`;
+        // Return the lines without <stats> wrapper so FormattedDescription doesn't nuke them
+        const newStatsBlock = lines.join('<br>');
         return description.replace(/<stats>[\s\S]*?<\/stats>/i, newStatsBlock);
     }
 }
@@ -614,8 +655,12 @@ function getStatDisplay(key) {
         'omnivamp': { color: 'text-[#ff4500]', name: 'Omnivamp' },
         'lethality': { color: 'text-[#ff4500]', name: 'Lethality' },
         'tenacity': { color: 'text-[#f0e6d2]', name: 'Tenacity' },
-        'magicPenetration': { color: 'text-[#87cefa]', name: 'Magic Penetration' },
+        'magicPenetration': { color: 'text-[#00bfff]', name: 'Magic Penetration' },
+        'flatMagicPenetration': { color: 'text-[#00bfff]', name: 'Magic Penetration' },
+        'percentMagicPenetration': { color: 'text-[#00bfff]', name: 'Magic Penetration' },
+        'magicPenetrationPercent': { color: 'text-[#00bfff]', name: 'Magic Penetration' },
         'armorPenetration': { color: 'text-[#ff8c00]', name: 'Armor Penetration' },
+        'percentArmorPenetration': { color: 'text-[#ff8c00]', name: 'Armor Penetration' },
         'cooldownReduction': { color: 'text-[#f0e6d2]', name: 'Cooldown Reduction' },
         'goldPer10': { color: 'text-[#e6ac00]', name: 'Gold Per 10' },
         'healAndShieldPower': { color: 'text-[#1dc451]', name: 'Heal & Shield Power' }

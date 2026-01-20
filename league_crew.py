@@ -41,9 +41,17 @@ def _get_latest_ddragon_version() -> str:
             return resp.json()[0]
     except Exception:
         pass
-    return "14.23.1" # Fallback
+    return "16.1.1" # Fallback (Season 16)
 
 import time
+
+KEYSTONE_MAP = {
+    8005: "Press the Attack", 8008: "Lethal Tempo", 8021: "Fleet Footwork", 8010: "Conqueror",
+    8112: "Electrocute", 8124: "Predator", 8128: "Dark Harvest", 9923: "Hail of Blades",
+    8214: "Summon Aery", 8229: "Arcane Comet", 8230: "Phase Rush",
+    8437: "Grasp of the Undying", 8439: "Aftershock", 8465: "Guardian",
+    8351: "Glacial Augment", 8360: "Unsealed Spellbook", 8369: "First Strike"
+}
 
 # ...
 
@@ -134,10 +142,16 @@ def _fetch_meta_context(champion: str, role: str, vs_champion: str | None = None
             summary += f"- Core Keystone: {data.keystone}\n"
         
         # Resolve Items
+        # Resolve Items
         build_ids = getattr(data, 'popular_build', [])
         if build_ids:
             item_names = [_get_item_name(iid) for iid in build_ids]
-            summary += f"- Core Build: {', '.join(item_names)}\n"
+            summary += f"- Most Popular Build: {', '.join(item_names)}\n"
+            
+        win_ids = getattr(data, 'winning_build', [])
+        if win_ids:
+            win_names = [_get_item_name(iid) for iid in win_ids]
+            summary += f"- Highest Winrate Build: {', '.join(win_names)}\n"
         
         return summary
     except Exception as e:
@@ -832,14 +846,33 @@ def _build_single_game_prompt(match_data: Dict[str, Any], champion_pool: List[st
         p_kda = f"{p.get('kills')}/{p.get('deaths')}/{p.get('assists')}"
         pid_map[p.get("participant_id")] = p_name
         
-        info = f"{p_name} ({p_role}) - {p_kda}"
+        # --- ENHANCED: Extract Items & Runes ---
+        # 1. Items
+        items = []
+        for i in range(7):
+            iid = p.get(f"item{i}", 0)
+            if iid and iid > 0:
+                items.append(_get_item_name(iid))
+        item_str = ", ".join(items) if items else "No Items"
+        
+        # 2. Runes (Keystone)
+        keystone_str = "Unknown Rune"
+        styles = p.get("perks", {}).get("styles", [])
+        if styles:
+            try:
+                kid = styles[0]["selections"][0]["perk"]
+                keystone_str = KEYSTONE_MAP.get(kid, f"Keystone {kid}")
+            except (IndexError, KeyError):
+                pass
+        
+        info = f"{p_name} ({p_role}) | {p_kda} | {keystone_str} | Build: [{item_str}]"
         
         if p.get("team_id") == your_team_id:
             your_team.append(info)
         else:
             enemy_team.append(info)
             if p_role == role and role != "UNKNOWN":
-                lane_opponent_str = f"{p_name} ({p_kda})"
+                lane_opponent_str = f"{p_name} ({p_kda}) with {keystone_str}"
                 lane_opponent_name = p_name
 
     # Now fetch meta with known opponent
@@ -859,27 +892,30 @@ def _build_single_game_prompt(match_data: Dict[str, Any], champion_pool: List[st
             item_name = _get_item_name(item_id)
             events.append({"t": ts, "msg": f"[{ts_min}m] BOUGHT {item_name}"})
             
-    # B. Kills/Deaths
+    # B. Global Kills (Context for feed/snowball)
     for k in match_data.get("kill_events", []):
         ts = k.get("timestamp", 0)
         ts_min = int(ts / 60000)
         killer_id = k.get("killerId")
         victim_id = k.get("victimId")
         
-        killer_name = pid_map.get(killer_id, "Minion/Tower")
+        killer_name = pid_map.get(killer_id, "Minion/Tower/Monster")
         victim_name = pid_map.get(victim_id, "Unknown")
+        
+        # Determine relationship
+        killer_team = next((p.get("team_id", 0) for p in participants if p.get("participant_id") == killer_id), 0)
+        victim_team = next((p.get("team_id", 0) for p in participants if p.get("participant_id") == victim_id), 0)
         
         if self_p["participant_id"] == killer_id:
             events.append({"t": ts, "msg": f"[{ts_min}m] KILL: You killed {victim_name}"})
         elif self_p["participant_id"] == victim_id:
             events.append({"t": ts, "msg": f"[{ts_min}m] DEATH: You were killed by {killer_name}"})
-            
+        elif killer_team == your_team_id:
+            events.append({"t": ts, "msg": f"[{ts_min}m] TEAM: {killer_name} killed {victim_name}"})
+        elif killer_team != 0 and killer_team != your_team_id:
+             events.append({"t": ts, "msg": f"[{ts_min}m] ENEMY: {killer_name} killed {victim_name}"})
+
     # C. Objectives (Dragon, Baron, Herald, Towers)
-    # Note: building_events and elite_monster_events might be in match_data if enriched, 
-    # but standard Riot match DTO puts them in 'info.frames' which we might not have fully parsed here 
-    # unless coach_data_enricher did it. 
-    # Assuming match_data has 'building_events' and 'monster_events' from the enricher.
-    
     for b in match_data.get("building_events", []):
         if b.get("type") == "BUILDING_KILL":
             ts = b.get("timestamp", 0)
@@ -888,56 +924,56 @@ def _build_single_game_prompt(match_data: Dict[str, Any], champion_pool: List[st
             tower = b.get("towerType", "TURRET")
             team_id = b.get("teamId") # Team of the building (victim)
             
+            # If team_id is YOUR team, it means YOUR tower was destroyed (Bad)
             victim_team = "Your" if team_id == your_team_id else "Enemy"
             events.append({"t": ts, "msg": f"[{ts_min}m] TOWER: {victim_team} {lane} {tower} Destroyed"})
 
-    for m in match_data.get("monster_events", []): # Assuming we have this, or elite_monster_kills
-         # If not present, we skip. The enricher needs to provide this.
-         # Let's check if we have standard elite monster kills in participants? No, that's summary.
-         # We'll rely on what's available. If 'monster_events' isn't there, we miss it.
-         pass
-
     # D. Wards (Grouped & Filtered)
-    ward_counts = {} # (minute) -> count
     for w in match_data.get("ward_events", []):
         if w.get("creatorId") == self_p["participant_id"] and w.get("type") == "WARD_PLACED":
             ts = w.get("timestamp", 0)
             ts_min = int(ts / 60000)
             ward_type = w.get("wardType", "WARD")
-            
-            # Only log Control Wards explicitly, group others
             if ward_type == "CONTROL_WARD":
                 events.append({"t": ts, "msg": f"[{ts_min}m] VISION: Placed Control Ward"})
-            else:
-                # We'll summarize stealth wards later if needed, or just log them sparingly
-                pass
 
-    # E. Location Snapshots (Every 3 mins)
-    # We need position data. match_data['all_positions'] has it?
-    # Or self_p['position_history']?
-    # The enricher puts 'all_positions' in the root usually.
-    all_positions = match_data.get("all_positions", {}).get(str(self_p["participant_id"]), [])
+    # E. Location Snapshots (Self + Enemy Jungler Tracking)
+    all_pos_dict = match_data.get("all_positions", {})
     
-    # Sort positions by time
-    all_positions.sort(key=lambda x: x["t"])
-    
+    # helper
+    def get_area(x, y):
+        if x < 3000 and y < 3000: return "Blue Base"
+        elif x > 12000 and y > 12000: return "Red Base"
+        elif x < 5000 and y > 10000: return "Top Lane"
+        elif x > 10000 and y < 5000: return "Bot Lane"
+        elif 5000 < x < 10000 and 5000 < y < 10000: return "Mid Lane"
+        else: return "Jungle/River"
+
+    # 1. Self Tracking (Every 3 mins)
+    my_positions = all_pos_dict.get(str(self_p["participant_id"]), [])
+    my_positions.sort(key=lambda x: x["t"])
     last_snapshot = -10
-    for pos in all_positions:
+    for pos in my_positions:
         t_min = pos["t"]
-        if t_min - last_snapshot >= 3.0: # Every 3 mins
-            # Determine rough area
-            x, y = pos["x"], pos["y"]
-            area = "Base"
-            if x < 3000 and y < 3000: area = "Blue Base"
-            elif x > 12000 and y > 12000: area = "Red Base"
-            elif x < 5000 and y > 10000: area = "Top Lane"
-            elif x > 10000 and y < 5000: area = "Bot Lane"
-            elif 5000 < x < 10000 and 5000 < y < 10000: area = "Mid Lane"
-            else: area = "Jungle/River"
-            
-            events.append({"t": t_min * 60000, "msg": f"[{int(t_min)}m] LOCATION: {area}"})
+        if t_min - last_snapshot >= 3.0: 
+            area = get_area(pos["x"], pos["y"])
+            events.append({"t": t_min * 60000, "msg": f"[{int(t_min)}m] LOCATION: You are at {area}"})
             last_snapshot = t_min
-
+            
+    # 2. Enemy Jungler Tracking (Every 2 mins - High Value)
+    enemy_jg = next((p for p in participants if p.get("teamPosition") == "JUNGLE" and p.get("team_id") != your_team_id), None)
+    if enemy_jg:
+        ej_pid = str(enemy_jg["participant_id"])
+        ej_positions = all_pos_dict.get(ej_pid, [])
+        ej_positions.sort(key=lambda x: x["t"])
+        last_ej = -10
+        for pos in ej_positions:
+            t_min = pos["t"]
+            if t_min - last_ej >= 2.0:
+                 area = get_area(pos["x"], pos["y"])
+                 events.append({"t": t_min * 60000, "msg": f"[{int(t_min)}m] INTEL: Enemy Jungler ({enemy_jg['champion_name']}) at {area}"})
+                 last_ej = t_min
+    
     # Sort all events by timestamp
     events.sort(key=lambda x: x["t"])
     
@@ -956,6 +992,14 @@ Instead, explain the interaction between items, champions, and game state.
 - KDA: {kda}
 - Duration: {match_data.get("game_duration", 0) // 60} minutes
     - Lane Opponent: {lane_opponent_str or "Unknown"}
+
+**Season 16 Mechanics Primer**:
+- **Role Quests**: New system where completing role-specific tasks grants power spikes.
+- **Mid Lane Quest**: Completing this grants **Tier 3 Boots** (Upgraded Sorcerer's Shoes, moving faster, better stats). If you see "Tier 3 Boots" in the build, it means the player completed their quest.
+- **Top Lane Quest**: Top Top Laners can now reach **Level 20** (Level cap increased from 18).
+- **Bot Lane Quest**: ADCs gain a **7th Item Slot** (Boots move to a dedicated slot), allowing for 6 Legendary Items + Boots.
+- **New Items**: Be aware of S16 items like "Dusk and Dawn", "Fiendhunter Bolts", and "Hextech Gunblade" (returned).
+
 
 **Meta Data (Live Winrates)**:
 {meta_context}

@@ -10,7 +10,7 @@ from rich.table import Table
 
 
 from riot_client import RiotClient
-from analyzer import analyze_matches
+from analyzer import analyze_matches, calculate_season_stats_from_db
 from timeline_analyzer import classify_loss_reason, analyze_timeline_movement
 from league_crew import call_league_crew, classify_matches_and_identify_candidates
 from coach_data_enricher import enrich_coaching_data
@@ -22,6 +22,102 @@ console = Console()
 SCRIPT_DIR = Path(__file__).resolve().parent
 SAVE_DIR = SCRIPT_DIR / "saves"
 SAVE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+
+def backfill_match_history(puuid: str, region: str):
+    """
+    Background task to fetch up to 1000 matches for season stats.
+    Only fetches matching IDs that are NOT in the database.
+    """
+    try:
+        import time
+        from riot_client import RiotClient
+        from database import Database
+        
+        # 1. Setup
+        client = RiotClient()
+        db = Database()
+        
+        # console.print(f"[dim][Backfill] Starting history sync for {puuid[:10]}...[/dim]")
+        
+        # 2. Get 1000 IDs (Fast)
+        all_ids = client.get_recent_match_ids(puuid, count=1000)
+        
+        # 3. Check what we have
+        cached_map = db.get_matches_bulk(all_ids) # Only returns found docs
+        missing_ids = [mid for mid in all_ids if mid not in cached_map]
+        
+        if not missing_ids:
+            # console.print(f"[dim][Backfill] History up to date (Checked {len(all_ids)} games).[/dim]")
+            return
+
+        console.print(f"[dim][Backfill] Found {len(missing_ids)} missing matches. Fetching in background...[/dim]")
+        
+        # 4. Fetch Missing (Sequential to be polite in background)
+        for i, mid in enumerate(missing_ids):
+            try:
+                m_data = client.get_match(mid)
+                if m_data:
+                    db.save_match(m_data)
+                # Sleep slightly to avoid rate limits if running long
+                if i % 10 == 0:
+                    time.sleep(0.5)
+            except Exception as e:
+                pass
+                
+        # console.print(f"[dim][Backfill] Complete. Fetched {len(missing_ids)} matches.[/dim]")
+        
+    except Exception as e:
+        console.print(f"[yellow][Backfill] Error: {e}[/yellow]")
+
+
+
+def backfill_match_history(puuid: str, region: str):
+    """
+    Background task to fetch up to 1000 matches for season stats.
+    Only fetches matching IDs that are NOT in the database.
+    """
+    try:
+        import time
+        from riot_client import RiotClient
+        from database import Database
+        
+        # 1. Setup
+        client = RiotClient()
+        db = Database()
+        
+        # console.print(f"[dim][Backfill] Starting history sync for {puuid[:10]}...[/dim]")
+        
+        # 2. Get 1000 IDs (Fast)
+        all_ids = client.get_recent_match_ids(puuid, count=1000)
+        
+        # 3. Check what we have (O(1) lookups via id index)
+        cached_map = db.get_matches_bulk(all_ids) 
+        missing_ids = [mid for mid in all_ids if mid not in cached_map]
+        
+        if not missing_ids:
+            # console.print(f"[dim][Backfill] History up to date (Checked {len(all_ids)} games).[/dim]")
+            return
+
+        console.print(f"[dim][Backfill] Found {len(missing_ids)} missing matches. Fetching in background...[/dim]")
+        
+        # 4. Fetch Missing (Sequential to be polite in background)
+        for i, mid in enumerate(missing_ids):
+            try:
+                m_data = client.get_match(mid)
+                if m_data:
+                    db.save_match(m_data)
+                # Sleep slightly to avoid rate limits if running long
+                if i % 5 == 0:
+                    time.sleep(0.2)
+            except Exception as e:
+                pass
+                
+        # console.print(f"[dim][Backfill] Complete. Fetched {len(missing_ids)} matches.[/dim]")
+        
+    except Exception as e:
+        console.print(f"[yellow][Backfill] Error: {e}[/yellow]")
 
 
 def get_cached_past_ranks(puuid: str, game_name: str, tag_line: str, region: str) -> List[Dict[str, str]]:
@@ -216,7 +312,7 @@ def print_human_summary(
 
 def run_analysis_pipeline(
     riot_id: str,
-    match_count: int = 20,
+    match_count: int = 100,
     use_timeline: bool = True,
     call_ai: bool = True,
     save_json: bool = True,
@@ -227,6 +323,10 @@ def run_analysis_pipeline(
     Programmatic entry point for the analysis pipeline.
     Returns the final agent_payload dictionary.
     """
+    import time
+    t_start = time.time()
+    # console.print(f"[cyan]TIMING: Pipeline Start[/cyan]")
+
     if "#" not in riot_id:
         raise ValueError("Invalid Riot ID format. Use Name#TAG.")
 
@@ -253,11 +353,16 @@ def run_analysis_pipeline(
     # If we are asked to call AI, check if we already have the raw stats in DB.
     # This allows the frontend to split the request: 
     # 1. Get Stats (Fast) 
-    # 2. Get AI (Slow, but resumes from step 1)
+    # 2. MATCH HISTORY
+    with open("backend_debug.txt", "a") as f:
+        f.write(f"[DEBUG] Pipeline Step: Fetching Match History...\n")
     if call_ai:
         from database import Database
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Init Database...\n")
         db = Database()
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] DB Init Done. Checking existing analysis...\n")
         existing_doc = db.get_analysis(riot_id)
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Existing analysis check done. Found: {bool(existing_doc)}\n")
         
         # We resume if:
         # 1. We have a doc
@@ -305,9 +410,11 @@ def run_analysis_pipeline(
 
     # If missing, fetch fresh
     if not account or not summoner:
-        console.print(f"[bold]Looking up account on {region_key} (Routing: {client.region})...[/bold]")
+        # console.print(f"[bold]Looking up account on {region_key} (Routing: {client.region})...[/bold]")
         try:
+            with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Fetching account from Riot...\n")
             account = client.get_account_by_riot_id(game_name, tag_line)
+            with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Account fetched. Fetching Summoner...\n")
             puuid = account["puuid"]
             
             console.print("[bold]Fetching summoner profile...[/bold]")
@@ -337,15 +444,20 @@ def run_analysis_pipeline(
         console.print(f"[yellow]Warning: Failed to fetch rank data: {e}[/yellow]")
         console.print("[yellow]Hint: Check your PLATFORM setting in .env (e.g. 'na1', 'euw1') if you are in a non-default region.[/yellow]")
 
-    console.print(f"[bold]Fetching last {match_count} ranked matches...[/bold]")
+    # console.print(f"[bold]Fetching last {match_count} ranked matches...[/bold]")
     try:
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Fetching Match IDs...\n")
         match_ids = client.get_recent_match_ids(puuid, match_count)
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Match IDs fetched: {len(match_ids)}\n")
     except Exception as e:
         msg = f"Failed to fetch match IDs: {e}"
         console.print(f"[red]{msg}[/red]")
         return {"error": msg}
         
     console.print(f"Retrieved {len(match_ids)} match IDs.")
+    
+    t_ids = time.time()
+    console.print(f"[cyan]TIMING: ID Fetch took {t_ids - t_start:.2f}s[/cyan]")
 
     matches: List[Dict[str, Any]] = []
     # Parallel Fetching of Matches
@@ -354,37 +466,42 @@ def run_analysis_pipeline(
     # Initialize DB for caching matches
     from database import Database
     db = Database()
-    
-    def fetch_match_safe(idx, m_id):
-        try:
-            # 1. Check DB Cache
-            cached = db.get_match(m_id)
-            if cached:
-                return idx, cached
-                
-            # 2. Fetch from API
-            match_data = client.get_match(m_id)
-            
-            # 3. Save to DB
-            if match_data:
-                db.save_match(match_data)
-                
-            return idx, match_data
-        except Exception as e:
-            # console.print(f"[yellow]Failed to fetch/cache match {m_id}: {e}[/yellow]")
-            return idx, None
 
-    # Use ThreadPoolExecutor for parallel fetching
-    # Reduced to 3 workers to prevent OOM on small instances (Render free tier)
-    with ThreadPoolExecutor(max_workers=3) as executor:
-        futures = {executor.submit(fetch_match_safe, i, mid): mid for i, mid in enumerate(match_ids)}
-        for future in as_completed(futures):
-            idx, match_data = future.result()
-            matches[idx] = match_data
-            
-            # Only print every 5th or 10th to reduce noise if many
-            if (idx+1) % 5 == 0 or (idx+1) == len(match_ids):
-                console.print(f"Fetched match {idx+1}/{len(match_ids)}")
+    # 1. BULK FETCH from Cache (Optimization)
+    console.print(f"[dim]Checking cache for {len(match_ids)} matches...[/dim]")
+    cached_matches_map = db.get_matches_bulk(match_ids)
+    console.print(f"Found {len(cached_matches_map)} matches in cache.")
+    
+    t_bulk = time.time()
+    console.print(f"[cyan]TIMING: Bulk DB Fetch took {t_bulk - t_ids:.2f}s[/cyan]")
+
+    # 2. Parallel Fetch for MISSING matches
+    matches = [None] * len(match_ids)
+    missing_ids = [mid for mid in match_ids if mid not in cached_matches_map]
+    fetched_map = {}
+
+    if missing_ids:
+        console.print(f"[bold]Fetching {len(missing_ids)} missing matches (Parallel)...[/bold]")
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            future_to_mid = {executor.submit(client.get_match, mid): mid for mid in missing_ids}
+            for future in as_completed(future_to_mid):
+                mid = future_to_mid[future]
+                try:
+                    m_data = future.result()
+                    if m_data:
+                        # Save to DB immediately to avoid memory bloat if large batch
+                        db.save_match(m_data)
+                        fetched_map[mid] = m_data
+                except Exception as e:
+                    # console.print(f"[yellow]Failed to fetch {mid}: {e}[/yellow]")
+                    pass
+
+    # Reassemble in order
+    for i, mid in enumerate(match_ids):
+        if mid in cached_matches_map:
+            matches[i] = cached_matches_map[mid]
+        elif mid in fetched_map:
+            matches[i] = fetched_map[mid]
 
     # Filter out failed fetches
     matches = [m for m in matches if m is not None]
@@ -406,24 +523,15 @@ def run_analysis_pipeline(
 
     timeline_loss_diagnostics: List[Dict[str, Any]] = []
     movement_summaries: List[Dict[str, Any]] = []
-
+    # 3. TIMELINES
     if use_timeline:
+        with open("backend_debug.txt", "a") as f:
+            f.write(f"[DEBUG] Pipeline Step: Processing Timelines...\n")
         console.print("[bold]Fetching timelines and analyzing movement... (Parallel)[/bold]")
         
-        def process_timeline(idx, m_id, m_data):
-            # Fetch timeline
-            try:
-                # 1. Check DB Cache
-                tl = db.get_timeline(m_id)
-                
-                # 2. Fetch Fresh if missing
-                if not tl:
-                    tl = client.get_match_timeline(m_id)
-                    if tl:
-                        db.save_timeline(m_id, tl)
-                        
-            except Exception as e:
-                console.print(f"[yellow]Failed to fetch timeline for {m_id}: {e}[/yellow]")
+        def process_timeline(idx, m_id, m_data, tl):
+            # Timeline is already fetched and saved by the caller (Sequential Loop)
+            if not tl:
                 return None, None
 
             # Loss Analysis
@@ -443,69 +551,93 @@ def run_analysis_pipeline(
                     mov = {"match_id": m_id, **mov}
             except Exception:
                 pass
+            
+            return l_diag, mov
                 
             return l_diag, mov
 
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            # zip matches with ids carefully (matches list aligns if we didn't filter? 
-            # Wait, we filtered matches. We need to realign with match_ids.
-            # Actually, `matches` objects contain metadata including matchId usually, 
-            # but let's rely on the metadata inside specific match object or just be careful.)
+        # SEQUENTIAL EXECUTION (Hybrid Strategy)
+        # Re-map matches to IDs
+        valid_tasks = []
+        for m in matches:
+            mid = m['metadata']['matchId']
+            valid_tasks.append((mid, m))
+        
+        # HYBRID ANALYSIS STRATEGY:
+        # Priority: 
+        # 1. Most recent 3 games (Instant feedback)
+        # 2. Recent Losses (Where coaching is needed most)
+        # 3. Cap total at 15 timelines.
+        
+        TIMELINE_CAP = 15
+        hybrid_tasks = []
+        
+        # valid_tasks contains (mid, match_dto)
+        for i, (mid, m_data) in enumerate(valid_tasks):
+            if len(hybrid_tasks) >= TIMELINE_CAP:
+                break
             
-            # Re-map matches to IDs.
-            # matches is a list of dicts. matches[i]['metadata']['matchId'] usually exists.
+            # Always take the freshest 3 games
+            if i < 3:
+                hybrid_tasks.append((mid, m_data))
+                continue
             
-            valid_tasks = []
-            for m in matches:
-                mid = m['metadata']['matchId']
-                valid_tasks.append((mid, m))
-            
-            # HYBRID ANALYSIS STRATEGY:
-            # We want stats for ALL games (for AI trends), but Timelines are expensive (1 API call).
-            # To stay under rate limits (100 req/2m), we cap timelines to a "High Value" subset.
-            # Priority: 
-            # 1. Most recent 3 games (Instant feedback)
-            # 2. Recent Losses (Where coaching is needed most)
-            # 3. Cap total at 15 timelines.
-            
-            TIMELINE_CAP = 15
-            hybrid_tasks = []
-            
-            # valid_tasks contains (mid, match_dto)
-            for i, (mid, m_data) in enumerate(valid_tasks):
-                if len(hybrid_tasks) >= TIMELINE_CAP:
-                    break
+            # For older games, only deep-analyze LOSSES
+            try:
+                # Find self
+                parts = m_data.get('info', {}).get('participants', [])
+                self_part = next((p for p in parts if p['puuid'] == puuid), None)
                 
-                # Always take the freshest 3 games
-                if i < 3:
+                if self_part and not self_part['win']:
                     hybrid_tasks.append((mid, m_data))
-                    continue
-                
-                # For older games, only deep-analyze LOSSES
-                try:
-                    # Find self
-                    parts = m_data.get('info', {}).get('participants', [])
-                    self_part = next((p for p in parts if p['puuid'] == puuid), None)
-                    
-                    if self_part and not self_part['win']:
-                        hybrid_tasks.append((mid, m_data))
-                except Exception:
-                    pass
-            
-            if len(valid_tasks) > len(hybrid_tasks):
-                console.print(f"[dim]Hybrid Optimization: Selected {len(hybrid_tasks)} high-value timelines (Recent + Losses) from {len(valid_tasks)} games.[/dim]")
-                valid_tasks = hybrid_tasks
+            except Exception:
+                pass
+        
+        if len(valid_tasks) > len(hybrid_tasks):
+            console.print(f"[dim]Hybrid Optimization: Selected {len(hybrid_tasks)} high-value timelines (Recent + Losses) from {len(valid_tasks)} games.[/dim]")
+            valid_tasks = hybrid_tasks
 
-            futures = [executor.submit(process_timeline, i, mid, m) for i, (mid, m) in enumerate(valid_tasks)]
+        # OPTIMIZED PARALLEL FETCHING
+        # 1. Fetch all missing timelines in parallel
+        
+        missing_mids = []
+        for mid, _ in valid_tasks:
+            if not db.get_timeline(mid):
+                missing_mids.append(mid)
+                
+        if missing_mids:
+            console.print(f"[bold]Fetching {len(missing_mids)} missing timelines (Parallel)...[/bold]")
+            with ThreadPoolExecutor(max_workers=5) as executor:
+                future_to_mid = {executor.submit(client.get_match_timeline, mid): mid for mid in missing_mids}
+                
+                for future in as_completed(future_to_mid):
+                    mid = future_to_mid[future]
+                    try:
+                        tl = future.result()
+                        if tl:
+                            db.save_timeline(mid, tl)
+                    except Exception as e:
+                        # console.print(f"[yellow]Failed to fetch timeline {mid}: {e}[/yellow]")
+                        pass
+
+        # 2. Process Sequentially (CPU bound + Safety)
+        console.print(f"[bold]Processing {len(valid_tasks)} timelines...[/bold]")
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Start Processing {len(valid_tasks)} timelines...\n")
+        
+        for i, (mid, m_data) in enumerate(valid_tasks):
+            t_start_tl = time.time()
+            try:
+                tl = db.get_timeline(mid)
+                if tl:
+                    process_timeline(i, mid, m_data, tl)
+            except Exception as e:
+                console.print(f"[yellow]Error processing timeline {mid}: {e}[/yellow]")
             
-            for future in as_completed(futures):
-                l_diag, mov = future.result()
-                if l_diag:
-                    timeline_loss_diagnostics.append(l_diag)
-                if mov:
-                    movement_summaries.append(mov)
-                    
-        console.print(f"Processed {len(movement_summaries)} timelines.")
+            dur = time.time() - t_start_tl
+            with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Processed {mid} in {dur:.2f}s\n")
+
+    t_processing = time.time()
+    console.print(f"[cyan]TIMING: Match & Timeline Processing took {t_processing - t_bulk:.2f}s[/cyan]")
 
     # Enrich analysis with macro, comp, and itemization data
     analysis = enrich_coaching_data(
@@ -568,6 +700,16 @@ def run_analysis_pipeline(
             ),
         },
     }
+
+    # Enhanced Season Stats (Tier 3)
+    try:
+        t_season_start = time.time()
+        agent_payload["season_stats"] = calculate_season_stats_from_db(puuid)
+        t_season_end = time.time()
+        # console.print(f"[green]Calculated Season Stats from {agent_payload['season_stats'].get('total_games', 0)} cached games.[/green]")
+        # console.print(f"[cyan]TIMING: Season Stats took {t_season_end - t_season_start:.2f}s[/cyan]")
+    except Exception as e:
+        console.print(f"[yellow]Warning: Failed to calculate season stats: {e}[/yellow]")
 
     # Champion-aware coaching metadata
     try:
@@ -636,8 +778,49 @@ def run_analysis_pipeline(
         except Exception as e:
             console.print(f"[red]Failed to save Stage 1 Analysis to DB: {e}[/red]")
 
-    # Optional: call the multi-agent League Coach crew (Gemini)
-    if call_ai:
+    # Optional: call the multi-agent League Coach crew    # 5. AI
+    # LOGIC UPDATE: Only run AI if we actually found NEW matches or if the user forced it,
+    # OR if the previous report is missing.
+    # We need to know if new matches were found.
+    # Let's assume if we had to fetch ANY match history logic, we might need a refresh.
+    # But strictly speaking, we want to know if the list of match IDs changed.
+    
+    # We can fetch the old analysis from DB to check if report simply exists.
+    # In Stage 1 above, we loaded 'old_data'.
+    
+    has_valid_report = False
+    if 'old_data' in locals() and old_data:
+        if "coaching_report" in old_data or "coaching_report_markdown" in old_data:
+            has_valid_report = True
+
+    # We assume 'match_count' requested matches were processed.
+    # If all of them were cached and we have a report, we can skip.
+    # Ideally we'd track 'new_matches_count' earlier in the script.
+    # For now, let's implement a heuristic:
+    # If 'saved_doc' existed (from DB load at start) AND match list is same?
+    # Simpler: If the user didn't ask for a force refresh, and we have a report, 
+    # and the latest match ID in 'matches' matches the latest in 'old_data', we are good.
+    
+    skip_ai = False
+    if has_valid_report and not force_refresh:
+        # Check if the latest match is statistically the same
+        try:
+            latest_new = matches[0]['metadata']['matchId']
+            latest_old = old_data.get('matches', [{}])[0].get('metadata', {}).get('matchId')
+            if latest_new == latest_old:
+                skip_ai = True
+                console.print("[green]Creating Analysis: No new matches found & Cache exists. Skipping AI re-run.[/green]")
+                # Ensure the payload has the report
+                if "coaching_report" in old_data:
+                    agent_payload["coaching_report"] = old_data["coaching_report"]
+                if "coaching_report_markdown" in old_data:
+                    agent_payload["coaching_report_markdown"] = old_data["coaching_report_markdown"]
+        except Exception:
+            pass # Safety fallthrough
+            
+    if call_ai and not skip_ai:
+        with open("backend_debug.txt", "a") as f:
+            f.write(f"[DEBUG] Pipeline Step: Calling AI...\n")
         console.print("Contacting League Coach Crew (Gemini - may take 10-30s)...")
         try:
             coaching_report = call_league_crew(agent_payload)
@@ -695,18 +878,23 @@ def run_analysis_pipeline(
     except Exception as e:
         console.print(f"[yellow]Cleanup warning: {e}[/yellow]")
 
+    # Open dashboard if requested
     if open_dashboard:
-        # ... logic ...
-            import traceback
-            traceback.print_exc()
+        try:
+            import webbrowser
+            webbrowser.open("http://localhost:5173")
+            console.print("[green]Opening dashboard in browser...[/green]")
+        except Exception as e:
+            console.print(f"[yellow]Failed to open browser: {e}[/yellow]")
 
-            if open_dashboard:
-                import webbrowser
-                webbrowser.open("http://localhost:5173")
-                console.print("[green]Opening dashboard in browser...[/green]")
 
-        except Exception as e:  # noqa: BLE001
-            console.print(f"[red]Failed to save JSON: {e}[/red]")
+
+    # --- PROACTIVE BACKFILL (Background) ---
+    # Fetch remaining season matches (up to 1000) for accurate stats next time.
+    if puuid:
+        import threading
+        t = threading.Thread(target=backfill_match_history, args=(puuid, region_key), daemon=True)
+        t.start()
 
     return agent_payload
 

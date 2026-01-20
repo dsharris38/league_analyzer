@@ -239,11 +239,11 @@ def analyze_matches(
 
     match_count = len(matches)
     use_weighted = match_count > 50
-    current_season_prefix = "15" # Default fallback
+    current_season_prefix = "16" # Default to Season 16
     
     # Detect most recent season from the latest game
     if matches:
-        latest_ver = matches[0]["info"].get("gameVersion", "15.1")
+        latest_ver = matches[0]["info"].get("gameVersion", "16.1")
         current_season_prefix = _get_season_from_version(latest_ver)
 
     kdas_weighted = []
@@ -638,6 +638,126 @@ def analyze_matches(
         "you_vs_team": you_vs_team,
         "per_game_loss_details": per_game_loss_details,
         "primary_role": primary_role,
-        "teammates": analyze_teammates(matches, puuid, season_prefix=current_season_prefix if use_weighted else None),
+        "teammates": analyze_teammates(matches, puuid, season_prefix=current_season_prefix),
         "recent_performance": analyze_recent_performance(matches, puuid),
+    }
+
+
+def calculate_season_stats_from_db(puuid: str) -> Dict[str, Any]:
+    """
+    Fetch all cached matches for this PUUID and aggregate season stats.
+    Includes: Total Winrate, Champion Winrates, Duo Performance.
+    """
+    from database import Database
+    db = Database()
+    
+    # Fetch ALL matches (cached)
+    matches = db.get_matches_by_puuid(puuid, limit=1000)
+    
+    if not matches:
+        return {}
+
+    total_games = 0
+    total_wins = 0
+    
+    champ_stats = defaultdict(lambda: {"games": 0, "wins": 0, "kills": 0, "deaths": 0, "assists": 0, "cs": 0, "duration": 0})
+    duo_tracker = defaultdict(lambda: {"games": 0, "wins": 0})
+    
+    for m in matches:
+        info = m.get("info", {})
+        
+        # Strict Season Filter (Season 16)
+        game_version = info.get("gameVersion", "")
+        if not game_version.startswith("16."):
+            continue
+            
+        parts = info.get("participants", [])
+        
+        # Find self
+        me = next((p for p in parts if p["puuid"] == puuid), None)
+        if not me: continue
+        
+        # Validate Queue Type (Optional: Filter only Ranked Solo/Flex?)
+        # For now, aggregate all fetched games as they are likely ranked from our fetch logic.
+        
+        win = me["win"]
+        total_games += 1
+        if win: total_wins += 1
+        
+        # Champ Stats
+        c_name = me["championName"]
+        s = champ_stats[c_name]
+        s["games"] += 1
+        if win: s["wins"] += 1
+        s["kills"] += me["kills"]
+        s["deaths"] += me["deaths"]
+        s["assists"] += me["assists"]
+        s["cs"] += (me["totalMinionsKilled"] + me.get("neutralMinionsKilled", 0))
+        s["duration"] += info["gameDuration"]
+        
+        # Duo Analysis (Same Team)
+        my_team = me["teamId"]
+        for p in parts:
+            if p["puuid"] == puuid: continue
+            if p["teamId"] == my_team:
+                # Identification: name#tag or just name
+                # Riot API v5 has riotIdGameName / riotIdTagLine
+                name = p.get("riotIdGameName", p.get("summonerName", "Unknown"))
+                tag = p.get("riotIdTagLine", "")
+                full_name = f"{name}#{tag}" if tag else name
+                if not full_name or full_name == "Unknown": continue
+                
+                duo_tracker[full_name]["games"] += 1
+                if win: duo_tracker[full_name]["wins"] += 1
+
+    # Format Champion Stats
+    final_champs = []
+    for name, s in champ_stats.items():
+        g = s["games"]
+        # Filter: Only show champs with > 0 games (always true)
+        
+        # CS per min
+        minutes = s["duration"] / 60
+        cspm = s["cs"] / minutes if minutes > 0 else 0
+        
+        deaths = max(1, s["deaths"])
+        kda = (s["kills"] + s["assists"]) / deaths
+        
+        winrate = 0.0
+        if g > 0:
+            winrate = round((s["wins"] / g) * 100, 1)
+
+        final_champs.append({
+            "name": name,
+            "games": g,
+            "wins": s["wins"],
+            "winrate": winrate,
+            "kda": round(kda, 2),
+            "cs_per_min": round(cspm, 1)
+        })
+        
+    final_champs.sort(key=lambda x: x["games"], reverse=True)
+    
+    # Format Duos (Filter: min 3 games together)
+    final_duos = []
+    for name, s in duo_tracker.items():
+        if s["games"] >= 3:
+            wr = 0.0
+            if s["games"] > 0:
+                wr = round((s["wins"] / s["games"]) * 100, 1)
+            final_duos.append({
+                "name": name,
+                "games": s["games"],
+                "wins": s["wins"],
+                "winrate": wr
+            })
+    final_duos.sort(key=lambda x: x["games"], reverse=True)
+
+    return {
+        "total_games": total_games,
+        "total_wins": total_wins,
+        "total_winrate": round((total_wins / total_games * 100), 1) if total_games else 0,
+        "champions": final_champs,
+        "duos": final_duos,
+        "season_sample_size": total_games
     }

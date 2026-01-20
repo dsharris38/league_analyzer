@@ -4,7 +4,7 @@ import config from '../config';
 
 const DD_BASE_URL = "https://ddragon.leagueoflegends.com";
 const MERAKI_BASE_URL = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US";
-let currentVersion = "15.1.1"; // Default fallback
+let currentVersion = "16.1.1"; // Default fallback (S16)
 
 // Data caches
 let runeMap = {};
@@ -19,7 +19,14 @@ export const fetchLatestVersion = async () => {
         const response = await fetch(`${DD_BASE_URL}/api/versions.json`);
         const versions = await response.json();
         if (versions && versions.length > 0) {
-            currentVersion = versions[0];
+            // Force S16 if the API returns an older version (common early season issue)
+            const latest = versions[0];
+            const major = parseInt(latest.split('.')[0]);
+            if (major >= 16) {
+                currentVersion = latest;
+            } else {
+                console.warn(`Fetched version ${latest} is older than enforced 16.1.1, ignoring.`);
+            }
             return currentVersion;
         }
     } catch (e) {
@@ -293,12 +300,52 @@ export const fetchItems = async () => {
     if (data) {
         try {
             await enrichWithDDragon(data);
+            patchItemStats(data); // Apply manual S16 fixes
         } catch (err) {
             console.warn("DDragon enrichment failed", err);
         }
         itemDataMap = data;
     }
 };
+
+// Manual Patch for S16 items where API is stale/incomplete
+function patchItemStats(data) {
+    if (!data) return;
+
+    // Spellslinger's Shoes (3175)
+    // Riot API only returns Move Speed. Description says 18 Pen + 8% Pen.
+    if (data["3175"]) {
+        data["3175"].stats = {
+            ...data["3175"].stats,
+            "magicPenetration": 18,
+            "percentMagicPenetration": 0.08
+        };
+    }
+
+    // Crimson Lucidity (3171)
+    // Description: 20 AH, 45 MS. Stats usually miss AH.
+    if (data["3171"]) {
+        data["3171"].stats = {
+            ...data["3171"].stats,
+            "abilityHaste": 20
+        };
+    }
+
+    // Chainlaced Crushers (3173)
+    // Description: 30 MR, 45 MS, 30% Tenacity. Stats often miss Tenacity.
+    if (data["3173"]) {
+        data["3173"].stats = {
+            ...data["3173"].stats,
+            "tenacity": 0.30
+        };
+    }
+
+    // Gunmetal Greaves (3172) -> 40% AS, 45 MS, 5% LS. (Usually OK but safety check)
+    // Armored Advance (3174) -> 35 Armor, 45 MS. (Usually OK)
+    // Swiftmarch (3170) -> 65 MS. (OK)
+
+    console.log("Applied S16 Boot Stat Patches");
+}
 
 // Helper: Merge DDragon descriptions into Meraki data where missing
 async function enrichWithDDragon(merakiData) {

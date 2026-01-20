@@ -114,7 +114,7 @@ function ParticipantRow({ participant, maxDamage, isSelf, teamId, onPlayerClick 
             {/* Items */}
             <td className="px-2 py-1 w-72">
                 <div className="flex flex-wrap gap-1 justify-end md:justify-start">
-                    {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5].map((item, i) => {
+                    {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item7].map((item, i) => {
                         const itemData = getItemData(item);
                         return (
                             <Tooltip key={i} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>

@@ -70,6 +70,64 @@ class Database:
             return doc
         return None
 
+    def get_matches_bulk(self, match_ids: List[str]) -> Dict[str, Any]:
+        """Bulk fetch matches from DB. Returns a dict {match_id: match_data}."""
+        col = self._get_collection("matches")
+        if col is None or not match_ids: return {}
+        
+        # Use $in query for bulk retrieval
+        cursor = col.find({"metadata.matchId": {"$in": match_ids}})
+        
+        results = {}
+        import zlib
+        import json
+        
+        for doc in cursor:
+            mid = doc.get("metadata", {}).get("matchId")
+            if not mid: continue
+            
+            final_doc = None
+            if "compressed_data" in doc:
+                try:
+                    decompressed = zlib.decompress(doc["compressed_data"])
+                    final_doc = json.loads(decompressed)
+                except Exception as e:
+                    print(f"Error decompressing match {mid}: {e}")
+            else:
+                final_doc = doc
+            
+            if final_doc:
+                results[mid] = self._sanitize_document(final_doc)
+        
+        return results
+
+    def get_matches_by_puuid(self, puuid: str, limit: int = 1000) -> List[Dict[str, Any]]:
+        """Retrieve all cached matches where the user is a participant."""
+        col = self._get_collection("matches")
+        if col is None: return []
+        
+        # Query for PUUID in participants list (using metadata for speed)
+        # Sort by gameCreation descending (newest first)
+        cursor = col.find({"metadata.participants": puuid})\
+                    .sort("metadata.gameCreation", -1)\
+                    .limit(limit)
+        
+        results = []
+        import zlib
+        import json
+        
+        for doc in cursor:
+            if "compressed_data" in doc:
+                try:
+                    decompressed = zlib.decompress(doc["compressed_data"])
+                    results.append(json.loads(decompressed))
+                except Exception as e:
+                    print(f"Error decompressing match {doc.get('metadata', {}).get('matchId')}: {e}")
+            else:
+                results.append(doc)
+                
+        return results
+
     def save_match(self, match_data: Dict[str, Any]):
         col = self._get_collection("matches")
         if col is None or not match_data: return
@@ -108,7 +166,7 @@ class Database:
                 sanitized = self._sanitize_document(match_data)
                 col.replace_one({"metadata.matchId": match_id}, sanitized, upsert=True)
 
-    def cleanup_old_matches(self, puuid: str, limit: int = 250):
+    def cleanup_old_matches(self, puuid: str, limit: int = 1000):
         """Delete matches exceeding the limit for a specific player."""
         col = self._get_collection("matches")
         tl_col = self._get_collection("timelines")
@@ -220,11 +278,24 @@ class Database:
             import time
             analysis_data["created"] = time.time()
             
+        # Optimization: Store the "virtual filename" ID for O(1) lookups
+        if "riot_id" in analysis_data:
+            analysis_data["filename_id"] = analysis_data["riot_id"].replace("#", "_")
+            
         riot_id = analysis_data.get("riot_id", "Unknown")
+        
+        # Add Normalized Filename ID for O(1) Lookup
+        # Matches logic: riot_id.replace("#", "_")
+        if riot_id != "Unknown":
+            # Store standard ID
+            analysis_data["filename_id"] = riot_id.replace("#", "_")
+            # Store lowercase ID for case-insensitive O(1) lookup
+            analysis_data["filename_id_lower"] = analysis_data["filename_id"].lower()
+
         # Identify by Riot ID
         try:
             col.replace_one({"riot_id": riot_id}, analysis_data, upsert=True)
-            print(f"[DB-DEBUG] Saved analysis for {riot_id}")
+            print(f"[DB-DEBUG] Saved analysis for {riot_id} (fid: {analysis_data.get('filename_id')})")
         except Exception as e:
             msg = f"[DB-ERROR] Failed to save analysis for {riot_id}: {e}"
             print(msg)
@@ -269,38 +340,47 @@ class Database:
         return results
 
     def find_analysis_by_fuzzy_filename(self, core_name: str) -> Optional[Dict[str, Any]]:
-        """
-        Attempts to find a document where the Riot ID matches the 'core_name' 
-        (which comes from filename 'league_analysis_{core_name}.json').
-        The core_name has substituted '#' and ' ' with '_'.
-        We need to match this against stored riot_ids like 'Name#TAG'.
-        """
+        import time
+        t_start = time.time()
         col = self._get_collection("analyses")
-        if col is None: return None
         
-        # 1. Optimistic: Try recreating the Riot ID if it follows standard Name_Tag pattern
-        # Assume last underscore is the tag separator if no # exists
+        # 0. Super-Optimistic: Exact filename_id match (Fastest, O(1))
+        doc = col.find_one({"filename_id": core_name}, {"_id": 0})
+        if doc:
+            # print(f"[DB-PERF] Direct Filename Match '{core_name}' found in {time.time() - t_start:.4f}s")
+            return doc
+
+        # 1. Case-Insensitive O(1) Match (Fast, requires 'filename_id_lower' index)
+        core_lower = core_name.lower()
+        doc = col.find_one({"filename_id_lower": core_lower}, {"_id": 0})
+        if doc:
+            print(f"[DB-PERF] Case-Insensitive Match '{core_lower}' found in {time.time() - t_start:.4f}s")
+            return doc
+
+        # 2. Optimistic: Try recreating the Riot ID if it follows standard Name_Tag pattern
         parts = core_name.rsplit('_', 1)
         if len(parts) == 2:
             potential_id = f"{parts[0]}#{parts[1]}" # e.g. "Doublelift#NA1"
-            # Try exact match first
             doc = col.find_one({"riot_id": potential_id}, {"_id": 0})
             if doc: 
                 return doc
+            
+            # Try Case Insensitive Riot ID (if we indexed 'riot_id_lower'?)
+            # Or assume most users type correct casing or rely on filename_id_lower above.
 
-        # 2. Fallback: Search using Regex
+        # 3. Fallback: Search using Regex (Slowest, Last Resort)
+        print(f"[DB-WARN] Falling back to REGEX search for {core_name} (This is slow on remote DB)")
         import re
-        # re.escape() behavior varies by python version regarding underscores.
-        # We need to robustly replace the underscore with our class [# _].
         escaped = re.escape(core_name)
-        # Normalize: if it DID escape underscores (old python), replace \_ with _
         escaped = escaped.replace(r'\_', '_')
-        # Now replace all underscores with the class
         pattern_str = escaped.replace('_', '[# _]')
         pattern_str = f"^{pattern_str}$"
         
         try:
-            return col.find_one({"riot_id": {"$regex": pattern_str, "$options": "i"}}, {"_id": 0})
+
+            doc = col.find_one({"riot_id": {"$regex": pattern_str, "$options": "i"}}, {"_id": 0})
+            print(f"[DB-PERF] Regex Search for '{core_name}' took {time.time() - t_regex:.4f}s (Result: {bool(doc)})")
+            return doc
         except Exception as e:
             print(f"[DB-ERROR] Fuzzy search failed: {e}")
             return None

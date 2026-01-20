@@ -1,0 +1,47 @@
+Fetching https://ddragon.leagueoflegends.com/cdn/16.1.1/data/en_US/item.json...
+ID: 3170 | Name: Swiftmarch
+STATS: {
+  "FlatMovementSpeedMod": 65
+}
+DESC: <mainText><stats><attention>65</attention> Move Speed</stats><br><br><passive>Fleetfooted</passive><br>Reduce the effectiveness of <keyword>Slows</keyword> by 40%.<br><br><passive>Noxian Fervor</passive><br>Gain 5% of your <speed>Move Speed</speed> as Adaptive Force.</mainText>
+--------------------
+ID: 3171 | Name: Crimson Lucidity
+STATS: {
+  "FlatMovementSpeedMod": 45
+}
+DESC: <mainText><stats><attention>20</attention> Ability Haste<br><attention>45</attention> Move Speed</stats><br><br><passive>Ionian Insight</passive><br>Gain 20 Summoner Spell Haste.<br><br><passive>Noxian Haste</passive><br>Empowering or protecting allies with abilities, dealing damage to enemy Champions with abilities, or casting a Summoner Spell grants <speed> Move Speed</speed> for 4 seconds.<br><br><rules>Noxian Haste can only be triggered once per Ability cast.</rules></mainText>
+--------------------
+ID: 3172 | Name: Gunmetal Greaves
+STATS: {
+  "FlatMovementSpeedMod": 45,
+  "PercentAttackSpeedMod": 0.4,
+  "PercentLifeStealMod": 0.05
+}
+DESC: <mainText><stats><attention>40%</attention> Attack Speed<br><attention>45</attention> Move Speed<br><attention>5%</attention> Life Steal</stats><br><br><passive>Noxian Gait</passive><br>Attacks against Champions grant <speed>Move Speed</speed> <OnHit>On-Hit</OnHit> decaying over 2 seconds.</mainText>
+--------------------
+ID: 3173 | Name: Chainlaced Crushers
+STATS: {
+  "FlatSpellBlockMod": 30,
+  "FlatMovementSpeedMod": 45
+}
+DESC: <mainText><stats><attention>30</attention> Magic Resist<br><attention>45</attention> Move Speed<br><attention>30%</attention> Tenacity</stats><br><br><passive>Noxian Persistence</passive> (0s)<br>After taking magic damage from a Champion, gain a <shield></shield> <magicDamage>magic</magicDamage> <shield>shield</shield> for 5 seconds.</mainText>
+--------------------
+ID: 3174 | Name: Armored Advance
+STATS: {
+  "FlatMovementSpeedMod": 45,
+  "FlatArmorMod": 35
+}
+DESC: <mainText><stats><attention>35</attention> Armor<br><attention>45</attention> Move Speed</stats><br><br><passive>Plating</passive><br>Reduces incoming damage from Attacks by 10%.<br><br><passive>Noxian Endurance</passive> (0s)<br>After taking physical damage from a Champion, gain a <shield></shield> <physicalDamage>physical</physicalDamage> <shield>shield</shield> for 5 seconds.</mainText>
+--------------------
+ID: 3175 | Name: Spellslinger's Shoes
+STATS: {
+  "FlatMovementSpeedMod": 45
+}
+DESC: <mainText><stats><attention>18</attention> Magic Penetration<br><attention>8%</attention> Magic Penetration<br><attention>45</attention> Move Speed</stats><br><br></mainText>
+--------------------
+ID: 3176 | Name: Forever Forward
+STATS: {
+  "FlatMovementSpeedMod": 55
+}
+DESC: <mainText><stats><attention>55</attention> Move Speed</stats><br><br><passive>Omnipresent</passive><br>Gain a new Active: Teleport.<br><br><passive>Voidborn</passive><br>Gain Empowered Recall.<br><br><passive>Noxian Synchrony</passive><br>Gain <speed>45 Move Speed</speed> and <speed>8% total Move Speed</speed> when out of combat.</mainText>
+--------------------

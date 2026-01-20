@@ -164,7 +164,7 @@ function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidat
 
                     {/* Items - Flexible Fill (Wrap enabled to prevent overlap) */}
                     <div className="flex gap-1 items-center justify-start flex-1 min-w-0 flex-wrap pr-2 w-full md:w-auto mt-2 md:mt-0 border-t border-white/5 md:border-none pt-2 md:pt-0">
-                        {[self.item0, self.item1, self.item2, self.item3, self.item4, self.item5].map((item, i) => {
+                        {[self.item0, self.item1, self.item2, self.item3, self.item4, self.item5, self.item7].map((item, i) => {
                             const itemData = getItemData(item);
                             return (
                                 <Tooltip key={i} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>

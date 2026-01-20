@@ -1,8 +1,10 @@
 import { Trophy, Target, Crosshair, TrendingUp, Hash, Eye, Sword } from 'lucide-react';
 
 export default function SummaryCards({ summary, analysis }) {
+    if (!summary) return null;
+
     const winrate = (summary.winrate * 100).toFixed(1);
-    const kda = summary.avg_kda.toFixed(2);
+    const kda = (summary.avg_kda || 0).toFixed(2);
     const cs = summary.avg_cs_per_min.toFixed(1);
     const kp = (summary.avg_kp * 100).toFixed(1);
     const vis = (summary.avg_vis_score || 0).toFixed(1);

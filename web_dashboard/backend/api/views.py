@@ -86,7 +86,9 @@ class AnalysisDetailView(APIView):
                 target_doc = db.find_analysis_by_fuzzy_filename(core)
                 
                 if target_doc:
-                    return Response(target_doc)
+                    # Sanitize to remove ObjectId
+                    target_doc = db._sanitize_document(target_doc)
+                    return JsonResponse(target_doc)
                 else:
                     return Response({'error': 'Analysis not found in DB'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -106,97 +108,118 @@ import requests
 # Define cache path (should match coach_data_enricher)
 CACHE_DIR = Path(__file__).resolve().parent.parent.parent.parent / "saves" / "cache"
 
+# Helper for Smart Caching
+def fetch_if_modified(url, cache_path, timeout=10):
+    """
+    Fetches URL only if remote content is newer than local file.
+    Returns: (data, was_modified)
+    """
+    headers = {}
+    if cache_path.exists():
+        # Add If-Modified-Since header
+        mtime = cache_path.stat().st_mtime
+        from email.utils import formatdate
+        headers['If-Modified-Since'] = formatdate(mtime, usegmt=True)
+        
+    try:
+        resp = requests.get(url, headers=headers, timeout=timeout)
+        
+        if resp.status_code == 304:
+            # Not Modified - Update local mtime to touch the file
+            # print(f"[Smart Cache] Not Modified: {cache_path.name}")
+            os.utime(cache_path, None)
+            with open(cache_path, "r", encoding="utf-8") as f:
+                return json.load(f), False
+                
+        elif resp.status_code == 200:
+            # Modified - Save new data
+            # print(f"[Smart Cache] Modified! Downloading {cache_path.name}")
+            data = resp.json()
+            with open(cache_path, "w", encoding="utf-8") as f:
+                json.dump(data, f)
+            return data, True
+            
+        else:
+            # Error status - Fallback to cache if exists
+            resp.raise_for_status()
+            
+    except Exception as e:
+        print(f"Smart fetch failed ({e}), checking cache...")
+        if cache_path.exists():
+            with open(cache_path, "r", encoding="utf-8") as f:
+                return json.load(f), False
+        raise e
+
 def cached_meraki_items(request):
-    """Serve cached Meraki items to frontend."""
+    """Serve cached Meraki items to frontend with Smart Caching."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     cache_path = CACHE_DIR / "meraki_items_enriched.json"
     
-    # Check cache validity
-    if cache_path.exists():
-        mtime = cache_path.stat().st_mtime
-        if time.time() - mtime < 86400: # 24 hours
-            try:
-                with open(cache_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    return JsonResponse(data)
-            except Exception:
-                pass 
-    
-    # Fetch fresh
+    # Base Meraki Fetch (Smart)
+    data = {}
     try:
-        # 1. Fetch Meraki (Base Data)
         url = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/items.json"
-        resp = requests.get(url, timeout=10)
-        resp.raise_for_status()
-        data = resp.json()
+        # Use simple name for raw cache to support headers check
+        raw_cache_path = CACHE_DIR / "meraki_items_raw.json"
+        
+        # Check remote
+        raw_data, modified = fetch_if_modified(url, raw_cache_path, timeout=3)
+        
+        if not modified and cache_path.exists():
+            # If Meraki didn't change and we have enriched cache, return enriched
+             # Check if enriched is also recent-ish (synced with raw)
+            if cache_path.stat().st_mtime >= raw_cache_path.stat().st_mtime:
+                 with open(cache_path, "r", encoding="utf-8") as f:
+                    return JsonResponse(json.load(f))
+        
+        # If modified or no enriched cache, proceed to enrich
+        data = raw_data
+        
+    except Exception as e:
+        print(f"Meraki Smart Fetch failed ({e})...")
+        
+    # Enrichment Logic (Same as before)
+    try:
+        # Get latest version
+        v_resp = requests.get("https://ddragon.leagueoflegends.com/api/versions.json", timeout=5)
+        latest_version = v_resp.json()[0]
+        
+        # Get DDragon Items
+        dd_resp = requests.get(f"https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/en_US/item.json", timeout=10)
+        dd_items = dd_resp.json().get("data", {})
 
-        # 2. Fetch DDragon (Enrichment for Text/Description)
-        try:
-            # Get latest version
-            v_resp = requests.get("https://ddragon.leagueoflegends.com/api/versions.json", timeout=5)
-            latest_version = v_resp.json()[0]
-            
-            # Get DDragon Items
-            dd_resp = requests.get(f"https://ddragon.leagueoflegends.com/cdn/{latest_version}/data/en_US/item.json", timeout=10)
-            dd_items = dd_resp.json().get("data", {})
-
+        if not data:
+            data = dd_items # Fallback
+        else:
             # Merge
             for item_id, item_info in data.items():
                 dd_item = dd_items.get(item_id)
                 if dd_item:
-                    # Always prefer Riot's description for tooltips (contains formatted passives)
                     if dd_item.get("description"):
                         item_info["description"] = dd_item.get("description")
-                    
-                    # Ensure Name is Riot-official
                     if dd_item.get("name"):
                          item_info["name"] = dd_item.get("name")
-        except Exception as e:
-            print(f"Warning: Failed to merge DDragon data: {e}")
-        
-        # Save to cache
-        try:
-            with open(cache_path, "w", encoding="utf-8") as f:
-                json.dump(data, f)
-        except Exception:
-            pass
+                         
+        # Save enriched
+        with open(cache_path, "w", encoding="utf-8") as f:
+            json.dump(data, f)
             
-        return JsonResponse(data)
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        print(f"Enrichment failed: {e}")
+        if not data:
+            return JsonResponse({'error': 'Failed to fetch item data source'}, status=503)
+
+    return JsonResponse(data)
 
 def cached_meraki_champions(request):
-    """Serve cached Meraki champions to frontend."""
+    """Serve cached Meraki champions to frontend with Smart Caching."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     cache_path = CACHE_DIR / "meraki_champions.json"
     
-    # Check cache validity
-    if cache_path.exists():
-        mtime = cache_path.stat().st_mtime
-        if time.time() - mtime < 86400: # 24 hours
-            try:
-                with open(cache_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    return JsonResponse(data)
-            except Exception:
-                pass 
-    
-    # Fetch fresh
     try:
         url = "https://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/champions.json"
-        
-        # Champions file is large (~1.5MB), increased timeout
-        resp = requests.get(url, timeout=20) 
-        resp.raise_for_status()
-        data = resp.json()
-        
-        # Save to cache
-        try:
-            with open(cache_path, "w", encoding="utf-8") as f:
-                json.dump(data, f)
-        except Exception:
-            pass
-            
+        # Smart Fetch (Large file, 20s timeout)
+        data, _ = fetch_if_modified(url, cache_path, timeout=20)
         return JsonResponse(data)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
@@ -204,6 +227,9 @@ def cached_meraki_champions(request):
 class RunAnalysisView(APIView):
 # ... existing code ...
     def post(self, request):
+        with open("backend_debug.txt", "a") as f:
+            f.write(f"\n[DEBUG] /api/analyze/ POST received at {time.time()}\n")
+            
         riot_id = request.data.get('riot_id')
         match_count = int(request.data.get('match_count', 20))
         use_timeline = request.data.get('use_timeline', True)
@@ -211,35 +237,22 @@ class RunAnalysisView(APIView):
         region = request.data.get('region', 'NA')
         force_refresh = request.data.get('force_refresh', False)
         
+        with open("backend_debug.txt", "a") as f:
+            f.write(f"[DEBUG] Params: riot_id={riot_id}, count={match_count}, ai={call_ai}, refresh={force_refresh}\n")
+
         if not riot_id:
             return Response({'error': 'riot_id is required'}, status=status.HTTP_400_BAD_REQUEST)
             
-        # Check for existing analysis to save tokens (Global Cache)
-        # Format: league_analysis_{Name}_{Tag}.json (spaces -> _, # -> _)
-        # Note: This is case-sensitive on Linux, but usually files are saved with original casing or normalized?
-        # main.py uses the riot_id as passed or from account data. 
-        # To be safe, we might miss if case differs, but accurate inputs will hit cache.
         # Check for existing analysis in MongoDB
         from database import Database
         db = Database()
-        existing_doc = db.get_analysis(riot_id)
-        
-        if existing_doc and not force_refresh:
-            print(f"CACHE HIT (DB): Found existing analysis for {riot_id}, skipping pipeline.")
-            return Response({
-                'status': 'success', 
-                'riot_id': riot_id, 
-                'cached': True,
-                'debug': {
-                    'db_connected': db.is_connected,
-                    'save_verified': True,
-                    'saved_id': existing_doc.get('riot_id'),
-                    'db_doc_count': len(db.list_analyses())
-                }
-            })
+        # ... cache logic commented out ...
             
         try:
             # Run the pipeline
+            with open("backend_debug.txt", "a") as f:
+                f.write(f"[DEBUG] Starting pipeline...\n")
+            
             import sys
             # Insert at 0 to prioritize local modules over installed setup
             project_root = str(settings.BASE_DIR.parent.parent)
@@ -258,24 +271,25 @@ class RunAnalysisView(APIView):
                 open_dashboard=False,
                 region_key=region
             )
+            with open("backend_debug.txt", "a") as f:
+                f.write(f"[DEBUG] Pipeline finished successfully\n")
             
             if "error" in analysis_result:
                 return Response({'error': analysis_result['error']}, status=status.HTTP_400_BAD_REQUEST)
             
             # Verify save immediately
+            with open("backend_debug.txt", "a") as f:
+                f.write("[DEBUG] Verifying Save...\n")
+            
             from database import Database
             db = Database()
             saved_doc = db.get_analysis(riot_id)
-            print(f"[DEBUG-VIEW] Run Complete. DB Connected: {db.is_connected}. Analysis found in DB? {bool(saved_doc)}")
-            if saved_doc:
-                print(f"[DEBUG-VIEW] Saved ID: {saved_doc.get('riot_id')}")
-            else:
-                print(f"[DEBUG-VIEW] ANALYSIS MISSING FROM DB! Riot ID: {riot_id}")
-                # Try list all to see what's there
-                all_docs = db.list_analyses()
-                print(f"[DEBUG-VIEW] Current DB entries ({len(all_docs)}): {[d.get('riot_id') for d in all_docs]}")
+            
+            with open("backend_debug.txt", "a") as f:
+                f.write(f"[DEBUG] Save Verified: {bool(saved_doc)}\n")
 
-            return Response({
+            print("[DEBUG-VIEW] Preparing Response...")
+            response_data = {
                 'status': 'success', 
                 'riot_id': riot_id,
                 'debug': {
@@ -284,9 +298,30 @@ class RunAnalysisView(APIView):
                     'saved_id': saved_doc.get('riot_id') if saved_doc else None,
                     'db_doc_count': len(db.list_analyses())
                 }
-            })
+            }
+            
+            # log size of response (should be tiny)
+            import json
+            try:
+                debug_json = json.dumps(response_data)
+                with open("backend_debug.txt", "a") as f:
+                    f.write(f"[DEBUG] Response JSON Size: {len(debug_json)} bytes\n")
+            except Exception as e:
+                with open("backend_debug.txt", "a") as f:
+                    f.write(f"[DEBUG] Response Serialization Failed: {e}\n")
+
+            with open("backend_debug.txt", "a") as f:
+                f.write("[DEBUG] Sending Response object now.\n")
+                
+            # Use JsonResponse to bypass DRF content negotiation/overhead
+            return JsonResponse(response_data)
             
         except Exception as e:
+            import traceback
+            traceback.print_exc()
+            with open("backend_debug.txt", "a") as f:
+                f.write(f"[DEBUG] Error in View: {str(e)}\n")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             import traceback
             traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -300,15 +335,30 @@ class DeepDiveAnalysisView(APIView):
         if not match_id:
             return Response({'error': 'match_id is required'}, status=status.HTTP_400_BAD_REQUEST)
             
-        file_path = SAVES_DIR / filename
-        if not file_path.exists():
-            print(f"File not found: {file_path}")
-            return Response({'error': 'File not found'}, status=status.HTTP_404_NOT_FOUND)
+        if not match_id:
+            return Response({'error': 'match_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        # Use robust DB lookup instead of fragile file path
+        from database import Database
+        db = Database()
+        
+        # 1. Strip helper prefix/suffix if present (Frontend sends "league_analysis_X.json")
+        core_id = filename
+        if core_id.startswith("league_analysis_") and core_id.endswith(".json"):
+             core_id = core_id[len("league_analysis_"):-5]
+        
+        # Try finding by fuzzy filename (handles normalization)
+        data = db.find_analysis_by_fuzzy_filename(core_id)
+        
+        if not data:
+            # Fallback: Try straight ID lookup or original filename
+            data = db.get_analysis(filename)
+            
+        if not data:
+            print(f"Analysis not found for identifier: {filename}")
+            return Response({'error': 'Analysis not found'}, status=status.HTTP_404_NOT_FOUND)
             
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                
             # Find the match in detailed_matches
             analysis = data.get("analysis", {})
             detailed_matches = analysis.get("detailed_matches", [])
@@ -319,6 +369,11 @@ class DeepDiveAnalysisView(APIView):
                 print(f"Match {match_id} not found in detailed_matches (count={len(detailed_matches)})")
                 return Response({'error': 'Match not found in this analysis file'}, status=status.HTTP_404_NOT_FOUND)
                 
+            # 1. Check Cache
+            if "deep_dive_report" in target_match and target_match["deep_dive_report"]:
+                print(f"[Deep Dive] serving cached report for {match_id}")
+                return Response({'report': target_match["deep_dive_report"], 'match_data': target_match})
+
             # Run the deep dive
             import sys
             sys.path.append(str(settings.BASE_DIR.parent.parent))
@@ -327,10 +382,8 @@ class DeepDiveAnalysisView(APIView):
             # Extract Champion Pool (Top 7 by games played)
             per_champion = analysis.get("per_champion", [])
             # Sort by games played (assuming 'games' or 'count' key, fallback to sorting provided by backend)
-            # Backend usually provides it sorted or we assume the list is useful.
-            # Let's just pass the names and game counts.
             champion_pool = []
-            for pc in per_champion: # per_champion is list of {champion_name: ..., games: ...}
+            for pc in per_champion:
                 cname = pc.get("champion_name")
                 cgames = pc.get("games", 0)
                 if cname:
@@ -344,7 +397,24 @@ class DeepDiveAnalysisView(APIView):
             print(f"Deep dive complete. Report length: {len(report_markdown)}")
             
             if not report_markdown:
-                 print("Report is empty!")
+                    print("Report is empty!")
+            else:
+                # SAVE CACHE
+                print(f"[Deep Dive] Saving report to DB for {filename}...")
+                target_match["deep_dive_report"] = report_markdown
+                # Find index to update in list
+                for i, m in enumerate(detailed_matches):
+                    if m["match_id"] == match_id:
+                        detailed_matches[i] = target_match
+                        break
+                
+                # Update analysis object
+                analysis["detailed_matches"] = detailed_matches
+                data["analysis"] = analysis
+                
+                # Persist to DB
+                db.save_analysis(data)
+                print("[Deep Dive] Saved successfully.")
             
             return Response({'report': report_markdown, 'match_data': target_match})
             

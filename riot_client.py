@@ -84,12 +84,22 @@ class RiotClient:
 
         for attempt in range(1, max_attempts + 1):
             try:
+                # print(f"[RiotClient] GET {url} (Attempt {attempt})...")
+                # Log to backend_debug.txt for absolute visibility
+                with open("backend_debug.txt", "a") as f:
+                    f.write(f"[REQ] GET {url} (Attempt {attempt}) Params: {params}\n")
+                
                 resp = self.session.get(url, params=params, timeout=timeout)
+                
+                with open("backend_debug.txt", "a") as f:
+                    f.write(f"[REQ] Status: {resp.status_code}\n")
 
                 # Handle Riot rate limits
                 if resp.status_code == 429:
                     retry_after = int(resp.headers.get("Retry-After", "2"))
                     print(f"[RiotClient] Rate limited (429). Retrying in {retry_after}s...")
+                    with open("backend_debug.txt", "a") as f:
+                        f.write(f"[REQ] Rate Limit 429. Retry in {retry_after}\n")
                     time.sleep(retry_after)
                     continue
 
@@ -97,6 +107,8 @@ class RiotClient:
                 return resp
 
             except requests.RequestException as e:
+                with open("backend_debug.txt", "a") as f:
+                    f.write(f"[REQ] Exception: {e}\n")
                 status_code = e.response.status_code if e.response else "Unknown"
                 
                 # Fail fast on client errors (4xx) - likely not recoverable by retry
