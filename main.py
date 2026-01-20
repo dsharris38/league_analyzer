@@ -318,6 +318,7 @@ def run_analysis_pipeline(
     save_json: bool = True,
     open_dashboard: bool = False,
     region_key: str = "NA",
+    puuid: str = None,
 ) -> Dict[str, Any]:
     """
     Programmatic entry point for the analysis pipeline.
@@ -327,11 +328,39 @@ def run_analysis_pipeline(
     t_start = time.time()
     # console.print(f"[cyan]TIMING: Pipeline Start[/cyan]")
 
-    if "#" not in riot_id:
-        raise ValueError("Invalid Riot ID format. Use Name#TAG.")
-
-    game_name, tag_line = riot_id.split("#", 1)
     client = RiotClient(region_key=region_key)
+
+    # 1. Resolve Riot ID from PUUID if provided (Robust Navigation)
+    if puuid:
+        try:
+            acc = client.get_account_by_puuid(puuid)
+            raw_name = acc.get("gameName", "Unknown")
+            raw_tag = acc.get("tagLine", "NA1")
+            riot_id = f"{raw_name}#{raw_tag}"
+            console.print(f"[green]Resolved PUUID to Riot ID: {riot_id}[/green]")
+        except Exception as e:
+            console.print(f"[yellow]Warning: Failed to resolve PUUID to Riot ID: {e}[/yellow]")
+            # Fallthrough to existing riot_id string usage
+
+    riot_id = riot_id.strip()
+    
+    # Handle missing '#' by inferring from last space (common issue with some inputs/encodings)
+    if "#" not in riot_id:
+        if " " in riot_id:
+            # Assume "Name Tag" format
+            parts = riot_id.rsplit(" ", 1)
+            game_name = parts[0].strip()
+            tag_line = parts[1].strip()
+            # Reconstruct standard ID
+            riot_id = f"{game_name}#{tag_line}"
+            console.print(f"[yellow]Warning: Riot ID missing '#'. inferred from space: {riot_id}[/yellow]")
+        else:
+            raise ValueError("Invalid Riot ID format. Use Name#TAG.")
+    else:
+        game_name, tag_line = riot_id.split("#", 1)
+        game_name = game_name.strip()
+        tag_line = tag_line.strip()
+    # client already instantiated above
     safe_riot_id = riot_id.replace("#", "_")
     account_cache_file = SAVE_DIR / f"cache_account_{safe_riot_id}.json"
 
@@ -418,7 +447,13 @@ def run_analysis_pipeline(
             puuid = account["puuid"]
             
             console.print("[bold]Fetching summoner profile...[/bold]")
-            summoner = client.get_summoner_by_puuid(puuid)
+            try:
+                summoner = client.get_summoner_by_puuid(puuid)
+            except Exception as e:
+                if "404" in str(e):
+                    # Account exists (globally) but not on this region
+                    raise ValueError(f"Account found for '{riot_id}', but no Summoner profile on region '{region_key}'. Please check the region (currently {region_key}).")
+                raise e
             
             # Save to cache
             with open(account_cache_file, "w") as f:

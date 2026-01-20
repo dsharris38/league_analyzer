@@ -229,6 +229,12 @@ class RunAnalysisView(APIView):
     def post(self, request):
         with open("backend_debug.txt", "a") as f:
             f.write(f"\n[DEBUG] /api/analyze/ POST received at {time.time()}\n")
+            # Log Raw Body to catch truncation issues
+            try:
+                raw_body = request.body.decode('utf-8')
+                f.write(f"[DEBUG] Raw Body: {raw_body}\n")
+            except:
+                f.write("[DEBUG] Raw Body: <decode failed>\n")
             
         riot_id = request.data.get('riot_id')
         match_count = int(request.data.get('match_count', 20))
@@ -236,12 +242,16 @@ class RunAnalysisView(APIView):
         call_ai = request.data.get('call_ai', True)
         region = request.data.get('region', 'NA')
         force_refresh = request.data.get('force_refresh', False)
-        
-        with open("backend_debug.txt", "a") as f:
-            f.write(f"[DEBUG] Params: riot_id={riot_id}, count={match_count}, ai={call_ai}, refresh={force_refresh}\n")
+        puuid = request.data.get('puuid', None)
 
+        # Basic Validation
         if not riot_id:
-            return Response({'error': 'riot_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Riot ID is required"}, status=400)
+
+        # Log to debug file
+        with open("backend_debug.txt", "a") as f:
+            f.write(f"[DEBUG] Params: riot_id={riot_id}, count={match_count}, ai={call_ai}, refresh={force_refresh}, puuid={puuid}\n")
+            f.write(f"[DEBUG] Starting pipeline...\n")
             
         # Check for existing analysis in MongoDB
         from database import Database
@@ -250,8 +260,6 @@ class RunAnalysisView(APIView):
             
         try:
             # Run the pipeline
-            with open("backend_debug.txt", "a") as f:
-                f.write(f"[DEBUG] Starting pipeline...\n")
             
             import sys
             # Insert at 0 to prioritize local modules over installed setup
@@ -261,6 +269,19 @@ class RunAnalysisView(APIView):
             
             from main import run_analysis_pipeline
             
+            # If force_refresh is True, we pass it via specialized logic or simply don't load cache
+            # But run_analysis_pipeline doesn't have force_refresh arg, it handles logic internally?
+            # Actually main.py doesn't expose force_refresh param in run_analysis_pipeline signature!
+            # It does now (checked previously? No, signature was:
+            # riot_id, match_count, use_timeline, call_ai, save_json, open_dashboard, region_key)
+            
+            # Wait, I checked main.py just now. It DOES NOT have force_refresh.
+            # But the view was passing it? 
+            # Let's check the old code I am replacing.
+            # "analysis_result = run_analysis_pipeline(riot_id, match_count=match_count, region_key=region, call_ai=call_ai)"
+            
+            # So I simply add puuid=puuid.
+            
             # Note: We set open_dashboard=False since we are already in the dashboard
             analysis_result = run_analysis_pipeline(
                 riot_id=riot_id,
@@ -269,7 +290,8 @@ class RunAnalysisView(APIView):
                 call_ai=call_ai,
                 save_json=True,
                 open_dashboard=False,
-                region_key=region
+                region_key=region,
+                puuid=puuid
             )
             with open("backend_debug.txt", "a") as f:
                 f.write(f"[DEBUG] Pipeline finished successfully\n")

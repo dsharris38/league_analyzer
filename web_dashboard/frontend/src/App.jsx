@@ -60,7 +60,7 @@ function App() {
   };
 
   // Run new analysis / Navigate to player (Optimized: Check First)
-  const handleAnalyze = async (riotId, matchCount, region) => {
+  const handleAnalyze = async (riotId, matchCount, region, puuid = null) => {
     setLoading(true);
 
     try {
@@ -105,10 +105,12 @@ function App() {
         riot_id: riotId,
         match_count: matchCount,
         region: region,
-        call_ai: false // Key change: Disabled for first pass
+        call_ai: false, // Key change: Disabled for first pass
+        puuid: puuid
       });
 
       // 3. Load Stage 1 Result
+      // ... (existing logic to find/load file) ...
       // Re-fetch files list
       const res2 = await axios.get(`${config.API_URL}/api/analyses/?_t=${Date.now()}`);
       const files2 = res2.data;
@@ -141,7 +143,8 @@ function App() {
             match_count: matchCount,
             region: region,
             call_ai: true,
-            force_refresh: false // Use existing stats
+            force_refresh: false, // Use existing stats
+            puuid: puuid
           });
 
           console.log("AI Analysis Complete. Refreshing data...");
@@ -207,8 +210,9 @@ function App() {
     // Backend handles historical backfill for stats separately
     const matchCount = 50;
     const region = analysisData.region || 'NA';
+    const puuid = analysisData.summoner_info?.puuid || analysisData.puuid;
 
-    console.log("handleUpdate: Starting update", { riotId, matchCount, region, selectedFile });
+    console.log("handleUpdate: Starting update", { riotId, matchCount, region, puuid, selectedFile });
 
     // Do NOT set full screen loading. We want the dashboard to stay visible.
     // The DashboardView can show its own local loading state if needed.
@@ -221,7 +225,8 @@ function App() {
         region: region,
         force_refresh: true,
         call_ai: false,
-        use_timeline: true // Re-enabled: User wants full data
+        use_timeline: true, // Re-enabled: User wants full data
+        puuid: puuid
       });
       console.log("handleUpdate: Stage 1 response:", stage1Response.status, stage1Response.data);
 
@@ -237,7 +242,8 @@ function App() {
           region: region,
           force_refresh: true,
           call_ai: true,
-          use_timeline: true
+          use_timeline: true,
+          puuid: puuid
         }, { timeout: 300000 }); // 5 Minute Timeout (prevent "Taking Forever" failure)
 
         console.log("handleUpdate: Stage 2 complete", res.status, res.data);
@@ -255,10 +261,10 @@ function App() {
     }
   };
 
-  const handlePlayerClick = (riotId) => {
+  const handlePlayerClick = (riotId, puuid = null) => {
     // Navigate to player analysis
     const region = analysisData?.region || 'NA';
-    handleAnalyze(riotId, 20, region);
+    handleAnalyze(riotId, 20, region, puuid);
   };
 
 

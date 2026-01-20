@@ -26,7 +26,10 @@ function ParticipantRow({ participant, maxDamage, isSelf, teamId, onPlayerClick 
                             loading="lazy"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onPlayerClick && onPlayerClick(p.riot_id);
+                                const rId = (p.riotIdGameName && p.riotIdTagLine)
+                                    ? `${p.riotIdGameName}#${p.riotIdTagLine}`
+                                    : (p.riot_id || p.summonerName);
+                                onPlayerClick && onPlayerClick(rId, p.puuid);
                             }}
                         />
                         <div className="absolute -bottom-1 -right-1 bg-slate-900 text-[10px] w-4 h-4 flex items-center justify-center rounded-full border border-slate-600 text-slate-200 shadow-sm font-bold">
@@ -55,11 +58,14 @@ function ParticipantRow({ participant, maxDamage, isSelf, teamId, onPlayerClick 
                             )}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onPlayerClick && onPlayerClick(p.riot_id);
+                                const rId = (p.riotIdGameName && p.riotIdTagLine)
+                                    ? `${p.riotIdGameName}#${p.riotIdTagLine}`
+                                    : (p.riot_id || p.summonerName);
+                                onPlayerClick && onPlayerClick(rId);
                             }}
                             title={p.riot_id}
                         >
-                            {p.riot_id.split('#')[0]}
+                            {p.riotIdGameName || (p.riot_id ? p.riot_id.split('#')[0] : p.summonerName)}
                         </span>
                     </div>
                 </div>

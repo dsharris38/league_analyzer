@@ -1,6 +1,7 @@
 import time
 import requests
 from typing import List, Dict, Any, Optional
+from urllib.parse import quote
 from analyzer_config import RIOT_API_KEY, REGION, PLATFORM
 
 
@@ -135,7 +136,17 @@ class RiotClient:
 
     def get_account_by_riot_id(self, game_name: str, tag_line: str) -> Dict[str, Any]:
         """Look up an account by Riot ID (gameName#tagLine)."""
-        url = f"{self.base_account_url}/riot/account/v1/accounts/by-riot-id/{game_name}/{tag_line}"
+        # Encode components to handle spaces/special chars (e.g. "im having fun")
+        gn_enc = quote(game_name.strip())
+        tl_enc = quote(tag_line.strip())
+        
+        url = f"{self.base_account_url}/riot/account/v1/accounts/by-riot-id/{gn_enc}/{tl_enc}"
+        r = self._get(url, timeout=10)
+        return r.json()
+
+    def get_account_by_puuid(self, puuid: str) -> Dict[str, Any]:
+        """Look up an account by PUUID (returns gameName, tagLine)."""
+        url = f"{self.base_account_url}/riot/account/v1/accounts/by-puuid/{puuid}"
         r = self._get(url, timeout=10)
         return r.json()
 

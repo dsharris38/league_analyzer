@@ -192,7 +192,10 @@ function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidat
                                     className="w-3 h-3 rounded-sm shrink-0 cursor-pointer hover:ring-1 hover:ring-cyan-400 transition-all bg-slate-800 text-transparent"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        onPlayerClick && onPlayerClick(p.riot_id);
+                                        const rId = (p.riotIdGameName && p.riotIdTagLine)
+                                            ? `${p.riotIdGameName}#${p.riotIdTagLine}`
+                                            : (p.riot_id || p.summonerName);
+                                        onPlayerClick && onPlayerClick(rId, p.puuid);
                                     }}
                                     loading="lazy" decoding="async"
                                 />
@@ -203,11 +206,14 @@ function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidat
                                     )}
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        onPlayerClick && onPlayerClick(p.riot_id);
+                                        const rId = (p.riotIdGameName && p.riotIdTagLine)
+                                            ? `${p.riotIdGameName}#${p.riotIdTagLine}`
+                                            : (p.riot_id || p.summonerName);
+                                        onPlayerClick && onPlayerClick(rId, p.puuid);
                                     }}
                                     title="View Profile"
                                 >
-                                    {p.riot_id.split('#')[0]}
+                                    {p.riotIdGameName || (p.riot_id ? p.riot_id.split('#')[0] : p.summonerName)}
                                 </span>
                             </div>
                         ))}
@@ -220,7 +226,10 @@ function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidat
                                     className="w-3 h-3 rounded-sm shrink-0 cursor-pointer hover:ring-1 hover:ring-cyan-400 transition-all bg-slate-800 text-transparent"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        onPlayerClick && onPlayerClick(p.riot_id);
+                                        const rId = (p.riotIdGameName && p.riotIdTagLine)
+                                            ? `${p.riotIdGameName}#${p.riotIdTagLine}`
+                                            : (p.riot_id || p.summonerName);
+                                        onPlayerClick && onPlayerClick(rId, p.puuid);
                                     }}
                                     loading="lazy" decoding="async"
                                 />
@@ -231,11 +240,14 @@ function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidat
                                     )}
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        onPlayerClick && onPlayerClick(p.riot_id);
+                                        const rId = (p.riotIdGameName && p.riotIdTagLine)
+                                            ? `${p.riotIdGameName}#${p.riotIdTagLine}`
+                                            : (p.riot_id || p.summonerName);
+                                        onPlayerClick && onPlayerClick(rId, p.puuid);
                                     }}
                                     title="View Profile"
                                 >
-                                    {p.riot_id.split('#')[0]}
+                                    {p.riotIdGameName || (p.riot_id ? p.riot_id.split('#')[0] : p.summonerName)}
                                 </span>
                             </div>
                         ))}

@@ -25,12 +25,12 @@ export default function TeammatesCard({ teammates, onPlayerClick }) {
                                 alt="Icon"
                                 className="w-9 h-9 rounded-lg border border-slate-600 group-hover:border-cyan-400 transition-colors shadow-lg cursor-pointer"
                                 onError={(e) => { e.target.src = "https://ddragon.leagueoflegends.com/cdn/15.1.1/img/profileicon/29.png" }}
-                                onClick={() => onPlayerClick && onPlayerClick(mate.name)}
+                                onClick={() => onPlayerClick && onPlayerClick(mate.tag ? `${mate.name}#${mate.tag}` : mate.name, mate.puuid)}
                             />
                             <div className="flex flex-col">
                                 <span
                                     className="font-bold text-slate-200 group-hover:text-white truncate max-w-[100px] text-sm cursor-pointer hover:underline hover:text-cyan-400 transition-colors"
-                                    onClick={() => onPlayerClick && onPlayerClick(mate.name)}
+                                    onClick={() => onPlayerClick && onPlayerClick(mate.tag ? `${mate.name}#${mate.tag}` : mate.name, mate.puuid)}
                                 >
                                     {mate.name}
                                 </span>

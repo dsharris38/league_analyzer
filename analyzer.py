@@ -709,6 +709,8 @@ def calculate_season_stats_from_db(puuid: str) -> Dict[str, Any]:
                 
                 duo_tracker[full_name]["games"] += 1
                 if win: duo_tracker[full_name]["wins"] += 1
+                if "puuid" not in duo_tracker[full_name]:
+                    duo_tracker[full_name]["puuid"] = p.get("puuid")
 
     # Format Champion Stats
     final_champs = []
@@ -749,7 +751,8 @@ def calculate_season_stats_from_db(puuid: str) -> Dict[str, Any]:
                 "name": name,
                 "games": s["games"],
                 "wins": s["wins"],
-                "winrate": wr
+                "winrate": wr,
+                "puuid": s.get("puuid")
             })
     final_duos.sort(key=lambda x: x["games"], reverse=True)
 
