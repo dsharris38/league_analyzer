@@ -22,12 +22,7 @@ REGION_MAPPING = {
     "BR":  {"platform": "br1",  "routing": "americas"},
     "LAN": {"platform": "la1",  "routing": "americas"},
     "LAS": {"platform": "la2",  "routing": "americas"},
-    "OCE": {"platform": "oc1",  "routing": "sea"}, # OCE is weird, often routed to americas or sea. checking docs... officially 'sea' for match-v5? No, usually 'americas' for OCE match history in old system, but new routing might be 'sea'.
-    # Riot Docs: https://developer.riotgames.com/apis#match-v5
-    # NA, BR, LAN, LAS -> americas
-    # KR, JP -> asia
-    # EUNE, EUW, TR, RU -> europe
-    # OCE, PH, SG, TH, TW, VN -> sea
+    "OCE": {"platform": "oc1",  "routing": "sea"},
     "JP":  {"platform": "jp1",  "routing": "asia"},
     "TR":  {"platform": "tr1",  "routing": "europe"},
     "RU":  {"platform": "ru",   "routing": "europe"},
@@ -36,11 +31,7 @@ REGION_MAPPING = {
     "TH":  {"platform": "th2",  "routing": "sea"},
     "TW":  {"platform": "tw2",  "routing": "sea"},
     "VN":  {"platform": "vn2",  "routing": "sea"},
-}
-
-# For OCE, specifically, check docs. Usually mapped to 'sea' for V5?
-# Riot Developer Portal: "Americas" includes NA, BR, LATAM. "Asia" includes KR, JP. "Europe" includes EU, TR, RU. "SEA" includes OCE, PH, SG, TH, TW, VN.
-REGION_MAPPING["OCE"]["routing"] = "sea" 
+} 
 
 
 class RiotClient:

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getChampionIconUrl, getItemIconUrl, getSpellIconUrl, getRuneIconUrl, getItemData, getSummonerSpellData, getRuneData, subscribeToData } from '../utils/dataDragon';
+import { getChampionIconUrl, getItemIconUrl, getSpellIconUrl, getRuneIconUrl, getItemData, getSummonerSpellData, getRuneData, subscribeToData, isBoot } from '../utils/dataDragon';
 import Tooltip, { ItemTooltip, RuneTooltip, SummonerSpellTooltip } from './Tooltip';
 import { Clock, Trophy, Skull, Microscope, ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
@@ -109,17 +109,23 @@ function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidat
 
                     {/* Champion & Spells - Fixed Width */}
                     <div className="flex gap-2 items-center w-auto shrink-0 justify-start">
-                        <div className="relative">
-                            <img
-                                src={getChampionIconUrl(self.champion_name)}
-                                alt={self.champion_name}
-                                className="w-12 h-12 md:w-14 md:h-14 rounded border-2 border-rose-vale/30 bg-slate-800 text-transparent"
-                            />
-                            <div className="absolute -bottom-1 -right-1 bg-slate-900 text-[10px] rounded-full w-5 h-5 flex items-center justify-center border border-slate-600 text-white">
-                                {self.champ_level || 18}
+                        <div className="flex flex-col items-center">
+                            {/* Role Label */}
+                            <div className="text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider relative top-0.5">
+                                {match.role || self.position || self.teamPosition || self.individualPosition || "UNKNOWN"}
+                            </div>
+                            <div className="relative">
+                                <img
+                                    src={getChampionIconUrl(self.champion_name)}
+                                    alt={self.champion_name}
+                                    className="w-12 h-12 md:w-14 md:h-14 rounded border-2 border-rose-vale/30 bg-slate-800 text-transparent"
+                                />
+                                <div className="absolute -bottom-1 -right-1 bg-slate-900 text-[10px] rounded-full w-5 h-5 flex items-center justify-center border border-slate-600 text-white">
+                                    {self.champ_level || 18}
+                                </div>
                             </div>
                         </div>
-                        <div className="flex flex-col gap-0.5">
+                        <div className="flex flex-col gap-0.5 mt-4"> {/* Added mt-4 to align with portrait which moved down */}
                             <div className="flex gap-0.5">
                                 <Tooltip content={<SummonerSpellTooltip spellData={getSummonerSpellData(self.summoner1Id)} />}>
                                     {getSpellIconUrl(self.summoner1Id) && <img src={getSpellIconUrl(self.summoner1Id)} className="w-5 h-5 rounded cursor-help text-transparent" alt="Summoner 1" loading="lazy" decoding="async" />}
@@ -164,21 +170,77 @@ function MatchSummaryCard({ match, puuid, onExpand, onDeepDive, isReviewCandidat
 
                     {/* Items - Flexible Fill (Wrap enabled to prevent overlap) */}
                     <div className="flex gap-1 items-center justify-start flex-1 min-w-0 flex-wrap pr-2 w-full md:w-auto mt-2 md:mt-0 border-t border-white/5 md:border-none pt-2 md:pt-0">
-                        {[self.item0, self.item1, self.item2, self.item3, self.item4, self.item5, self.item7].map((item, i) => {
-                            const itemData = getItemData(item);
-                            return (
-                                <Tooltip key={i} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
-                                    <div className="w-7 h-7 bg-slate-800/80 rounded overflow-hidden border border-rose-vale/20 shrink-0 cursor-help relative xl:w-8 xl:h-8">
-                                        {item > 0 && <img src={getItemIconUrl(item)} alt={itemData?.name || ''} className="w-full h-full object-cover text-transparent" loading="lazy" decoding="async" />}
-                                    </div>
-                                </Tooltip>
-                            );
-                        })}
-                        <Tooltip content={getItemData(self.item6) ? <ItemTooltip itemData={getItemData(self.item6)} /> : null}>
-                            <div className="w-7 h-7 bg-slate-800/80 rounded-full overflow-hidden border border-rose-vale/20 ml-1 shrink-0 cursor-help relative xl:w-8 xl:h-8">
-                                {self.item6 > 0 && <img src={getItemIconUrl(self.item6)} alt="Trinket" className="w-full h-full object-cover text-transparent" loading="lazy" decoding="async" />}
-                            </div>
-                        </Tooltip>
+                        {(() => {
+                            const inventory = [self.item0, self.item1, self.item2, self.item3, self.item4, self.item5];
+                            const rawRole = match.role || self.teamPosition || self.individualPosition || "";
+                            const role = rawRole.toUpperCase();
+                            const isBotLane = role === 'BOTTOM' || role === 'ADC';
+
+                            if (isBotLane) {
+                                // --- S16 ADC BOOT SLOT LOGIC ---
+                                let bootId = inventory.find(id => isBoot(id));
+                                let mainItems = inventory.filter(id => !isBoot(id));
+                                while (mainItems.length < 6) mainItems.push(0);
+
+                                return (
+                                    <>
+                                        {/* 6 Main Item Slots */}
+                                        {mainItems.map((item, i) => {
+                                            const itemData = getItemData(item);
+                                            return (
+                                                <Tooltip key={`item-${i}`} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
+                                                    <div className="w-7 h-7 bg-slate-800/80 rounded overflow-hidden border border-rose-vale/20 shrink-0 cursor-help relative xl:w-8 xl:h-8">
+                                                        {item > 0 && <img src={getItemIconUrl(item)} alt={itemData?.name || ''} className="w-full h-full object-cover text-transparent" loading="lazy" decoding="async" />}
+                                                    </div>
+                                                </Tooltip>
+                                            );
+                                        })}
+
+                                        {/* Trinket (Round) - Now before Boots */}
+                                        <Tooltip content={getItemData(self.item6) ? <ItemTooltip itemData={getItemData(self.item6)} /> : null}>
+                                            <div className="w-7 h-7 bg-slate-800/80 rounded-full overflow-hidden border border-rose-vale/20 ml-1 shrink-0 cursor-help relative xl:w-8 xl:h-8">
+                                                {self.item6 > 0 && <img src={getItemIconUrl(self.item6)} alt="Trinket" className="w-full h-full object-cover text-transparent" loading="lazy" decoding="async" />}
+                                            </div>
+                                        </Tooltip>
+
+                                        {/* 7th Slot: Boots (Round) - Now to the right of Trinket */}
+                                        <Tooltip content={bootId ? <ItemTooltip itemData={getItemData(bootId)} /> : null}>
+                                            <div className="w-7 h-7 bg-slate-800/80 rounded-full overflow-hidden border border-amber-500/40 ml-0.5 shrink-0 cursor-help relative xl:w-8 xl:h-8 flex items-center justify-center">
+                                                {bootId > 0 ? (
+                                                    <img src={getItemIconUrl(bootId)} alt="Boots" className="w-full h-full object-cover text-transparent" loading="lazy" decoding="async" />
+                                                ) : (
+                                                    <span className="text-[9px] text-slate-600 font-bold opacity-30">BT</span>
+                                                )}
+                                            </div>
+                                        </Tooltip>
+                                    </>
+                                );
+                            } else {
+                                // --- STANDARD LOGIC (Non-ADC) ---
+                                // 6 slots + Trinket
+                                return (
+                                    <>
+                                        {inventory.map((item, i) => {
+                                            const itemData = getItemData(item);
+                                            return (
+                                                <Tooltip key={`item-${i}`} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
+                                                    <div className="w-7 h-7 bg-slate-800/80 rounded overflow-hidden border border-rose-vale/20 shrink-0 cursor-help relative xl:w-8 xl:h-8">
+                                                        {item > 0 && <img src={getItemIconUrl(item)} alt={itemData?.name || ''} className="w-full h-full object-cover text-transparent" loading="lazy" decoding="async" />}
+                                                    </div>
+                                                </Tooltip>
+                                            );
+                                        })}
+
+                                        {/* Trinket (Round) */}
+                                        <Tooltip content={getItemData(self.item6) ? <ItemTooltip itemData={getItemData(self.item6)} /> : null}>
+                                            <div className="w-7 h-7 bg-slate-800/80 rounded-full overflow-hidden border border-rose-vale/20 ml-0.5 shrink-0 cursor-help relative xl:w-8 xl:h-8">
+                                                {self.item6 > 0 && <img src={getItemIconUrl(self.item6)} alt="Trinket" className="w-full h-full object-cover text-transparent" loading="lazy" decoding="async" />}
+                                            </div>
+                                        </Tooltip>
+                                    </>
+                                );
+                            }
+                        })()}
                     </div>
                 </div>
 

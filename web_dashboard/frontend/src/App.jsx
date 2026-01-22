@@ -11,33 +11,41 @@ function App() {
   const [analysisData, setAnalysisData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Load persistent session
+  // Load persistent session from URL Hash
   useEffect(() => {
-    // Check for saved analysis but DO NOT auto-load it.
-    // User prefers landing on the search page first.
-    // const savedFile = localStorage.getItem('lastAnalysisFile');
-    // if (savedFile) {
-    //    // Add timeout to prevent infinite loading
-    //    const timeoutId = setTimeout(() => {
-    //      console.warn('Auto-load timeout - clearing cache');
-    //      localStorage.removeItem('lastAnalysisFile');
-    //      setLoading(false);
-    //      setSelectedFile(null);
-    //    }, 30000); // 30 second timeout
+    // 1. Check URL Hash (Priority)
+    const loadFromHash = () => {
+      const hash = window.location.hash.slice(1); // Remove #
+      if (hash && hash.startsWith('league_analysis_')) {
+        console.log("Loading from URL Hash:", hash);
+        handleSelect(decodeURIComponent(hash), false); // Pass false to avoid recursive hash update? Or just let it be idempotent.
+      } else {
+        // If hash is empty, ensure we are at Home
+        if (selectedFile) {
+          setSelectedFile(null);
+          setAnalysisData(null);
+        }
+      }
+    };
 
-    //    // Clear timeout if load succeeds
-    //    const originalHandleSelect = handleSelect;
-    //    handleSelect(savedFile);
+    // Load on mount
+    loadFromHash();
 
-    //    // Clean up timeout on unmount
-    //    return () => clearTimeout(timeoutId);
-    // }
-  }, []);
+    // Listen for hash changes (e.g. Back button)
+    window.addEventListener('hashchange', loadFromHash);
+    return () => window.removeEventListener('hashchange', loadFromHash);
+  }, []); // Only bind listener once, loadFromHash handles current state
 
   // Load existing analysis from cache/file
-  const handleSelect = (filename) => {
+  const handleSelect = (filename, updateHash = true) => {
+    console.log("Selecting file:", filename);
     setSelectedFile(filename);
-    localStorage.setItem('lastAnalysisFile', filename); // Persist
+
+    // Update URL Hash for persistence
+    if (updateHash) {
+      window.location.hash = encodeURIComponent(filename);
+    }
+
     setLoading(true);
     axios.get(`${config.API_URL}/api/analyses/${encodeURIComponent(filename)}/`)
       .then(res => {
@@ -47,13 +55,13 @@ function App() {
       .catch(err => {
         console.error(err);
         setLoading(false);
-        // If load fails (file deleted), clear cache
+        // If load fails, clear hash to return to home
         if (err.response && err.response.status === 404) {
-          localStorage.removeItem('lastAnalysisFile');
+          window.location.hash = "";
           setSelectedFile(null);
         } else {
-          // Don't alert on auto-load failures, just clear
-          localStorage.removeItem('lastAnalysisFile');
+          // Don't clear for transient errors, but might need manual retry
+          // window.location.hash = "";
           setSelectedFile(null);
         }
       });
@@ -99,83 +107,39 @@ function App() {
         return;
       }
 
-      // 2. STAGE 1: Stats Only (Fastest) -> Get user into dashboard ASAP
-      // call_ai: false
-      const postRes = await axios.post(`${config.API_URL}/api/analyze/`, {
+      // 2. Run new analysis
+      console.log("Starting new analysis for:", riotId);
+      const analyzeResponse = await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
         match_count: matchCount,
         region: region,
-        call_ai: false, // Key change: Disabled for first pass
-        puuid: puuid
+        puuid: puuid,
+        call_ai: true,
+        use_timeline: true
       });
 
-      // 3. Load Stage 1 Result
-      // ... (existing logic to find/load file) ...
-      // Re-fetch files list
-      const res2 = await axios.get(`${config.API_URL}/api/analyses/?_t=${Date.now()}`);
-      const files2 = res2.data;
-      const match2 = files2.find(f =>
-        f.riot_id.toLowerCase().replace(/#/g, '').replace(/\s/g, '') === targetId
-      );
+      console.log("Analysis initiated:", analyzeResponse.data);
+      const { filename } = analyzeResponse.data;
 
-      let filenameToLoad = null;
+      saveToHistory(riotId, region, filename);
 
-      if (match2) {
-        filenameToLoad = match2.filename;
-        saveToHistory(match2.riot_id, match2.region || region, match2.filename);
-      } else {
-        // Fallback: Manually construct filename
-        console.warn("Analysis file not found in list, attempting manual fallback...");
-        filenameToLoad = `league_analysis_${riotId.replace('#', '_')}.json`;
-        saveToHistory(riotId, region, filenameToLoad);
-      }
+      // Poll or wait? The backend returns filename immediately usually if async, 
+      // but here it seems to verify account first.
+      // Actually backend 'analyze/' returns { status: "success", filename: ... }
 
-      if (filenameToLoad) {
-        // Load the dashboard with stats immediately
-        await handleSelect(filenameToLoad);
-        setLoading(false); // Validating success -> Unblock UI
-
-        // 4. STAGE 2: AI Coach (Background)
-        console.log("Triggering Background AI Analysis...");
-        try {
-          await axios.post(`${config.API_URL}/api/analyze/`, {
-            riot_id: riotId,
-            match_count: matchCount,
-            region: region,
-            call_ai: true,
-            force_refresh: false, // Use existing stats
-            puuid: puuid
-          });
-
-          console.log("AI Analysis Complete. Refreshing data...");
-          // Reload the analysis file silently
-          const refreshRes = await axios.get(`${config.API_URL}/api/analyses/${encodeURIComponent(filenameToLoad)}/?_t=${Date.now()}`);
-          setAnalysisData(refreshRes.data);
-
-        } catch (aiErr) {
-          console.error("Background AI failed:", aiErr);
-        }
-      } else {
-        throw new Error("Could not resolve filename for analysis.");
-      }
+      handleSelect(filename);
 
     } catch (err) {
-      console.error("Navigation error:", err);
+      console.error("Analysis Error:", err);
       setLoading(false);
-
-      // Detailed error alert check
-      if (err.response && err.response.data && err.response.data.error) {
-        alert(`Analysis Failed: ${err.response.data.error}`);
-      } else {
-        alert("Failed to load player analysis. Please try again or check console.");
-      }
+      alert(err.response?.data?.error || "Analysis failed. Please check inputs.");
     }
   };
 
   const handleBack = () => {
     setSelectedFile(null);
     setAnalysisData(null);
-    localStorage.removeItem('lastAnalysisFile');
+    window.location.hash = ""; // Clear Hash
   };
 
   // Silent refresh for updates

@@ -250,8 +250,8 @@ class RunAnalysisView(APIView):
 
         # Log to debug file
         with open("backend_debug.txt", "a") as f:
-            f.write(f"[DEBUG] Params: riot_id={riot_id}, count={match_count}, ai={call_ai}, refresh={force_refresh}, puuid={puuid}\n")
-            f.write(f"[DEBUG] Starting pipeline...\n")
+            f.write(f"[DEBUG-V2] Params: riot_id={riot_id}, count={match_count}, ai={call_ai}, refresh={force_refresh}, puuid={puuid}\n")
+            f.write(f"[DEBUG-V2] Starting pipeline...\n")
             
         # Check for existing analysis in MongoDB
         from database import Database
@@ -303,9 +303,12 @@ class RunAnalysisView(APIView):
             with open("backend_debug.txt", "a") as f:
                 f.write("[DEBUG] Verifying Save...\n")
             
+            # Extract Canonical ID from pipeline result to ensure case-correctness
+            canonical_riot_id = analysis_result.get("riot_id", riot_id)
+
             from database import Database
             db = Database()
-            saved_doc = db.get_analysis(riot_id)
+            saved_doc = db.get_analysis(canonical_riot_id)
             
             with open("backend_debug.txt", "a") as f:
                 f.write(f"[DEBUG] Save Verified: {bool(saved_doc)}\n")
@@ -313,7 +316,8 @@ class RunAnalysisView(APIView):
             print("[DEBUG-VIEW] Preparing Response...")
             response_data = {
                 'status': 'success', 
-                'riot_id': riot_id,
+                'riot_id': canonical_riot_id, # Return the ACTUAL ID used for saving
+                'input_riot_id': riot_id,
                 'debug': {
                     'db_connected': db.is_connected,
                     'save_verified': bool(saved_doc),

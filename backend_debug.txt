@@ -1417,3 +1417,1394 @@
 [REQ] Status: 200
 [REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 400, 'count': 100, 'queue': 420}
 [REQ] Status: 200
+
+[DEBUG] /api/analyze/ POST received at 1768877159.3709488
+[DEBUG] Params: riot_id=apefarmer#6969, count=50, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/apefarmer/6969 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469251531 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469137202 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469094927 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469065424 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468413614 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468354309 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469181878 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469218363 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468310401 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468255915 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468166552 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468129316 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468009145 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467971837 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467922452 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467904056 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467890131 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467583491 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467546584 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467510185 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467472475 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467435075 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467412894 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467387093 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466933284 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466950679 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466907121 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 429
+[REQ] Rate Limit 429. Retry in 1
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466396638 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466466554 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466360088 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466316488 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466263597 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466248991 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466220830 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5465614520 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5465557556 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5465507207 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5465480451 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5465444606 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5464752678 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5464694259 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5464665672 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5464626351 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463913292 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463846043 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463822462 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463800373 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467387093 (Attempt 2) Params: None
+[REQ] Status: 429
+[REQ] Rate Limit 429. Retry in 1
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463760687 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463708562 (Attempt 1) Params: None
+[REQ] Status: 429
+[REQ] Rate Limit 429. Retry in 1
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463042763 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463846043 (Attempt 2) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463822462 (Attempt 2) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Processing Timelines...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469251531/timeline (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469218363/timeline (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469065424/timeline (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469181878/timeline (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468413614/timeline (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468310401/timeline (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467971837/timeline (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467510185/timeline (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467435075/timeline (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467412894/timeline (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466248991/timeline (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5466220830/timeline (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5465557556/timeline (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[DEBUG] Start Processing 15 timelines...
+[DEBUG] Processed NA1_5469251531 in 0.12s
+[DEBUG] Processed NA1_5469218363 in 0.06s
+[DEBUG] Processed NA1_5469181878 in 0.05s
+[DEBUG] Processed NA1_5469065424 in 0.05s
+[DEBUG] Processed NA1_5468413614 in 0.07s
+[DEBUG] Processed NA1_5468354309 in 0.04s
+[DEBUG] Processed NA1_5468310401 in 0.05s
+[DEBUG] Processed NA1_5467971837 in 0.05s
+[DEBUG] Processed NA1_5467583491 in 0.05s
+[DEBUG] Processed NA1_5467510185 in 0.04s
+[DEBUG] Processed NA1_5467435075 in 0.05s
+[DEBUG] Processed NA1_5467412894 in 0.04s
+[DEBUG] Processed NA1_5466248991 in 0.04s
+[DEBUG] Processed NA1_5466220830 in 0.06s
+[DEBUG] Processed NA1_5465557556 in 0.05s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 156 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1768877175.635263
+[DEBUG] Params: riot_id=apefarmer#6969, count=50, ai=True, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 400, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5463004279 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462961183 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462919853 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462908239 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462870348 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462833238 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462799379 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462769657 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462743618 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462178268 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462130864 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462085329 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5462046334 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5461993680 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5461920780 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5461896233 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5461856177 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5461834338 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5461803054 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5461741128 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5461702159 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5461008060 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460947859 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460856680 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460824287 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460779700 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460211651 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460158441 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460110600 (Attempt 1) Params: None
+[REQ] Status: 429
+[REQ] Rate Limit 429. Retry in 94
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 156 bytes
+[DEBUG] Sending Response object now.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460110600 (Attempt 2) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460058750 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5460018700 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5459969909 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5459930175 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5459855316 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5459164720 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5459126353 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5459072851 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5459035052 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5459005080 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5458059969 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5409361324 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5409356976 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5408599128 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5408572596 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5408550403 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5408063823 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5408033859 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5408012600 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5407990839 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5407935553 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5407932463 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5407449914 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5407405285 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5407373961 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5407352131 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5407291582 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5407265293 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406841429 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406812302 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406793391 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406755007 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406715841 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406235512 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406204678 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406178779 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406139603 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406093538 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406071448 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406053302 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405601583 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405556481 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405529022 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405493247 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405444018 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405419435 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405324685 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405307686 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405289859 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5405216115 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404882337 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404851269 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404819724 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404762428 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404734099 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404709356 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404684551 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404661333 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404530972 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404516760 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404300991 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404271683 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404221578 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5403646553 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5403052532 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5403000112 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5401792675 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5401787847 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5401761061 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5401730281 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5401688497 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5401670746 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5401224210 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5400337082 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5400331123 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5400308830 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5400303921 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5399056705 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398489718 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397974085 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397943801 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397919274 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397897470 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397390904 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397354696 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397339308 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397307671 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397283596 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396701588 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396667929 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396654493 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396615541 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396584022 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396551510 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396527506 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396504829 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396483301 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396457516 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396380552 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396292987 (Attempt 1) Params: None
+[REQ] Status: 429
+[REQ] Rate Limit 429. Retry in 79
+
+[DEBUG] /api/analyze/ POST received at 1768877393.1754386
+[DEBUG] Params: riot_id=im having fun, count=20, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Error in View: Invalid Riot ID format. Use Name#TAG.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396292987 (Attempt 2) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396276028 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395977102 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395946480 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395909747 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395877686 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395841465 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395797007 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395752872 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395721550 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395223062 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395191796 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5395159104 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5394636914 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5394610666 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5394580168 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5394544236 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5394510213 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5394021195 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5393990145 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5393951154 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5393919095 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5393896143 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5393868237 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5393848563 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5393340727 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5393310480 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5393274206 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392675152 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392646325 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392606379 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392565790 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392518621 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392516989 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392491738 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392470082 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392042003 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5392006445 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391970573 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391940464 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391903231 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391855095 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391820622 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391808716 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391556235 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391530971 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391284854 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391264227 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391232781 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391181828 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391145807 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391104119 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391080156 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391053915 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5391001602 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5390502549 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5390453897 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5390397704 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5390358619 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5388889417 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5204783277 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5194706065 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5194427259 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5191964761 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5191593739 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5191581692 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5191550013 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5191362933 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5191065926 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5191051842 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5190338220 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5189644015 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5189592203 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5189563510 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5189545351 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5189526493 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5189007317 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188967439 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188936461 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188877538 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188860916 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188702357 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188667179 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188643489 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188625660 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188578864 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188251626 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188217046 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188172344 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188143467 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188107666 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188026778 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187997972 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187894369 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187875712 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187365341 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187307544 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187178701 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187149699 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187134201 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185682865 (Attempt 1) Params: None
+[REQ] Status: 429
+[REQ] Rate Limit 429. Retry in 80
+
+[DEBUG] /api/analyze/ POST received at 1768877525.1067266
+[DEBUG] Params: riot_id=im having fun, count=20, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Error in View: unexpected indent (riot_client.py, line 140)
+
+[DEBUG] /api/analyze/ POST received at 1768877670.3482687
+[DEBUG] Params: riot_id=im having fun, count=20, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Error in View: Invalid Riot ID format. Use Name#TAG.
+
+[DEBUG] /api/analyze/ POST received at 1768877784.8603368
+[DEBUG] Params: riot_id=im having fun, count=20, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having/fun (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA (Attempt 1) Params: None
+[REQ] Status: 404
+[REQ] Exception: 404 Client Error: Not Found for url: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA (Attempt 2) Params: None
+[REQ] Status: 404
+[REQ] Exception: 404 Client Error: Not Found for url: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA (Attempt 3) Params: None
+[REQ] Status: 404
+[REQ] Exception: 404 Client Error: Not Found for url: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA (Attempt 4) Params: None
+[REQ] Status: 404
+[REQ] Exception: 404 Client Error: Not Found for url: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA
+[DEBUG] Pipeline finished successfully
+
+[DEBUG] /api/analyze/ POST received at 1768878059.4094505
+[DEBUG] Raw Body: {"riot_id":"im having fun","match_count":20,"region":"NA","call_ai":false}
+[DEBUG] Params: riot_id=im having fun, count=20, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having/fun (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA (Attempt 1) Params: None
+[REQ] Status: 404
+[REQ] Exception: 404 Client Error: Not Found for url: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA (Attempt 2) Params: None
+[REQ] Status: 404
+[REQ] Exception: 404 Client Error: Not Found for url: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA (Attempt 3) Params: None
+[REQ] Status: 404
+[REQ] Exception: 404 Client Error: Not Found for url: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA (Attempt 4) Params: None
+[REQ] Status: 404
+[REQ] Exception: 404 Client Error: Not Found for url: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/vVpRueIsewghuLs8btN-OxxoDSl0KZe6lg4ep0YMAaV4USnOQmMLrrrsEqoqmn9MBvHe2GVsruDHhA
+[DEBUG] Pipeline finished successfully
+
+[DEBUG] /api/analyze/ POST received at 1768878084.3634527
+[DEBUG] Raw Body: {"riot_id":"trungdleR#NA9","match_count":20,"region":"NA","call_ai":false}
+[DEBUG] Params: riot_id=trungdleR#NA9, count=20, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/trungdleR/NA9 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/ZoX9voLilh7lIil1SO55LlOKFJQLpYvrOF1OA7nlM81U5Ux_uTtM1r-cU9M_pXqwDhtYoPd7k1uuNg (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/ZoX9voLilh7lIil1SO55LlOKFJQLpYvrOF1OA7nlM81U5Ux_uTtM1r-cU9M_pXqwDhtYoPd7k1uuNg (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/ZoX9voLilh7lIil1SO55LlOKFJQLpYvrOF1OA7nlM81U5Ux_uTtM1r-cU9M_pXqwDhtYoPd7k1uuNg/ids (Attempt 1) Params: {'start': 0, 'count': 20, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 20
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469109140 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468882879 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468852074 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468822837 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468521738 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468467092 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469031663 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469001367 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468392696 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468285002 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468247201 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468236579 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5468024996 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467941456 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467890362 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467834696 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467062256 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467152645 (Attempt 1) Params: None
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5467000326 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] Status: 200
+[DEBUG] Pipeline finished successfully
+
+[DEBUG] /api/analyze/ POST received at 1768878096.9290407
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","call_ai":false}
+[DEBUG] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 15 timelines...
+[DEBUG] Processed NA1_5469251531 in 0.05s
+[DEBUG] Processed NA1_5469218363 in 0.05s
+[DEBUG] Processed NA1_5469181878 in 0.05s
+[DEBUG] Processed NA1_5469065424 in 0.06s
+[DEBUG] Processed NA1_5468413614 in 0.06s
+[DEBUG] Processed NA1_5468354309 in 0.05s
+[DEBUG] Processed NA1_5468310401 in 0.06s
+[DEBUG] Processed NA1_5467971837 in 0.05s
+[DEBUG] Processed NA1_5467583491 in 0.05s
+[DEBUG] Processed NA1_5467510185 in 0.05s
+[DEBUG] Processed NA1_5467435075 in 0.06s
+[DEBUG] Processed NA1_5467412894 in 0.05s
+[DEBUG] Processed NA1_5466974441 in 0.05s
+[DEBUG] Processed NA1_5466248991 in 0.05s
+[DEBUG] Processed NA1_5466220830 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 166 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1768878105.5881386
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","call_ai":true,"force_refresh":false}
+[DEBUG] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5409154897 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406952842 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406685360 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406675194 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406037743 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5406019164 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404564085 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404556513 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404547965 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404343783 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404113357 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404061788 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404033907 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5404016361 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5401788132 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5401762017 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5399069002 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5399025100 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5399006023 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398974993 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398953601 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398938265 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398925687 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398912790 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398723912 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398701069 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398416504 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398397568 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398379223 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398349497 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398061477 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398035864 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5398006242 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397978152 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397933938 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397907446 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397408854 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397375415 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5397368236 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396767003 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396723504 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396704743 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396557434 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5396414447 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5365914798 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5191807209 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5191623828 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5190878422 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5190858342 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5190833871 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5190584676 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5189490523 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5189473177 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188815052 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5188781013 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187959516 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187956922 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187851931 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187825685 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187580239 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187556795 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187522620 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187254178 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5187218812 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5186734397 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5186706274 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5186671804 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185682865 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185620811 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185595404 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185561559 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185102137 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185069704 (Attempt 1) Params: None
+[REQ] Status: 429
+[REQ] Rate Limit 429. Retry in 44
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 166 bytes
+[DEBUG] Sending Response object now.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185069704 (Attempt 2) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185040334 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5185012864 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5183902221 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5183872530 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182780367 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182724389 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182706301 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182449099 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182246428 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182129715 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182089881 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182046779 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182024196 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181883842 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181873703 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181856095 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181805818 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181489614 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181457727 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181422598 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5176464077 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5176057851 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175998473 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175967909 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175405264 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175367735 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175193229 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175155559 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175125904 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5174674056 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5174637955 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5174607851 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5174585487 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5174315118 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5174295424 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5174253677 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5174223314 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5174176018 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5173815408 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5173786261 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5173743260 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5172883121 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5172851815 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5172821359 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5172512936 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5172474054 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171938406 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171915776 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171517734 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171481044 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171461099 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171434517 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171416621 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5169583718 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5169303709 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5169121205 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5168312475 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5168274046 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5093118571 (Attempt 1) Params: None
+[REQ] Status: 200
+
+[DEBUG] /api/analyze/ POST received at 1768878378.1366556
+[DEBUG] Raw Body: {"riot_id":"apefarmer","match_count":20,"region":"NA","call_ai":false}
+[DEBUG] Params: riot_id=apefarmer, count=20, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Error in View: Invalid Riot ID format. Use Name#TAG.
+
+[DEBUG] /api/analyze/ POST received at 1768878381.1030257
+[DEBUG] Raw Body: {"riot_id":"apefarmer","match_count":20,"region":"NA","call_ai":false}
+[DEBUG] Params: riot_id=apefarmer, count=20, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Error in View: Invalid Riot ID format. Use Name#TAG.
+
+[DEBUG] /api/analyze/ POST received at 1768878396.6166632
+[DEBUG] Raw Body: {"riot_id":"Bingbong","match_count":20,"region":"NA","call_ai":false}
+[DEBUG] Params: riot_id=Bingbong, count=20, ai=False, refresh=False
+[DEBUG] Starting pipeline...
+[DEBUG] Error in View: Invalid Riot ID format. Use Name#TAG.
+
+[DEBUG] /api/analyze/ POST received at 1768879031.79704
+[DEBUG] Raw Body: {"riot_id":"apefarmer","match_count":20,"region":"NA","call_ai":false,"puuid":"4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q"}
+[DEBUG] Params: riot_id=apefarmer, count=20, ai=False, refresh=False, puuid=4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q
+[DEBUG] Starting pipeline...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 0, 'count': 20, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 20
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469308220 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Processing Timelines...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5469308220/timeline (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Start Processing 9 timelines...
+[DEBUG] Processed NA1_5469308220 in 0.09s
+[DEBUG] Processed NA1_5469251531 in 0.06s
+[DEBUG] Processed NA1_5469218363 in 0.06s
+[DEBUG] Processed NA1_5469065424 in 0.06s
+[DEBUG] Processed NA1_5468413614 in 0.06s
+[DEBUG] Processed NA1_5468354309 in 0.04s
+[DEBUG] Processed NA1_5468310401 in 0.05s
+[DEBUG] Processed NA1_5467971837 in 0.06s
+[DEBUG] Processed NA1_5467583491 in 0.05s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[DEBUG] Save Verified: False
+[DEBUG] Response JSON Size: 140 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1768879040.3103175
+[DEBUG] Raw Body: {"riot_id":"apefarmer","match_count":20,"region":"NA","call_ai":true,"force_refresh":false,"puuid":"4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q"}
+[DEBUG] Params: riot_id=apefarmer, count=20, ai=True, refresh=False, puuid=4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q
+[DEBUG] Starting pipeline...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Existing analysis check done. Found: True
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/4VJdTn4vlrNNmteNtZHJVHmKo3Xdi5S3pP_EjGjRmsg_Vsi1sBdq8niDb6xIgo1kDI2NwQ5b_acK5Q/ids (Attempt 1) Params: {'start': 400, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5183119519 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5183057229 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5182279480 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181886704 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181866503 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181838925 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181814878 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181375234 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181240433 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181213282 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5181042314 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175773130 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175750386 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5175739736 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171714229 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171665968 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5171623515 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5170708892 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5170648163 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5170492138 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5170286699 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5170247394 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5170147310 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5170142002 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5169424188 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5169086034 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5169081753 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5169067041 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5111405987 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5111382017 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5111361407 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5111234800 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5111220101 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5110690081 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5110674328 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5110670537 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4921503207 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4921470824 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4921445872 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4921435241 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4920987910 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4920893798 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4920842426 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4920775014 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4920717405 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4920681432 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4920653476 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4920585560 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4920558563 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4918686535 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4918653092 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4918597556 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4918551594 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4918074144 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4918049331 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4917453834 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4917395328 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4917358250 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4916991954 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4916937856 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4916916443 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4916657217 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4916605306 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4916569275 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4915897018 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4915858575 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4915806579 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4915468768 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4915419934 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4915355843 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4915312184 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4915244960 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4914431979 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4914398331 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4914063232 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4914046534 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4913817247 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4913778027 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4913729157 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4913639722 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4913507573 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4913476468 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4913450920 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4912726814 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4910726932 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4910675646 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4910643225 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4910587098 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4910554979 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4909123518 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4909096123 (Attempt 1) Params: None
+[REQ] Status: 429
+[REQ] Rate Limit 429. Retry in 73
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[DEBUG] Save Verified: False
+[DEBUG] Response JSON Size: 140 bytes
+[DEBUG] Sending Response object now.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4909096123 (Attempt 2) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4909055697 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4909010536 (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4908961585 (Attempt 1) Params: None
+[REQ] Status: 200

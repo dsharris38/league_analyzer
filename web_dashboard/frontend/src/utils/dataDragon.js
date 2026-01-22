@@ -411,6 +411,27 @@ async function enrichWithDDragon(merakiData) {
     }
 }
 
+// Helper to detect if an item is a Boot (for S16 7th slot logic)
+export const isBoot = (itemId) => {
+    if (!itemId || itemId === 0) return false;
+    const data = itemDataMap[itemId];
+    if (data && data.tags && data.tags.includes("Boots")) return true;
+
+    // Fallback for S16 custom items or missing tags
+    const BOOT_IDS = [
+        1001, // Boots
+        3006, // Berserker's Greaves
+        3009, // Boots of Swiftness
+        3020, // Sorcerer's Shoes
+        3047, // Plated Steelcaps
+        3111, // Mercury's Treads
+        3117, // Mobility Boots
+        3158, // Ionian Boots of Lucidity
+        3170, 3171, 3172, 3173, 3174, 3175, 3176 // S16 Tier 3 Boots
+    ];
+    return BOOT_IDS.includes(parseInt(itemId));
+};
+
 export const getItemData = (itemId) => {
     if (!itemId || itemId === 0) return null;
     return itemDataMap[itemId] || null;

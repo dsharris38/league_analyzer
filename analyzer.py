@@ -95,33 +95,15 @@ def _role_cs_threshold(role: str) -> float:
 
 def _detect_role(self_participant: Dict[str, Any]) -> str:
     """
-    Detect role using heuristics to fix Riot API misclassifications (e.g. Karma Jungle).
-    Priority:
-    1. Smite -> JUNGLE
-    2. Support Item in inventory -> UTILITY
-    3. Specified teamPosition -> As-is
-    4. Fallback -> MIDDLE
+    Detect role using strictly Riot API's teamPosition.
+    Falls back to individualPosition if teamPosition is missing/invalid.
     """
-    # 1. Check for Smite (Summoner 11)
-    # Note: Placeholder for Ultimate Spellbook (54) or others could be added if needed
-    summoners = [self_participant.get("summoner1Id"), self_participant.get("summoner2Id")]
-    if 11 in summoners:
-        return "JUNGLE"
-
-    # 2. Check for Support Items (World Atlas tree)
-    # 3862: World Atlas, 3863: Runic Compass, 3864: Bounty of Worlds, etc.
-    # We check for the starter item mainly.
-    support_items = {3862, 3863, 3864, 3850, 3851, 3853} # Expanded list just in case
-    items = [self_participant.get(f"item{i}", 0) for i in range(7)]
-    if any(item_id in support_items for item_id in items):
-        return "UTILITY"
-
-    # 3. Riot API Team Position
+    # 1. Riot API Team Position
     pos = self_participant.get("teamPosition")
     if pos and pos != "Invalid":
         return pos
 
-    # 4. Fallback
+    # 2. Fallback
     return self_participant.get("individualPosition") or "MIDDLE"
 
 
@@ -278,6 +260,9 @@ def analyze_matches(
     # "is it me or my team" scoring across games
     you_vs_team_scores_all = []
     you_vs_team_scores_losses = []
+
+    # Detailed match list for frontend
+    detailed_matches = []
 
     # Track your role across games for role-aware benchmarks
     role_counter = Counter()
@@ -475,6 +460,25 @@ def analyze_matches(
                 "role": game_role
             })
 
+        # Append to detailed_matches
+        # Append to detailed_matches
+        detailed_matches.append({
+            "match_id": match["metadata"]["matchId"],
+            "champion": champ_name,
+            "role": game_role,
+            "kda": round(kda, 2),
+            "win": win,
+            "game_creation": info.get("gameCreation", 0), # snake_case for frontend
+            "game_duration": duration, # snake_case for frontend
+            "queue_id": info.get("queueId", 0),
+            "game_mode": info.get("gameMode", "CLASSIC"),
+            "participants": [
+                {**p, "is_self": (p.get("puuid") == puuid)} 
+                for p in info.get("participants", [])
+            ],
+            "tags": match.get("tags", []), # Tags might be added by ai later, or empty
+        })
+
     # --- End Loop ---
     
     # Calculate Weighted Averages
@@ -637,6 +641,7 @@ def analyze_matches(
         "baseline_comparison": baseline_comparison,
         "you_vs_team": you_vs_team,
         "per_game_loss_details": per_game_loss_details,
+        "detailed_matches": detailed_matches,
         "primary_role": primary_role,
         "teammates": analyze_teammates(matches, puuid, season_prefix=current_season_prefix),
         "recent_performance": analyze_recent_performance(matches, puuid),
@@ -711,6 +716,12 @@ def calculate_season_stats_from_db(puuid: str) -> Dict[str, Any]:
                 if win: duo_tracker[full_name]["wins"] += 1
                 if "puuid" not in duo_tracker[full_name]:
                     duo_tracker[full_name]["puuid"] = p.get("puuid")
+                
+                # Store display data (first encounter wins)
+                if "tag" not in duo_tracker[full_name]:
+                    duo_tracker[full_name]["tag"] = tag
+                    duo_tracker[full_name]["short_name"] = name
+                    duo_tracker[full_name]["icon"] = p.get("profileIcon", 29)
 
     # Format Champion Stats
     final_champs = []
@@ -742,17 +753,21 @@ def calculate_season_stats_from_db(puuid: str) -> Dict[str, Any]:
     
     # Format Duos (Filter: min 3 games together)
     final_duos = []
-    for name, s in duo_tracker.items():
+    for full_name, s in duo_tracker.items():
         if s["games"] >= 3:
             wr = 0.0
             if s["games"] > 0:
                 wr = round((s["wins"] / s["games"]) * 100, 1)
             final_duos.append({
-                "name": name,
+                "name": full_name, # REVERTED: User search expects Full Name (Name#Tag)
+                "short_name": s.get("short_name", full_name), # Keep for potential UI use
+                "tag": s.get("tag", ""),
+                "full_name": full_name,
                 "games": s["games"],
                 "wins": s["wins"],
                 "winrate": wr,
-                "puuid": s.get("puuid")
+                "puuid": s.get("puuid"),
+                "icon": s.get("icon", 29)
             })
     final_duos.sort(key=lambda x: x["games"], reverse=True)
 

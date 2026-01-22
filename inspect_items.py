@@ -1,28 +1,35 @@
-import requests
-import json
 
-def check_boots_data():
-    url = "https://ddragon.leagueoflegends.com/cdn/16.1.1/data/en_US/item.json"
-    print(f"Fetching {url}...")
-    try:
-        r = requests.get(url)
-        data = r.json()
-        items = data['data']
-        
-        target_ids = ["3170", "3171", "3172", "3173", "3174", "3175", "3176"]
-        for i_id, i_data in items.items():
-            if i_id in target_ids:
-                print(f"ID: {i_id} | Name: {i_data['name']}")
-                print("STATS:", json.dumps(i_data.get('stats'), indent=2))
-                print("DESC:", i_data.get('description'))
-                print("-" * 20)
-            
-    except Exception as e:
-        print(f"Error: {e}")
+import json
+import os
+import glob
+
+def check_item7():
+    # Find cache dir
+    cache_dir = r"c:\Users\Dylan\OneDrive - Yale University\league_analyzer\saves_backup\cache\matches"
+    
+    # Get a few files
+    files = glob.glob(os.path.join(cache_dir, "*.json"))
+    if not files:
+        print("No cached matches found.")
+        return
+
+    print(f"Checking {len(files)} matches for item7...")
+    count_item7 = 0
+    
+    for fpath in files[:50]:
+        try:
+            with open(fpath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                info = data.get('info', {})
+                parts = info.get('participants', [])
+                for p in parts:
+                    if 'item7' in p and p['item7'] != 0:
+                        print(f"Match {data['metadata']['matchId']} - Champ: {p['championName']} has item7: {p['item7']}")
+                        count_item7 += 1
+        except Exception as e:
+            pass
+
+    print(f"Found {count_item7} participants with item7 != 0.")
 
 if __name__ == "__main__":
-    import sys
-    # Redirect stdout to a file with utf-8 encoding
-    with open("item_dump.txt", "w", encoding="utf-8") as f:
-        sys.stdout = f
-        check_boots_data()
+    check_item7()

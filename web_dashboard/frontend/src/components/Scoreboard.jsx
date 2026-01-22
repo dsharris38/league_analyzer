@@ -1,5 +1,5 @@
 import React from 'react';
-import { getChampionIconUrl, getItemIconUrl, getSpellIconUrl, getRuneIconUrl, getItemData, getSummonerSpellData, getRuneData } from '../utils/dataDragon';
+import { getChampionIconUrl, getItemIconUrl, getSpellIconUrl, getRuneIconUrl, getItemData, getSummonerSpellData, getRuneData, isBoot } from '../utils/dataDragon';
 import Tooltip, { ItemTooltip, RuneTooltip, SummonerSpellTooltip } from './Tooltip';
 import clsx from 'clsx';
 import { Skull } from 'lucide-react';
@@ -120,25 +120,82 @@ function ParticipantRow({ participant, maxDamage, isSelf, teamId, onPlayerClick 
             {/* Items */}
             <td className="px-2 py-1 w-72">
                 <div className="flex flex-wrap gap-1 justify-end md:justify-start">
-                    {[p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item7].map((item, i) => {
-                        const itemData = getItemData(item);
-                        return (
-                            <Tooltip key={i} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
-                                <div className={clsx(
-                                    "w-8 h-8 rounded border overflow-hidden cursor-help transition-colors",
-                                    item > 0 ? "border-slate-700 bg-slate-900" : "border-slate-800 bg-slate-900/50"
-                                )}>
-                                    {item > 0 && <img src={getItemIconUrl(item)} className="w-full h-full text-transparent" alt={itemData?.name || 'Item'} />}
-                                </div>
-                            </Tooltip>
-                        );
-                    })}
-                    <div className="w-[1px] h-8 bg-slate-800 mx-1"></div>
-                    <Tooltip content={getItemData(p.item6) ? <ItemTooltip itemData={getItemData(p.item6)} /> : null}>
-                        <div className="w-8 h-8 rounded-full border border-slate-700 bg-slate-900 overflow-hidden cursor-help">
-                            {p.item6 > 0 && <img src={getItemIconUrl(p.item6)} className="w-full h-full text-transparent" alt="Trinket" />}
-                        </div>
-                    </Tooltip>
+                    {(() => {
+                        const inventory = [p.item0, p.item1, p.item2, p.item3, p.item4, p.item5];
+                        const rawRole = p.position || p.team_position || p.teamPosition || p.individualPosition || p.role || "";
+                        const role = rawRole.toUpperCase();
+                        const isBotLane = role === 'BOTTOM' || role === 'ADC';
+
+                        if (isBotLane) {
+                            // --- S16 ADC BOOT SLOT LOGIC ---
+                            let bootId = inventory.find(id => isBoot(id));
+                            let mainItems = inventory.filter(id => !isBoot(id));
+                            while (mainItems.length < 6) mainItems.push(0);
+
+                            return (
+                                <>
+                                    {/* 6 Main Item Slots */}
+                                    {mainItems.map((item, i) => {
+                                        const itemData = getItemData(item);
+                                        return (
+                                            <Tooltip key={`item-${i}`} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
+                                                <div className={clsx(
+                                                    "w-8 h-8 rounded border overflow-hidden cursor-help transition-colors",
+                                                    item > 0 ? "border-slate-700 bg-slate-900" : "border-slate-800 bg-slate-900/50"
+                                                )}>
+                                                    {item > 0 && <img src={getItemIconUrl(item)} className="w-full h-full text-transparent" alt={itemData?.name || 'Item'} />}
+                                                </div>
+                                            </Tooltip>
+                                        );
+                                    })}
+
+                                    {/* Trinket (Round) - Now before Boots */}
+                                    <div className="w-[1px] h-8 bg-slate-800 mx-1"></div>
+                                    <Tooltip content={getItemData(p.item6) ? <ItemTooltip itemData={getItemData(p.item6)} /> : null}>
+                                        <div className="w-8 h-8 rounded-full border border-slate-700 bg-slate-900 overflow-hidden cursor-help">
+                                            {p.item6 > 0 && <img src={getItemIconUrl(p.item6)} className="w-full h-full text-transparent" alt="Trinket" />}
+                                        </div>
+                                    </Tooltip>
+
+                                    {/* 7th Slot: Boots (Round) - Now to the right of Trinket */}
+                                    <Tooltip content={bootId ? <ItemTooltip itemData={getItemData(bootId)} /> : null}>
+                                        <div className="w-8 h-8 rounded-full border border-amber-500/40 bg-slate-900 overflow-hidden cursor-help flex items-center justify-center ml-1">
+                                            {bootId > 0 ? (
+                                                <img src={getItemIconUrl(bootId)} className="w-full h-full text-transparent" alt="Boots" />
+                                            ) : (
+                                                <span className="text-[9px] text-slate-600 font-bold opacity-30">BT</span>
+                                            )}
+                                        </div>
+                                    </Tooltip>
+                                </>
+                            );
+                        } else {
+                            // --- STANDARD LOGIC ---
+                            return (
+                                <>
+                                    {inventory.map((item, i) => {
+                                        const itemData = getItemData(item);
+                                        return (
+                                            <Tooltip key={`item-${i}`} content={itemData ? <ItemTooltip itemData={itemData} /> : null}>
+                                                <div className={clsx(
+                                                    "w-8 h-8 rounded border overflow-hidden cursor-help transition-colors",
+                                                    item > 0 ? "border-slate-700 bg-slate-900" : "border-slate-800 bg-slate-900/50"
+                                                )}>
+                                                    {item > 0 && <img src={getItemIconUrl(item)} className="w-full h-full text-transparent" alt={itemData?.name || 'Item'} />}
+                                                </div>
+                                            </Tooltip>
+                                        );
+                                    })}
+                                    <div className="w-[1px] h-8 bg-slate-800 mx-1"></div>
+                                    <Tooltip content={getItemData(p.item6) ? <ItemTooltip itemData={getItemData(p.item6)} /> : null}>
+                                        <div className="w-8 h-8 rounded-full border border-slate-700 bg-slate-900 overflow-hidden cursor-help">
+                                            {p.item6 > 0 && <img src={getItemIconUrl(p.item6)} className="w-full h-full text-transparent" alt="Trinket" />}
+                                        </div>
+                                    </Tooltip>
+                                </>
+                            );
+                        }
+                    })()}
                 </div>
             </td>
         </tr>

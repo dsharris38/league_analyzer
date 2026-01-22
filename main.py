@@ -325,7 +325,16 @@ def run_analysis_pipeline(
     Returns the final agent_payload dictionary.
     """
     import time
+    
+    def log_debug(msg):
+        try:
+            with open("backend_debug.txt", "a") as f:
+                f.write(f"[MAIN-PY] {msg}\n")
+        except:
+            pass
+
     t_start = time.time()
+    log_debug(f"Pipeline Start for {riot_id} (AI={call_ai}, Region={region_key})")
     # console.print(f"[cyan]TIMING: Pipeline Start[/cyan]")
 
     client = RiotClient(region_key=region_key)
@@ -355,7 +364,10 @@ def run_analysis_pipeline(
             riot_id = f"{game_name}#{tag_line}"
             console.print(f"[yellow]Warning: Riot ID missing '#'. inferred from space: {riot_id}[/yellow]")
         else:
-            raise ValueError("Invalid Riot ID format. Use Name#TAG.")
+            msg = "Invalid Riot ID format. Use Name#TAG."
+            if puuid: 
+                msg += f" (Also failed to resolve PUUID: {puuid})"
+            raise ValueError(msg)
     else:
         game_name, tag_line = riot_id.split("#", 1)
         game_name = game_name.strip()
@@ -398,6 +410,14 @@ def run_analysis_pipeline(
         # 2. It has 'analysis' (stats computed)
         # 3. It DOES NOT have 'coaching_report' (or we want to re-run AI?)
         # For now, we assume if call_ai=True and doc exists, we want to add AI to it.
+        # Validate existing_doc freshness (Fix for Unknown roles)
+        if existing_doc and "analysis" in existing_doc:
+             dm = existing_doc["analysis"].get("detailed_matches", [])
+             # If we have matches but the first one lacks a valid role, assume stale cache
+             if dm and (not dm[0].get("role") or dm[0].get("role") == "Unknown"):
+                 console.print(f"[yellow]SMART RESUME: Found existing analysis but it has valid role data (Stale Cache). Forcing refresh.[/yellow]")
+                 existing_doc = None
+
         if existing_doc and "analysis" in existing_doc:
             console.print(f"[bold green]SMART RESUME: Found existing stats for {riot_id}. Skipping match fetch, jumping to AI.[/bold green]")
             agent_payload = existing_doc
@@ -841,17 +861,28 @@ def run_analysis_pipeline(
         # Check if the latest match is statistically the same
         try:
             latest_new = matches[0]['metadata']['matchId']
-            latest_old = old_data.get('matches', [{}])[0].get('metadata', {}).get('matchId')
+            # Check detailed_matches first (standard output), fallback to matches (legacy/raw)
+            latest_old = None
+            if 'detailed_matches' in old_data and old_data['detailed_matches']:
+                latest_old = old_data['detailed_matches'][0].get('match_id')
+            elif 'matches' in old_data and old_data['matches']:
+                latest_old = old_data.get('matches', [{}])[0].get('metadata', {}).get('matchId')
+            
             if latest_new == latest_old:
                 skip_ai = True
                 console.print("[green]Creating Analysis: No new matches found & Cache exists. Skipping AI re-run.[/green]")
-                # Ensure the payload has the report
-                if "coaching_report" in old_data:
-                    agent_payload["coaching_report"] = old_data["coaching_report"]
-                if "coaching_report_markdown" in old_data:
-                    agent_payload["coaching_report_markdown"] = old_data["coaching_report_markdown"]
-        except Exception:
-            pass # Safety fallthrough
+                log_debug("Skipping AI: No new matches & Cache exists")
+        except Exception as e:
+            log_debug(f"Error checking cache freshness: {e}")
+
+
+    
+    if skip_ai:
+        call_ai = False
+        
+    if call_ai:
+        log_debug("Starting AI Agent Exec...")
+
             
     if call_ai and not skip_ai:
         with open("backend_debug.txt", "a") as f:
