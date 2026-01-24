@@ -351,8 +351,11 @@ class Database:
             existing = col.find_one({"filename_id_lower": analysis_data["filename_id_lower"]})
             if existing:
                 # Reuse the EXISTING casing for the primary key to ensure we overwrite it
-                # instead of creating a duplicate with slightly different casing
+                # instead of creating a duplicate with slightly different casing.
+                # KEY FIX: Also force the payload itself to respect this ID so we don't trigger "duplicate key error"
+                # on the update if we accidentally change the index field to something that collides.
                 target_riot_id = existing["riot_id"]
+                analysis_data["riot_id"] = target_riot_id
                 # print(f"[DB-DEBUG] Found existing doc with id '{target_riot_id}'. Overwriting...")
             
             col.replace_one({"riot_id": target_riot_id}, analysis_data, upsert=True)
