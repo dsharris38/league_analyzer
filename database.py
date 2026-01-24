@@ -470,6 +470,24 @@ class Database:
             # Try Case Insensitive Riot ID (if we indexed 'riot_id_lower'?)
             # Or assume most users type correct casing or rely on filename_id_lower above.
 
+        # 2b. Prefix Match (Optimistic GameName lookup)
+        # If user provides "Bingbong" (no tag), find any "Bingbong#..." in DB.
+        # This fixes "Season Duos" clicks where only GameName is known.
+        if '#' not in core_name and '_' not in core_name:
+            import re
+            escaped_prefix = re.escape(core_name)
+            # Look for "GameName#" prefix, case-insensitive
+            prefix_pattern = f"^{escaped_prefix}#" 
+            # Sort by created desc to get the LATEST one if multiple tags exist
+            cursor = col.find({"riot_id": {"$regex": prefix_pattern, "$options": "i"}}).sort("created", -1).limit(1)
+            try:
+                doc = next(cursor, None)
+                if doc:
+                    print(f"[DB-PERF] Prefix Match '{core_name}' found '{doc.get('riot_id')}'")
+                    return self._decompress_analysis(doc)
+            except Exception:
+                pass
+
         # 3. Fallback: Search using Regex (Slowest, Last Resort)
         print(f"[DB-WARN] Falling back to REGEX search for {core_name} (This is slow on remote DB)")
         import re
