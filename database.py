@@ -281,6 +281,9 @@ class Database:
         col = self._get_collection("timeline_analysis")
         if col is None: return
         
+        # FIX: Sanitize integer keys in timeline data (e.g. frame numbers)
+        analysis_data = self._sanitize_document(analysis_data)
+        
         doc = {"match_id": match_id, **analysis_data}
         col.replace_one({"match_id": match_id}, doc, upsert=True)
 
