@@ -370,7 +370,7 @@ def run_analysis_pipeline(
                  console.print(f"[yellow]SMART RESUME: Found existing analysis but it has valid role data (Stale Cache). Forcing refresh.[/yellow]")
                  existing_doc = None
 
-        if existing_doc and "analysis" in existing_doc:
+        if existing_doc and "analysis" in existing_doc and not force_refresh:
             console.print(f"[bold green]SMART RESUME: Found existing stats for {riot_id}. Skipping match fetch, jumping to AI.[/bold green]")
             agent_payload = existing_doc
             
