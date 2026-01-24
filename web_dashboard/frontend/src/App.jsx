@@ -47,7 +47,7 @@ function App() {
     }
 
     setLoading(true);
-    axios.get(`${config.API_URL}/api/analyses/${encodeURIComponent(filename)}/`)
+    axios.get(`${config.API_URL}/api/analyses/${encodeURIComponent(filename)}/?_t=${Date.now()}`)
       .then(res => {
         setAnalysisData(res.data);
         setLoading(false);

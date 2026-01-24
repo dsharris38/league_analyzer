@@ -350,34 +350,34 @@ class Database:
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                # 1. Check if a record exists with the same ID (ignoring case)
+                with open("backend_debug.txt", "a") as f: f.write(f"[DB] Attempting to save analysis for {riot_id}...\n")
+                
                 # Use 'filename_id_lower' which we just set
                 target_riot_id = riot_id
                 
-                # Find ALL matches for this case-insensitive ID
+                # Check for duplicates (Case-Insensitive)
                 candidates = list(col.find({"filename_id_lower": analysis_data["filename_id_lower"]}))
-                
                 if candidates:
-                    # Sort by created desc (Newest first)
+                    with open("backend_debug.txt", "a") as f: f.write(f"[DB] Found {len(candidates)} candidates for {analysis_data['filename_id_lower']}\n")
                     candidates.sort(key=lambda x: x.get("created", 0), reverse=True)
                     
-                    # Target the newest one
-                    target_doc = candidates[0]
-                    target_riot_id = target_doc.get("riot_id", riot_id)
-                    
-                    # If we found duplicates (more than 1), delete the others
+                    # Keep the newest, delete the rest
                     if len(candidates) > 1:
                         victim_ids = [c["_id"] for c in candidates[1:]]
-                        print(f"[DB-FIX] Deleting {len(victim_ids)} duplicate docs for '{target_riot_id}' during save...")
                         col.delete_many({"_id": {"$in": victim_ids}})
-                    
-                    # Reuse the EXISTING casing for the primary key
-                    analysis_data["riot_id"] = target_riot_id
-                    # print(f"[DB-DEBUG] Found existing doc with id '{target_riot_id}'. Overwriting...")
+                        with open("backend_debug.txt", "a") as f: f.write(f"[DB] Deleted {len(victim_ids)} duplicate profiles.\n")
+
+                # Ensure the document uses the canonical casing from our payload
+                analysis_data["riot_id"] = target_riot_id
                 
+                # Use replace_one with upsert
                 col.replace_one({"riot_id": target_riot_id}, analysis_data, upsert=True)
-                print(f"[DB-DEBUG] Saved analysis for {target_riot_id} (fid: {analysis_data.get('filename_id')})")
+                
+                with open("backend_debug.txt", "a") as f: 
+                    f.write(f"[DB] Saved analysis for {target_riot_id} successfully.\n")
+                print(f"[DB-DEBUG] Saved analysis for {target_riot_id}")
                 return # Success
+
                 
             except Exception as e:
                 # pymongo.errors.DuplicateKeyError is wrapped in Exception usually, but better to check

@@ -488,8 +488,8 @@ def run_analysis_pipeline(
     fetched_map = {}
 
     if missing_ids:
-        console.print(f"[bold]Fetching {len(missing_ids)} missing matches (Parallel - Low Ram Mode)...[/bold]")
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        console.print(f"[bold]Fetching {len(missing_ids)} missing matches (Parallel)...[/bold]")
+        with ThreadPoolExecutor(max_workers=8) as executor:
             future_to_mid = {executor.submit(client.get_match, mid): mid for mid in missing_ids}
             for future in as_completed(future_to_mid):
                 mid = future_to_mid[future]
@@ -500,7 +500,6 @@ def run_analysis_pipeline(
                         db.save_match(m_data)
                         fetched_map[mid] = m_data
                 except Exception as e:
-                    with open("backend_debug.txt", "a") as f: f.write(f"[ERROR] Failed to fetch {mid}: {e}\n")
                     # console.print(f"[yellow]Failed to fetch {mid}: {e}[/yellow]")
                     pass
 
@@ -538,12 +537,6 @@ def run_analysis_pipeline(
         console.print("[bold]Fetching timelines and analyzing movement... (Parallel)[/bold]")
         
         def process_timeline(idx, m_id, m_data, tl):
-            # 1. OPTIMIZATION: Check for cached Analysis Results
-            # This skips the expensive 0.5s calc per match
-            cached = db.get_timeline_analysis(m_id)
-            if cached:
-                return cached.get("loss_diagnostics"), cached.get("movement")
-
             # Timeline is already fetched and saved by the caller (Sequential Loop)
             if not tl:
                 return None, None
@@ -554,8 +547,7 @@ def run_analysis_pipeline(
                 l_diag = classify_loss_reason(m_data, tl, puuid)
                 if l_diag:
                     l_diag = {"match_id": m_id, **l_diag}
-            except Exception as e:
-                console.print(f"[yellow]Loss Analysis Failed {m_id}: {e}[/yellow]")
+            except Exception:
                 pass
 
             # Movement Analysis
@@ -564,20 +556,8 @@ def run_analysis_pipeline(
                 mov = analyze_timeline_movement(m_data, tl, puuid)
                 if mov:
                     mov = {"match_id": m_id, **mov}
-            except Exception as e:
-                console.print(f"[yellow]Movement Analysis Failed {m_id}: {e}[/yellow]")
+            except Exception:
                 pass
-            
-            # 2. SAVE to Cache
-            if l_diag or mov:
-                try:
-                    db.save_timeline_analysis(m_id, {
-                        "loss_diagnostics": l_diag,
-                        "movement": mov
-                    })
-                except Exception as e:
-                    console.print(f"[yellow]Failed to save timeline analysis for {m_id}: {e}[/yellow]")
-                    with open("backend_debug.txt", "a") as f: f.write(f"[ERROR] DB Save Failed {m_id}: {e}\n")
             
             return l_diag, mov
 
@@ -601,8 +581,8 @@ def run_analysis_pipeline(
                 missing_mids.append(mid)
                 
         if missing_mids:
-            console.print(f"[bold]Fetching {len(missing_mids)} missing timelines (Parallel - Low Ram Mode)...[/bold]")
-            with ThreadPoolExecutor(max_workers=3) as executor:
+            console.print(f"[bold]Fetching {len(missing_mids)} missing timelines (Parallel)...[/bold]")
+            with ThreadPoolExecutor(max_workers=5) as executor:
                 future_to_mid = {executor.submit(client.get_match_timeline, mid): mid for mid in missing_mids}
                 
                 for future in as_completed(future_to_mid):
@@ -615,55 +595,29 @@ def run_analysis_pipeline(
                         # console.print(f"[yellow]Failed to fetch timeline {mid}: {e}[/yellow]")
                         pass
 
-        # 2. Process Sequentially (Batch Strategy to Save RAM)
-        # Processing 50 timelines at once can consume > 512MB RAM.
-        # We process in extremely small batches (1) for 512MB instances.
-        BATCH_SIZE = 1
-        console.print(f"[bold]Processing {len(valid_tasks)} timelines in batches of {BATCH_SIZE}...[/bold]")
+        # 2. Process Sequentially (CPU bound + Safety)
+        console.print(f"[bold]Processing {len(valid_tasks)} timelines...[/bold]")
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Start Processing {len(valid_tasks)} timelines...\n")
         
-        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Start Processing {len(valid_tasks)} timelines (Batched)...\n")
-        
-        for batch_start in range(0, len(valid_tasks), BATCH_SIZE):
-            batch_end = min(batch_start + BATCH_SIZE, len(valid_tasks))
-            batch = valid_tasks[batch_start:batch_end]
+        for i, (mid, m_data) in enumerate(valid_tasks):
+            t_start_tl = time.time()
+            try:
+                tl = db.get_timeline(mid)
+                if tl:
+                    l_res, mov_res = process_timeline(i, mid, m_data, tl)
+                    if l_res:
+                        timeline_loss_diagnostics.append(l_res)
+                    if mov_res:
+                        movement_summaries.append(mov_res)
+            except Exception as e:
+                console.print(f"[yellow]Error processing timeline {mid}: {e}[/yellow]")
             
-            console.print(f"[dim]Processing Batch {batch_start+1}-{batch_end}...[/dim]")
-            
-            for i, (mid, m_data) in enumerate(batch):
-                total_idx = batch_start + i
-                t_start_tl = time.time()
-                try:
-                    # Fetch from DB (it should be there from parallel fetch above)
-                    tl = db.get_timeline(mid)
-                    
-                    if tl:
-                        l_res, mov_res = process_timeline(total_idx, mid, m_data, tl)
-                        if l_res:
-                            timeline_loss_diagnostics.append(l_res)
-                        # if mov_res:
-                        #     movement_summaries.append(mov_res)
-                        
-                        # Aggressive Cleanup: Delete timeline object immediately after use
-                        del tl
-                        
-                except Exception as e:
-                    console.print(f"[yellow]Error processing timeline {mid}: {e}[/yellow]")
-                
-                dur = time.time() - t_start_tl
-                with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Processed {mid} in {dur:.2f}s\n")
-
-            # End of Batch: Force Garbage Collection
-            import gc
-            gc.collect()
+            dur = time.time() - t_start_tl
+            with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Processed {mid} in {dur:.2f}s\n")
 
     t_processing = time.time()
     console.print(f"[cyan]TIMING: Match & Timeline Processing took {t_processing - t_bulk:.2f}s[/cyan]")
-    
-    # Explicit GC to free timeline memory before analysis
-    import gc
-    gc.collect()
 
-    # Enrich analysis with macro, comp, and itemization data
     # Enrich analysis with macro, comp, and itemization data
     analysis = enrich_coaching_data(
         matches=matches,
@@ -671,8 +625,7 @@ def run_analysis_pipeline(
         puuid=puuid,
         analysis=base_analysis,
         timeline_loss_diagnostics=timeline_loss_diagnostics,
-        movement_summaries=[], # Empty to force lazy loading
-        db_client=db # Pass DB for lazy loading
+        movement_summaries=movement_summaries,
     )
     
     # Identify review candidates and classify matches
