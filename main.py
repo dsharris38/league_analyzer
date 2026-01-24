@@ -800,7 +800,13 @@ def run_analysis_pipeline(
     # and the latest match ID in 'matches' matches the latest in 'old_data', we are good.
     
     skip_ai = False
-    if has_valid_report and not force_refresh:
+    
+    # LOGIC FIX: If force_refresh is True, we NEVER skip AI.
+    if force_refresh:
+        console.print("[bold cyan]Force Refresh requested: Bypassing cache checks, running AI.[/bold cyan]")
+        log_debug("Force Refresh: Bypassing cache checks.")
+        skip_ai = False
+    elif has_valid_report:
         # Check if the latest match is statistically the same
         try:
             latest_new = matches[0]['metadata']['matchId']

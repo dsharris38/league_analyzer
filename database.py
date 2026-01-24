@@ -342,10 +342,21 @@ class Database:
                     except Exception as e:
                         print(f"[DB-WARN] Failed to compress movement_summaries: {e}")
 
-        # Identify by Riot ID
+        # Identify by Riot ID (Case-Insensitive Handling)
         try:
-            col.replace_one({"riot_id": riot_id}, analysis_data, upsert=True)
-            print(f"[DB-DEBUG] Saved analysis for {riot_id} (fid: {analysis_data.get('filename_id')})")
+            # 1. Check if a record exists with the same ID (ignoring case)
+            # Use 'filename_id_lower' which we just set
+            target_riot_id = riot_id
+            
+            existing = col.find_one({"filename_id_lower": analysis_data["filename_id_lower"]})
+            if existing:
+                # Reuse the EXISTING casing for the primary key to ensure we overwrite it
+                # instead of creating a duplicate with slightly different casing
+                target_riot_id = existing["riot_id"]
+                # print(f"[DB-DEBUG] Found existing doc with id '{target_riot_id}'. Overwriting...")
+            
+            col.replace_one({"riot_id": target_riot_id}, analysis_data, upsert=True)
+            print(f"[DB-DEBUG] Saved analysis for {target_riot_id} (fid: {analysis_data.get('filename_id')})")
         except Exception as e:
             msg = f"[DB-ERROR] Failed to save analysis for {riot_id}: {e}"
             print(msg)
