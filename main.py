@@ -270,6 +270,7 @@ def run_analysis_pipeline(
     open_dashboard: bool = False,
     region_key: str = "NA",
     puuid: str = None,
+    force_refresh: bool = False,
 ) -> Dict[str, Any]:
     """
     Programmatic entry point for the analysis pipeline.

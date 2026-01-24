@@ -323,7 +323,8 @@ class RunAnalysisView(APIView):
                 save_json=True,
                 open_dashboard=False,
                 region_key=region,
-                puuid=puuid
+                puuid=puuid,
+                force_refresh=force_refresh
             )
             with open("backend_debug.txt", "a") as f:
                 f.write(f"[DEBUG] Pipeline finished successfully\n")
