@@ -599,24 +599,46 @@ def run_analysis_pipeline(
                         pass
 
         # 2. Process Sequentially (CPU bound + Safety)
-        console.print(f"[bold]Processing {len(valid_tasks)} timelines...[/bold]")
-        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Start Processing {len(valid_tasks)} timelines...\n")
+        # BATCHING: chunk tasks to control memory usage and allow GC to run (500MB limit)
+        import gc
+        BATCH_SIZE = 5
         
-        for i, (mid, m_data) in enumerate(valid_tasks):
-            t_start_tl = time.time()
-            try:
-                tl = db.get_timeline(mid)
-                if tl:
-                    l_res, mov_res = process_timeline(i, mid, m_data, tl)
-                    if l_res:
-                        timeline_loss_diagnostics.append(l_res)
-                    if mov_res:
-                        movement_summaries.append(mov_res)
-            except Exception as e:
-                console.print(f"[yellow]Error processing timeline {mid}: {e}[/yellow]")
+        console.print(f"[bold]Processing {len(valid_tasks)} timelines in batches of {BATCH_SIZE}...[/bold]")
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Start Processing {len(valid_tasks)} timelines (Batched)...\n")
+        
+        for i in range(0, len(valid_tasks), BATCH_SIZE):
+            batch = valid_tasks[i : i + BATCH_SIZE]
+            with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Processing Batch {i}-{i+len(batch)}...\n")
             
-            dur = time.time() - t_start_tl
-            with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Processed {mid} in {dur:.2f}s\n")
+            for j, (mid, m_data) in enumerate(batch):
+                global_idx = i + j
+                t_start_tl = time.time()
+                try:
+                    # Load ONE timeline into memory
+                    tl = db.get_timeline(mid)
+                    if tl:
+                        l_res, mov_res = process_timeline(global_idx, mid, m_data, tl)
+                        
+                        # MEMORY OPTIMIZATION: Strip heavy unused fields
+                        if mov_res:
+                            mov_res.pop("all_positions", None)      # Huge, unused by frontend
+                            mov_res.pop("all_gold_xp_series", None) # Huge, unused by frontend
+                        
+                        # Explicitly free the timeline JSON
+                        del tl
+                        
+                        if l_res:
+                            timeline_loss_diagnostics.append(l_res)
+                        if mov_res:
+                            movement_summaries.append(mov_res)
+                except Exception as e:
+                    console.print(f"[yellow]Error processing timeline {mid}: {e}[/yellow]")
+                
+                dur = time.time() - t_start_tl
+                with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Processed {mid} in {dur:.2f}s\n")
+            
+            # Force GC after each batch to reclaim timeline memory
+            gc.collect()
 
     t_processing = time.time()
     console.print(f"[cyan]TIMING: Match & Timeline Processing took {t_processing - t_bulk:.2f}s[/cyan]")
