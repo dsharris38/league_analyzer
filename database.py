@@ -416,6 +416,7 @@ class Database:
         pattern_str = escaped.replace('_', '[# _]')
         pattern_str = f"^{pattern_str}$"
         
+        t_regex = time.time()
         try:
 
             doc = col.find_one({"riot_id": {"$regex": pattern_str, "$options": "i"}}, {"_id": 0})
