@@ -286,6 +286,11 @@ class RunAnalysisView(APIView):
             with open("backend_debug.txt", "a") as f:
                 f.write(f"[DEBUG] Save Verified: {bool(saved_doc)}\n")
 
+            if not saved_doc:
+                with open("backend_debug.txt", "a") as f:
+                     f.write(f"[DEBUG] CRITICAL: Save verification failed for {canonical_riot_id}\n")
+                return Response({'error': 'Analysis completed but failed to save to Database.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
             print("[DEBUG-VIEW] Preparing Response...")
             response_data = {
                 'status': 'success', 
@@ -293,8 +298,8 @@ class RunAnalysisView(APIView):
                 'input_riot_id': riot_id,
                 'debug': {
                     'db_connected': db.is_connected,
-                    'save_verified': bool(saved_doc),
-                    'saved_id': saved_doc.get('riot_id') if saved_doc else None,
+                    'save_verified': True,
+                    'saved_id': saved_doc.get('riot_id'),
                     'db_doc_count': len(db.list_analyses())
                 }
             }

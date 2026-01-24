@@ -56,6 +56,7 @@ function App() {
         console.error(err);
         setLoading(false);
         // If load fails, clear hash to return to home
+        alert("Failed to load analysis: " + (err.response?.data?.error || err.message));
         if (err.response && err.response.status === 404) {
           window.location.hash = "";
           setSelectedFile(null);
