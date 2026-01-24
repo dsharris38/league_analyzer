@@ -487,8 +487,8 @@ def run_analysis_pipeline(
     fetched_map = {}
 
     if missing_ids:
-        console.print(f"[bold]Fetching {len(missing_ids)} missing matches (Parallel)...[/bold]")
-        with ThreadPoolExecutor(max_workers=8) as executor:
+        console.print(f"[bold]Fetching {len(missing_ids)} missing matches (Parallel - Low Ram Mode)...[/bold]")
+        with ThreadPoolExecutor(max_workers=3) as executor:
             future_to_mid = {executor.submit(client.get_match, mid): mid for mid in missing_ids}
             for future in as_completed(future_to_mid):
                 mid = future_to_mid[future]
@@ -536,6 +536,12 @@ def run_analysis_pipeline(
         console.print("[bold]Fetching timelines and analyzing movement... (Parallel)[/bold]")
         
         def process_timeline(idx, m_id, m_data, tl):
+            # 1. OPTIMIZATION: Check for cached Analysis Results
+            # This skips the expensive 0.5s calc per match
+            cached = db.get_timeline_analysis(m_id)
+            if cached:
+                return cached.get("loss_diagnostics"), cached.get("movement")
+
             # Timeline is already fetched and saved by the caller (Sequential Loop)
             if not tl:
                 return None, None
@@ -557,6 +563,16 @@ def run_analysis_pipeline(
                     mov = {"match_id": m_id, **mov}
             except Exception:
                 pass
+            
+            # 2. SAVE to Cache
+            if l_diag or mov:
+                try:
+                    db.save_timeline_analysis(m_id, {
+                        "loss_diagnostics": l_diag,
+                        "movement": mov
+                    })
+                except Exception:
+                    pass
             
             return l_diag, mov
 
@@ -580,8 +596,8 @@ def run_analysis_pipeline(
                 missing_mids.append(mid)
                 
         if missing_mids:
-            console.print(f"[bold]Fetching {len(missing_mids)} missing timelines (Parallel)...[/bold]")
-            with ThreadPoolExecutor(max_workers=5) as executor:
+            console.print(f"[bold]Fetching {len(missing_mids)} missing timelines (Parallel - Low Ram Mode)...[/bold]")
+            with ThreadPoolExecutor(max_workers=3) as executor:
                 future_to_mid = {executor.submit(client.get_match_timeline, mid): mid for mid in missing_mids}
                 
                 for future in as_completed(future_to_mid):
@@ -616,6 +632,10 @@ def run_analysis_pipeline(
 
     t_processing = time.time()
     console.print(f"[cyan]TIMING: Match & Timeline Processing took {t_processing - t_bulk:.2f}s[/cyan]")
+    
+    # Explicit GC to free timeline memory before analysis
+    import gc
+    gc.collect()
 
     # Enrich analysis with macro, comp, and itemization data
     analysis = enrich_coaching_data(

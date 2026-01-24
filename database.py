@@ -270,6 +270,20 @@ class Database:
             sanitized["metadata"]["matchId"] = match_id
             col.replace_one({"metadata.matchId": match_id}, sanitized, upsert=True)
 
+    def get_timeline_analysis(self, match_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieve cached analysis results (loss/movement) to skip redundant processing."""
+        col = self._get_collection("timeline_analysis")
+        if col is None: return None
+        return col.find_one({"match_id": match_id}, {"_id": 0})
+
+    def save_timeline_analysis(self, match_id: str, analysis_data: Dict[str, Any]):
+        """Cache the expensive analysis results."""
+        col = self._get_collection("timeline_analysis")
+        if col is None: return
+        
+        doc = {"match_id": match_id, **analysis_data}
+        col.replace_one({"match_id": match_id}, doc, upsert=True)
+
     # --- Analysis Storage ---
 
     def _sanitize_document(self, doc: Any) -> Any:
