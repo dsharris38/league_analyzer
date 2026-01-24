@@ -454,7 +454,7 @@ def run_analysis_pipeline(
     # console.print(f"[bold]Fetching last {match_count} ranked matches...[/bold]")
     try:
         with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Fetching Match IDs...\n")
-        match_ids = client.get_recent_match_ids(puuid, match_count)
+        match_ids = client.get_recent_match_ids(puuid, match_count, queue=None)
         with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Match IDs fetched: {len(match_ids)}\n")
     except Exception as e:
         msg = f"Failed to fetch match IDs: {e}"
@@ -572,8 +572,9 @@ def run_analysis_pipeline(
                         "loss_diagnostics": l_diag,
                         "movement": mov
                     })
-                except Exception:
-                    pass
+                except Exception as e:
+                    console.print(f"[yellow]Failed to save timeline analysis for {m_id}: {e}[/yellow]")
+                    with open("backend_debug.txt", "a") as f: f.write(f"[ERROR] DB Save Failed {m_id}: {e}\n")
             
             return l_diag, mov
 
