@@ -454,7 +454,7 @@ def run_analysis_pipeline(
     # console.print(f"[bold]Fetching last {match_count} ranked matches...[/bold]")
     try:
         with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Fetching Match IDs...\n")
-        match_ids = client.get_recent_match_ids(puuid, match_count, queue=None)
+        match_ids = client.get_recent_match_ids(puuid, match_count, queue=420)
         with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Match IDs fetched: {len(match_ids)}\n")
     except Exception as e:
         msg = f"Failed to fetch match IDs: {e}"
@@ -553,7 +553,8 @@ def run_analysis_pipeline(
                 l_diag = classify_loss_reason(m_data, tl, puuid)
                 if l_diag:
                     l_diag = {"match_id": m_id, **l_diag}
-            except Exception:
+            except Exception as e:
+                console.print(f"[yellow]Loss Analysis Failed {m_id}: {e}[/yellow]")
                 pass
 
             # Movement Analysis
@@ -562,7 +563,8 @@ def run_analysis_pipeline(
                 mov = analyze_timeline_movement(m_data, tl, puuid)
                 if mov:
                     mov = {"match_id": m_id, **mov}
-            except Exception:
+            except Exception as e:
+                console.print(f"[yellow]Movement Analysis Failed {m_id}: {e}[/yellow]")
                 pass
             
             # 2. SAVE to Cache
@@ -612,11 +614,46 @@ def run_analysis_pipeline(
                         # console.print(f"[yellow]Failed to fetch timeline {mid}: {e}[/yellow]")
                         pass
 
-        # 2. Process Sequentially (CPU bound + Safety)
-        console.print(f"[bold]Processing {len(valid_tasks)} timelines...[/bold]")
-        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Start Processing {len(valid_tasks)} timelines...\n")
+        # 2. Process Sequentially (Batch Strategy to Save RAM)
+        # Processing 50 timelines at once can consume > 512MB RAM.
+        # We process in small batches and explicitly GC.
+        BATCH_SIZE = 5
+        console.print(f"[bold]Processing {len(valid_tasks)} timelines in batches of {BATCH_SIZE}...[/bold]")
         
-        for i, (mid, m_data) in enumerate(valid_tasks):
+        with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Start Processing {len(valid_tasks)} timelines (Batched)...\n")
+        
+        for batch_start in range(0, len(valid_tasks), BATCH_SIZE):
+            batch_end = min(batch_start + BATCH_SIZE, len(valid_tasks))
+            batch = valid_tasks[batch_start:batch_end]
+            
+            console.print(f"[dim]Processing Batch {batch_start+1}-{batch_end}...[/dim]")
+            
+            for i, (mid, m_data) in enumerate(batch):
+                total_idx = batch_start + i
+                t_start_tl = time.time()
+                try:
+                    # Fetch from DB (it should be there from parallel fetch above)
+                    tl = db.get_timeline(mid)
+                    
+                    if tl:
+                        l_res, mov_res = process_timeline(total_idx, mid, m_data, tl)
+                        if l_res:
+                            timeline_loss_diagnostics.append(l_res)
+                        if mov_res:
+                            movement_summaries.append(mov_res)
+                        
+                        # Aggressive Cleanup: Delete timeline object immediately after use
+                        del tl
+                        
+                except Exception as e:
+                    console.print(f"[yellow]Error processing timeline {mid}: {e}[/yellow]")
+                
+                dur = time.time() - t_start_tl
+                with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Processed {mid} in {dur:.2f}s\n")
+
+            # End of Batch: Force Garbage Collection
+            import gc
+            gc.collect()
             t_start_tl = time.time()
             try:
                 tl = db.get_timeline(mid)
