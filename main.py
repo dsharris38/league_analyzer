@@ -332,7 +332,7 @@ def run_analysis_pipeline(
     summoner = None
     
     # Try loading cached account/summoner data to speed up repeated runs
-    if account_cache_file.exists():
+    if account_cache_file.exists() and not force_refresh:
         try:
             with open(account_cache_file, "r") as f:
                 cached_data = json.load(f)
@@ -500,6 +500,7 @@ def run_analysis_pipeline(
                         db.save_match(m_data)
                         fetched_map[mid] = m_data
                 except Exception as e:
+                    with open("backend_debug.txt", "a") as f: f.write(f"[ERROR] Failed to fetch {mid}: {e}\n")
                     # console.print(f"[yellow]Failed to fetch {mid}: {e}[/yellow]")
                     pass
 
