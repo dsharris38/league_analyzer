@@ -37,6 +37,7 @@ class Database:
             # Default database name 'league_analyzer'
             self._db = self._client.get_database("league_analyzer")
             print("Connected to MongoDB.")
+            self._ensure_indexes()
         except Exception as e:
             print(f"Failed to connect to MongoDB: {e}")
             self._client = None
@@ -49,6 +50,23 @@ class Database:
         if not self.is_connected:
             return None
         return self._db[name]
+
+    def _ensure_indexes(self):
+        """Idempotently ensure critical indexes exist for performance."""
+        try:
+            col = self._get_collection("analyses")
+            if col is not None:
+                # 1. Access Query Indexes (Most Critical)
+                col.create_index([("filename_id", pymongo.ASCENDING)], background=True)
+                col.create_index([("filename_id_lower", pymongo.ASCENDING)], background=True)
+                
+                # 2. Uniqueness & Sorting
+                # Use background=True to avoid locking DB on startup
+                col.create_index([("riot_id", pymongo.ASCENDING)], unique=True, background=True)
+                col.create_index([("created", pymongo.DESCENDING)], background=True)
+                # print("[DB] Verified critical indexes.")
+        except Exception as e:
+            print(f"[DB-WARN] Auto-index creation failed: {e}")
 
     # --- Match Caching ---
 

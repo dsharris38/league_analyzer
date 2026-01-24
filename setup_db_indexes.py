@@ -27,6 +27,15 @@ def ensure_indexes():
     # Also index 'created' for sorting
     col.create_index([("created", pymongo.DESCENDING)])
     print("Index 'created_-1' created successfully.")
+    
+    # NEW: Index filename_id for fast O(1) lookups
+    print("Creating index on 'filename_id'...")
+    col.create_index([("filename_id", pymongo.ASCENDING)])
+    print("Index 'filename_id_1' created successfully.")
+
+    print("Creating index on 'filename_id_lower'...")
+    col.create_index([("filename_id_lower", pymongo.ASCENDING)])
+    print("Index 'filename_id_lower_1' created successfully.")
 
     print("\nVerifying Indexes:")
     for idx in col.list_indexes():
