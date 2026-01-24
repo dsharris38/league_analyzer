@@ -70,32 +70,33 @@ function App() {
 
   // Run new analysis / Navigate to player (Optimized: Check First)
   const handleAnalyze = async (riotId, matchCount, region, puuid = null) => {
+    // 1. Optimistic Lookup: Check if we have ANY data for this user
+    try {
+      const lookupRes = await axios.get(`${config.API_URL}/api/lookup/`, {
+        params: { riot_id: riotId }
+      });
+
+      if (lookupRes.data.found) {
+        console.log("Optimistic Cache Hit! Loading immediately:", lookupRes.data.filename);
+
+        // A. Load the cached dashboard instantly
+        handleSelect(lookupRes.data.filename);
+
+        // B. Trigger Background Refresh (Silent)
+        console.log("Triggering background refresh...");
+        // Non-blocking async call
+        performBackgroundUpdate(riotId, matchCount, region, puuid, lookupRes.data.filename);
+        return;
+      }
+    } catch (err) {
+      console.warn("Optimistic lookup check failed (proceeding to normal flow):", err);
+    }
+
+    // 2. Normal Flow (No cache found)
     setLoading(true);
 
     try {
-      // 1. Check if analysis already exists (Fast Switch) - REMOVED to force backend smart resume
-      // We rely on the backend to handle caching and invalidation (e.g. match count changes)
-
-      /* 
-      const res = await axios.get(`${config.API_URL}/api/analyses/?_t=${Date.now()}`);
-      const files = res.data;
-
-      const targetId = riotId.toLowerCase().replace(/#/g, '').replace(/\s/g, '');
-      const match = files.find(f =>
-        f.riot_id.toLowerCase().replace(/#/g, '').replace(/\s/g, '') === targetId
-      );
-
-      if (match) {
-        console.log("Found existing analysis, loading:", match.filename);
-        saveToHistory(match.riot_id, match.region || region, match.filename);
-        handleSelect(match.filename);
-        return;
-      }
-      */
-
-      // Ensure saveToHistory is defined or moved if it was inside the loop interactively, 
-      // but here it is defined inside handleAnalyze scope, so we can just proceed.
-
+      // Ensure saveToHistory is available
       const saveToHistory = (entryRiotId, entryRegion, entryFilename) => {
         try {
           const newEntry = {
@@ -115,7 +116,7 @@ function App() {
         }
       };
 
-      // 2. Run new analysis
+      // Run new analysis
       console.log("Starting new analysis for:", riotId);
       const analyzeResponse = await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
@@ -130,17 +131,50 @@ function App() {
       const { filename } = analyzeResponse.data;
 
       saveToHistory(riotId, region, filename);
-
-      // Poll or wait? The backend returns filename immediately usually if async, 
-      // but here it seems to verify account first.
-      // Actually backend 'analyze/' returns { status: "success", filename: ... }
-
       handleSelect(filename);
 
     } catch (err) {
       console.error("Analysis Error:", err);
       setLoading(false);
       alert(err.response?.data?.error || "Analysis failed. Please check inputs.");
+    }
+  };
+
+  // Helper for duplicate logic
+  const performBackgroundUpdate = async (riotId, matchCount, region, puuid, filename) => {
+    try {
+      // We use handleUpdate logic but headless? 
+      // Or just directly call the API.
+      // Let's replicate strict update logic to ensure consistency.
+
+      // STAGE 1 (Matches)
+      await axios.post(`${config.API_URL}/api/analyze/`, {
+        riot_id: riotId,
+        match_count: matchCount,
+        region: region,
+        force_refresh: true, // Force new fetch
+        call_ai: false,      // Fast stage first
+        use_timeline: true,
+        puuid: puuid
+      });
+      refreshData(filename);
+
+      // STAGE 2 (AI)
+      await axios.post(`${config.API_URL}/api/analyze/`, {
+        riot_id: riotId,
+        match_count: matchCount,
+        region: region,
+        force_refresh: true,
+        call_ai: true,     // Full AI
+        use_timeline: true,
+        puuid: puuid
+      });
+      refreshData(filename);
+      console.log("Background update complete for", riotId);
+
+    } catch (e) {
+      console.error("Background update failed:", e);
+      // Optional: show toast error?
     }
   };
 

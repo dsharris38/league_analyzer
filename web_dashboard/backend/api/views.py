@@ -203,6 +203,56 @@ def cached_meraki_champions(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
+class AnalysisLookupView(APIView):
+    """
+    Lightweight O(1) lookup to check if an analysis exists before running the heavy pipeline.
+    Used for Optimistic UI loading.
+    """
+    def get(self, request):
+        riot_id = request.query_params.get('riot_id')
+        if not riot_id:
+            return Response({'error': 'riot_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            from database import Database
+            db = Database()
+            
+            # Use the same fuzzy logic as AnalysisDetailView
+            # The database handles normalization (removal of #, lowercase check)
+            # We treat the input riot_id as the "core_id" candidate
+            
+            # The fuzzy finder expects identifying part. 
+            # If user sends "Name#Tag", we should probably normalize it slightly to match "Name_Tag" expectation if needed,
+            # but find_analysis_by_fuzzy_filename handles "Name_Tag" style. 
+            # Let's convert "Name#Tag" -> "Name_Tag" here to be safe and consistent with logic.
+            safe_id = riot_id.replace("#", "_")
+            
+            doc = db.find_analysis_by_fuzzy_filename(safe_id)
+            
+            if doc:
+                # Calculate correct filename
+                # If the doc has 'filename_id', use that. Else fall back to riot_id
+                # Ideally we return the EXACT filename the frontend should request
+                
+                # Note: find_analysis_by_fuzzy_filename returns the DECOMPRESSED doc.
+                # The filename logic in views.py (lines 304) is: f"league_analysis_{canonical_riot_id.replace('#', '_')}.json"
+                
+                real_riot_id = doc.get("riot_id", riot_id)
+                canonical_filename = f"league_analysis_{real_riot_id.replace('#', '_')}.json"
+                
+                return Response({
+                    'found': True,
+                    'filename': canonical_filename,
+                    'riot_id': real_riot_id,
+                    'region': doc.get('region', 'NA')
+                })
+            else:
+                return Response({'found': False}, status=status.HTTP_200_OK)
+                
+        except Exception as e:
+            print(f"Lookup Error: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class RunAnalysisView(APIView):
 # ... existing code ...
     def post(self, request):
