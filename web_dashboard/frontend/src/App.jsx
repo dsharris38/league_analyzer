@@ -143,11 +143,8 @@ function App() {
   // Helper for duplicate logic
   const performBackgroundUpdate = async (riotId, matchCount, region, puuid, filename) => {
     try {
-      // We use handleUpdate logic but headless? 
-      // Or just directly call the API.
-      // Let's replicate strict update logic to ensure consistency.
-
       // STAGE 1 (Matches)
+      // We set a longer timeout (60s) to avoid client-side "Network Error" when backend is slow but working
       await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
         match_count: matchCount,
@@ -156,10 +153,12 @@ function App() {
         call_ai: false,      // Fast stage first
         use_timeline: true,
         puuid: puuid
-      });
+      }, { timeout: 60000 }); // 60s timeout for Stage 1
+
       refreshData(filename);
 
       // STAGE 2 (AI)
+      // AI can take longer, so we set a very generous timeout
       await axios.post(`${config.API_URL}/api/analyze/`, {
         riot_id: riotId,
         match_count: matchCount,
@@ -168,13 +167,16 @@ function App() {
         call_ai: true,     // Full AI
         use_timeline: true,
         puuid: puuid
-      });
+      }, { timeout: 120000 }); // 120s timeout for Stage 2
+
       refreshData(filename);
       console.log("Background update complete for", riotId);
 
     } catch (e) {
-      console.error("Background update failed:", e);
-      // Optional: show toast error?
+      console.error("Background update failed (Network/Timeout?):", e);
+      // Even if it failed, maybe the DB updated? Try refreshing one last time.
+      // This handles the "Server finished but response timed out" case.
+      refreshData(filename);
     }
   };
 
