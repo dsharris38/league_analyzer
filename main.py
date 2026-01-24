@@ -25,6 +25,7 @@ SAVE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 
+
 def backfill_match_history(puuid: str, region: str):
     """
     Background task to fetch up to 1000 matches for season stats.
@@ -39,17 +40,14 @@ def backfill_match_history(puuid: str, region: str):
         client = RiotClient()
         db = Database()
         
-        # console.print(f"[dim][Backfill] Starting history sync for {puuid[:10]}...[/dim]")
-        
         # 2. Get 1000 IDs (Fast)
         all_ids = client.get_recent_match_ids(puuid, count=1000)
         
-        # 3. Check what we have
-        cached_map = db.get_matches_bulk(all_ids) # Only returns found docs
+        # 3. Check what we have (O(1) lookups via id index)
+        cached_map = db.get_matches_bulk(all_ids) 
         missing_ids = [mid for mid in all_ids if mid not in cached_map]
         
         if not missing_ids:
-            # console.print(f"[dim][Backfill] History up to date (Checked {len(all_ids)} games).[/dim]")
             return
 
         console.print(f"[dim][Backfill] Found {len(missing_ids)} missing matches. Fetching in background...[/dim]")
@@ -63,61 +61,14 @@ def backfill_match_history(puuid: str, region: str):
                 # Sleep slightly to avoid rate limits if running long
                 if i % 10 == 0:
                     time.sleep(0.5)
-            except Exception as e:
+            except Exception:
                 pass
                 
-        # console.print(f"[dim][Backfill] Complete. Fetched {len(missing_ids)} matches.[/dim]")
-        
     except Exception as e:
         console.print(f"[yellow][Backfill] Error: {e}[/yellow]")
 
 
 
-def backfill_match_history(puuid: str, region: str):
-    """
-    Background task to fetch up to 1000 matches for season stats.
-    Only fetches matching IDs that are NOT in the database.
-    """
-    try:
-        import time
-        from riot_client import RiotClient
-        from database import Database
-        
-        # 1. Setup
-        client = RiotClient()
-        db = Database()
-        
-        # console.print(f"[dim][Backfill] Starting history sync for {puuid[:10]}...[/dim]")
-        
-        # 2. Get 1000 IDs (Fast)
-        all_ids = client.get_recent_match_ids(puuid, count=1000)
-        
-        # 3. Check what we have (O(1) lookups via id index)
-        cached_map = db.get_matches_bulk(all_ids) 
-        missing_ids = [mid for mid in all_ids if mid not in cached_map]
-        
-        if not missing_ids:
-            # console.print(f"[dim][Backfill] History up to date (Checked {len(all_ids)} games).[/dim]")
-            return
-
-        console.print(f"[dim][Backfill] Found {len(missing_ids)} missing matches. Fetching in background...[/dim]")
-        
-        # 4. Fetch Missing (Sequential to be polite in background)
-        for i, mid in enumerate(missing_ids):
-            try:
-                m_data = client.get_match(mid)
-                if m_data:
-                    db.save_match(m_data)
-                # Sleep slightly to avoid rate limits if running long
-                if i % 5 == 0:
-                    time.sleep(0.2)
-            except Exception as e:
-                pass
-                
-        # console.print(f"[dim][Backfill] Complete. Fetched {len(missing_ids)} matches.[/dim]")
-        
-    except Exception as e:
-        console.print(f"[yellow][Backfill] Error: {e}[/yellow]")
 
 
 def get_cached_past_ranks(puuid: str, game_name: str, tag_line: str, region: str) -> List[Dict[str, str]]:
@@ -607,8 +558,6 @@ def run_analysis_pipeline(
             except Exception:
                 pass
             
-            return l_diag, mov
-                
             return l_diag, mov
 
         # SEQUENTIAL EXECUTION (Full Batch Strategy)
