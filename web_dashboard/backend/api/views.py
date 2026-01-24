@@ -49,52 +49,25 @@ class AnalysisDetailView(APIView):
         # Frontend passes "league_analysis_Name_TAG.json".
         
         try:
+
             from database import Database
             db = Database()
             
-            # Simple parsing: remove prefix and extension
-            if filename.startswith("league_analysis_") and filename.endswith(".json"):
-                core = filename[len("league_analysis_"):-5] # "Name_TAG"
-                # This is "safe_id". We need "Name#TAG".
-                # Problem: We don't know where the # was.
-                # Solution: The DB is keyed by `riot_id`. 
-                # Either we fuzzy match OR we change `list_analyses` to return the real Riot ID as the ID, 
-                # and Frontend passes just the ID? 
-                # For compatibility, `list_analyses` returns filenames that map to this view.
-                # Let's try to query by the `riot_id` if we can reconstruct it, OR scan.
-                # BETTER: `save_analysis` keys by `riot_id`. `list_analyses` creates a filename.
-                # Ideally, we should just query `db.analyses` where `riot_id.replace('#', '_') == core`.
-                # But that requires a scan or a stored "safe_id" field.
-                
-                # Let's fix this properly: 
-                # 1. `list_analyses` should provide the riot_id. 
-                # 2. Frontend probably uses `filename` as the key.
-                # 3. We can iterate DB or normalize?
-                # Quick fix: The DB key is `riot_id`. We can try to find a doc where `riot_id` matches "Name#TAG" 
-                # derived from "Name_TAG". But "_" is ambiguous (Name_With_Underscore#TAG).
-                
-                # Fallback: Query where `riot_id` approximately matches?
-                # Or simply add a `safe_id` field to the DB on save?
-                # Actually, in `main.py` we used `safe_riot_id = riot_id.replace("#", "_")`.
-                # Let's assume we can loop through the limited number of analyses to find the match? 
-                # OR, just fix the View to accept `riot_id`? Front end relies on filename.
-                
-                # Let's search the DB for the document where `riot_id` transforms to this `core`.
-                # This is safer than guessing.
-                
-                # Let's search the DB for the document using optimized fuzzy match
-                target_doc = db.find_analysis_by_fuzzy_filename(core)
-                
-                if target_doc:
-                    # Sanitize to remove ObjectId
-                    target_doc = db._sanitize_document(target_doc)
-                    return JsonResponse(target_doc)
-                else:
-                    return Response({'error': 'Analysis not found in DB'}, status=status.HTTP_404_NOT_FOUND)
-
-            return Response({'error': 'Invalid filename format'}, status=status.HTTP_400_BAD_REQUEST)
+            # Use fuzzy finder for robust lookup
+            # This handles "league_analysis_..." prefix AND raw Riot IDs
+            # It normalizes spaces, tags, etc.
+            target_doc = db.find_analysis_by_fuzzy_filename(filename)
+            
+            if target_doc:
+                # Sanitize to remove ObjectId
+                target_doc = db._sanitize_document(target_doc)
+                return JsonResponse(target_doc)
+            else:
+                return Response({'error': 'Analysis not found in DB'}, status=status.HTTP_404_NOT_FOUND)
 
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 import json
@@ -347,9 +320,6 @@ class RunAnalysisView(APIView):
             traceback.print_exc()
             with open("backend_debug.txt", "a") as f:
                 f.write(f"[DEBUG] Error in View: {str(e)}\n")
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            import traceback
-            traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class DeepDiveAnalysisView(APIView):
