@@ -54,9 +54,14 @@ class AnalysisDetailView(APIView):
             db = Database()
             
             # Use fuzzy finder for robust lookup
+            # 1. Strip helper prefix/suffix if present (Frontend sends "league_analysis_X.json")
+            core_id = filename
+            if core_id.startswith("league_analysis_") and core_id.endswith(".json"):
+                 core_id = core_id[len("league_analysis_"):-5]
+
             # This handles "league_analysis_..." prefix AND raw Riot IDs
             # It normalizes spaces, tags, etc.
-            target_doc = db.find_analysis_by_fuzzy_filename(filename)
+            target_doc = db.find_analysis_by_fuzzy_filename(core_id)
             
             if target_doc:
                 # Sanitize to remove ObjectId
