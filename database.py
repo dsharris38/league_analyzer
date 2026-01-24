@@ -354,13 +354,24 @@ class Database:
                 # Use 'filename_id_lower' which we just set
                 target_riot_id = riot_id
                 
-                existing = col.find_one({"filename_id_lower": analysis_data["filename_id_lower"]})
-                if existing:
-                    # Reuse the EXISTING casing for the primary key to ensure we overwrite it
-                    # instead of creating a duplicate with slightly different casing.
-                    # KEY FIX: Also force the payload itself to respect this ID so we don't trigger "duplicate key error"
-                    # on the update if we accidentally change the index field to something that collides.
-                    target_riot_id = existing["riot_id"]
+                # Find ALL matches for this case-insensitive ID
+                candidates = list(col.find({"filename_id_lower": analysis_data["filename_id_lower"]}))
+                
+                if candidates:
+                    # Sort by created desc (Newest first)
+                    candidates.sort(key=lambda x: x.get("created", 0), reverse=True)
+                    
+                    # Target the newest one
+                    target_doc = candidates[0]
+                    target_riot_id = target_doc.get("riot_id", riot_id)
+                    
+                    # If we found duplicates (more than 1), delete the others
+                    if len(candidates) > 1:
+                        victim_ids = [c["_id"] for c in candidates[1:]]
+                        print(f"[DB-FIX] Deleting {len(victim_ids)} duplicate docs for '{target_riot_id}' during save...")
+                        col.delete_many({"_id": {"$in": victim_ids}})
+                    
+                    # Reuse the EXISTING casing for the primary key
                     analysis_data["riot_id"] = target_riot_id
                     # print(f"[DB-DEBUG] Found existing doc with id '{target_riot_id}'. Overwriting...")
                 
