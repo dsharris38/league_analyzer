@@ -343,26 +343,39 @@ class Database:
                         print(f"[DB-WARN] Failed to compress movement_summaries: {e}")
 
         # Identify by Riot ID (Case-Insensitive Handling)
-        try:
-            # 1. Check if a record exists with the same ID (ignoring case)
-            # Use 'filename_id_lower' which we just set
-            target_riot_id = riot_id
-            
-            existing = col.find_one({"filename_id_lower": analysis_data["filename_id_lower"]})
-            if existing:
-                # Reuse the EXISTING casing for the primary key to ensure we overwrite it
-                # instead of creating a duplicate with slightly different casing.
-                # KEY FIX: Also force the payload itself to respect this ID so we don't trigger "duplicate key error"
-                # on the update if we accidentally change the index field to something that collides.
-                target_riot_id = existing["riot_id"]
-                analysis_data["riot_id"] = target_riot_id
-                # print(f"[DB-DEBUG] Found existing doc with id '{target_riot_id}'. Overwriting...")
-            
-            col.replace_one({"riot_id": target_riot_id}, analysis_data, upsert=True)
-            print(f"[DB-DEBUG] Saved analysis for {target_riot_id} (fid: {analysis_data.get('filename_id')})")
-        except Exception as e:
-            msg = f"[DB-ERROR] Failed to save analysis for {riot_id}: {e}"
-            print(msg)
+        # Identify by Riot ID (Case-Insensitive Handling)
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                # 1. Check if a record exists with the same ID (ignoring case)
+                # Use 'filename_id_lower' which we just set
+                target_riot_id = riot_id
+                
+                existing = col.find_one({"filename_id_lower": analysis_data["filename_id_lower"]})
+                if existing:
+                    # Reuse the EXISTING casing for the primary key to ensure we overwrite it
+                    # instead of creating a duplicate with slightly different casing.
+                    # KEY FIX: Also force the payload itself to respect this ID so we don't trigger "duplicate key error"
+                    # on the update if we accidentally change the index field to something that collides.
+                    target_riot_id = existing["riot_id"]
+                    analysis_data["riot_id"] = target_riot_id
+                    # print(f"[DB-DEBUG] Found existing doc with id '{target_riot_id}'. Overwriting...")
+                
+                col.replace_one({"riot_id": target_riot_id}, analysis_data, upsert=True)
+                print(f"[DB-DEBUG] Saved analysis for {target_riot_id} (fid: {analysis_data.get('filename_id')})")
+                return # Success
+                
+            except Exception as e:
+                # pymongo.errors.DuplicateKeyError is wrapped in Exception usually, but better to check
+                is_dup = "E11000" in str(e) or "DuplicateKeyError" in str(e)
+                if is_dup and attempt < max_retries - 1:
+                     print(f"[DB-WARN] DuplicateKeyError on save (race condition). Retrying {attempt+1}/{max_retries}...")
+                     import time
+                     time.sleep(0.2)
+                     continue
+                     
+                msg = f"[DB-ERROR] Failed to save analysis for {riot_id}: {e}"
+                print(msg)
             import traceback
             traceback.print_exc()
             try:
