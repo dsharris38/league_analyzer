@@ -301,6 +301,7 @@ class RunAnalysisView(APIView):
             response_data = {
                 'status': 'success', 
                 'riot_id': canonical_riot_id, # Return the ACTUAL ID used for saving
+                'filename': f"league_analysis_{canonical_riot_id.replace('#', '_')}.json",
                 'input_riot_id': riot_id,
                 'debug': {
                     'db_connected': db.is_connected,
