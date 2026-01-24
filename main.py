@@ -321,6 +321,7 @@ def run_analysis_pipeline(
                 msg += f" (Also failed to resolve PUUID: {puuid})"
             raise ValueError(msg)
     else:
+        game_name, tag_line = riot_id.split("#", 1)
         game_name = game_name.strip()
         tag_line = tag_line.strip()
         # NORMALIZE: Ensure riot_id is always canonical (Name#Tag) with no extra spaces
