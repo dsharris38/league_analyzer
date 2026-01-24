@@ -315,71 +315,214 @@ function patchItemStats(data) {
     // --- S16 TIER 3 BOOTS PATCHES ---
     // Source: In-game descriptions (verified via item_dump.txt)
 
+    // --- S16 TIER 3 BOOTS PATCHES ---
+    // Source: In-game descriptions (verified via item_dump.txt)
+
     // 3170: Swiftmarch
     // Desc: 65 Move Speed
-    if (data["3170"]) {
-        data["3170"].stats = {
-            "flatMovementSpeedMod": 65
-        };
-    }
+    if (!data["3170"]) data["3170"] = { id: 3170 };
+    data["3170"].name = "Swiftmarch";
+    data["3170"].description = "<mainText><stats>+65 Move Speed</stats><br><br><passed>Unique Passive - Swift:</passed> Movement Speed is increased by 65.</mainText>";
+    data["3170"].gold = { total: 1000, sell: 700, purchasable: true };
+    data["3170"].tags = ["Boots", "Speed"];
+    data["3170"].stats = {
+        "flatMovementSpeedMod": 65
+    };
 
     // 3171: Crimson Lucidity
     // Desc: 20 Ability Haste, 45 Move Speed
-    if (data["3171"]) {
-        data["3171"].stats = {
-            "abilityHaste": 20,
-            "flatMovementSpeedMod": 45
-        };
-    }
+    if (!data["3171"]) data["3171"] = { id: 3171 };
+    data["3171"].name = "Crimson Lucidity";
+    data["3171"].description = "<mainText><stats>+20 Ability Haste<br>+45 Move Speed</stats><br><br><passed>Unique Passive - Cooldown:</passed> Reduces Summoner Spell cooldowns by 12%.</mainText>";
+    data["3171"].gold = { total: 900, sell: 630, purchasable: true };
+    data["3171"].tags = ["Boots", "CooldownReduction", "Speed"];
+    data["3171"].stats = {
+        "abilityHaste": 20,
+        "flatMovementSpeedMod": 45
+    };
 
     // 3172: Gunmetal Greaves
-    // Desc: 40% Attack Speed, 45 Move Speed, 5% Life Steal
-    if (data["3172"]) {
-        data["3172"].stats = {
-            "percentAttackSpeedMod": 0.40,
-            "flatMovementSpeedMod": 45,
-            "percentLifeStealMod": 0.05
-        };
-    }
+    // Desc: 40% Attack Speed, 45 Move Speed
+    if (!data["3172"]) data["3172"] = { id: 3172 };
+    data["3172"].name = "Gunmetal Greaves";
+    data["3172"].description = "<mainText><stats>+40% Attack Speed<br>+45 Move Speed<br>+5% Life Steal</stats></mainText>";
+    data["3172"].gold = { total: 1850, sell: 1295, purchasable: true }; // Estimated Tier 3
+    data["3172"].tags = ["Boots", "AttackSpeed", "LifeSteal", "Speed"];
+    data["3172"].stats = {
+        "percentAttackSpeedMod": 0.40,
+        "flatMovementSpeedMod": 45,
+        "percentLifeStealMod": 0.05
+    };
 
     // 3173: Chainlaced Crushers
     // Desc: 30 Magic Resist, 45 Move Speed, 30% Tenacity
-    if (data["3173"]) {
-        data["3173"].stats = {
-            "flatSpellBlockMod": 30,
-            "flatMovementSpeedMod": 45,
-            "tenacity": 0.30
-        };
-    }
+    if (!data["3173"]) data["3173"] = { id: 3173 };
+    data["3173"].name = "Chainlaced Crushers";
+    data["3173"].description = "<mainText><stats>+30 Magic Resist<br>+45 Move Speed<br>+30% Tenacity</stats><br><br><passed>Unique Passive - Tenacity:</passed> Reduces the duration of stuns, slows, taunts, fears, silences, blinds, polymorphs, and immobilizes by 30%.</mainText>";
+    data["3173"].gold = { total: 2050, sell: 1435, purchasable: true };
+    data["3173"].tags = ["Boots", "SpellBlock", "Tenacity", "Speed"];
+    data["3173"].stats = {
+        "flatSpellBlockMod": 30,
+        "flatMovementSpeedMod": 45,
+        "tenacity": 0.30
+    };
 
     // 3174: Armored Advance
     // Desc: 35 Armor, 45 Move Speed
-    if (data["3174"]) {
-        data["3174"].stats = {
-            "flatArmorMod": 35,
-            "flatMovementSpeedMod": 45
-        };
-    }
+    if (!data["3174"]) data["3174"] = { id: 3174 };
+    data["3174"].name = "Armored Advance";
+    data["3174"].description = "<mainText><stats>+35 Armor<br>+45 Move Speed</stats><br><br><passed>Unique Passive - Plated:</passed> Reduces incoming damage from basic attacks by 12%.</mainText>";
+    data["3174"].gold = { total: 2000, sell: 1400, purchasable: true }; // Estimated
+    data["3174"].tags = ["Boots", "Armor", "Speed"];
+    data["3174"].stats = {
+        "flatArmorMod": 35,
+        "flatMovementSpeedMod": 45
+    };
 
     // 3175: Spellslinger's Shoes
     // Desc: 18 Magic Pen, 8% Magic Pen, 45 Move Speed
-    if (data["3175"]) {
-        data["3175"].stats = {
-            "magicPenetration": 18, // Flat
-            "percentMagicPenetration": 0.08,
-            "flatMovementSpeedMod": 45
-        };
-    }
+    if (!data["3175"]) data["3175"] = { id: 3175 };
+    data["3175"].name = "Spellslinger's Shoes";
+    data["3175"].description = "<mainText><stats>+18 Magic Penetration<br>+8% Magic Penetration<br>+45 Move Speed</stats></mainText>";
+    data["3175"].gold = { total: 1850, sell: 1295, purchasable: true };
+    data["3175"].tags = ["Boots", "MagicPenetration", "Speed"];
+    data["3175"].stats = {
+        "magicPenetration": 18, // Flat
+        "percentMagicPenetration": 0.08,
+        "flatMovementSpeedMod": 45
+    };
 
     // 3176: Forever Forward
     // Desc: 55 Move Speed (Plus passives)
-    if (data["3176"]) {
-        data["3176"].stats = {
-            "flatMovementSpeedMod": 55
-        };
-    }
+    if (!data["3176"]) data["3176"] = { id: 3176 };
+    data["3176"].name = "Forever Forward";
+    data["3176"].description = "<mainText><stats>+55 Move Speed</stats><br><br><passed>Unique Passive - Focus:</passed> You ignore unit collision and movement speed is increased.</mainText>";
+    data["3176"].gold = { total: 900, sell: 630, purchasable: true };
+    data["3176"].tags = ["Boots", "Speed"];
+    data["3176"].stats = {
+        "flatMovementSpeedMod": 55
+    };
 
-    console.log("Applied S16 Boot Stat Patches (All T3)");
+    // --- S16 NEW ITEMS PATCHES ---
+    // 2512: Fiendhunter Bolts
+    if (!data["2512"]) data["2512"] = { id: 2512 };
+    data["2512"].name = "Fiendhunter Bolts";
+    data["2512"].description = "<mainText><stats>+40% Attack Speed<br>+25% Critical Strike Chance<br>+4% Move Speed</stats><br><br><passed>Unique Passive - Night Vigil:</passed> Grants 30 Ultimate Ability Haste.<br><passed>Unique Passive - Opening Barrage:</passed> After casting your Ultimate, your next 3 attacks gain Attack Speed and critically strike.</mainText>";
+    data["2512"].gold = { total: 2650, sell: 1855, purchasable: true };
+    data["2512"].tags = ["AttackSpeed", "CriticalStrike", "Speed"];
+    data["2512"].stats = {
+        "percentAttackSpeedMod": 0.40,
+        "flatCritChanceMod": 0.25,
+        "flatMovementSpeedMod": 4
+    };
+
+    // 2523: Hexoptics C44
+    if (!data["2523"]) data["2523"] = { id: 2523 };
+    data["2523"].name = "Hexoptics C44";
+    data["2523"].description = "<mainText><stats>+50 Attack Damage<br>+25% Critical Strike Chance</stats><br><br><passed>Unique Passive - Magnification:</passed> Deal up to 10% increased damage based on distance.<br><passed>Unique Passive - Arcane Aim:</passed> Takedowns grant bonus Attack Range.</mainText>";
+    data["2523"].gold = { total: 3000, sell: 2100, purchasable: true };
+    data["2523"].tags = ["Damage", "CriticalStrike"];
+    data["2523"].stats = {
+        "flatPhysicalDamageMod": 50,
+        "flatCritChanceMod": 0.25
+    };
+
+    // 2525: Protoplasm Harness
+    if (!data["2525"]) data["2525"] = { id: 2525 };
+    data["2525"].name = "Protoplasm Harness";
+    data["2525"].description = "<mainText><stats>+600 Health<br>+15 Ability Haste</stats><br><br><passed>Unique Passive - Survival:</passed> Falling below 30% Health restores health over time and grants size and tenacity.</mainText>";
+    data["2525"].gold = { total: 2500, sell: 1750, purchasable: true };
+    data["2525"].tags = ["Health", "AbilityHaste"];
+    data["2525"].stats = {
+        "flatHPPoolMod": 600,
+        "abilityHaste": 15
+    };
+
+    // 2510: Dusk and Dawn
+    if (!data["2510"]) data["2510"] = { id: 2510 };
+    data["2510"].name = "Dusk and Dawn";
+    data["2510"].description = "<mainText><stats>+70 Ability Power<br>+300 Health<br>+20 Ability Haste<br>+25% Attack Speed</stats><br><br><passed>Unique Passive - Dawn's Edge:</passed> After casting a spell, your next attack strikes twice, dealing bonus magic damage and applying on-hit effects a second time.</mainText>";
+    data["2510"].gold = { total: 3100, sell: 2170, purchasable: true };
+    data["2510"].tags = ["SpellDamage", "Health", "AttackSpeed", "AbilityHaste"];
+    data["2510"].stats = {
+        "flatHPPoolMod": 300,
+        "flatMagicDamageMod": 70,
+        "abilityHaste": 20,
+        "percentAttackSpeedMod": 0.25
+    };
+
+    // 2517: Endless Hunger
+    if (!data["2517"]) data["2517"] = { id: 2517 };
+    data["2517"].name = "Endless Hunger";
+    data["2517"].description = "<mainText><stats>+60 Attack Damage<br>+5% Omnivamp<br>+20% Tenacity</stats><br><br><passed>Unique Passive - Famine:</passed> Gain Ability Haste equal to 10% of bonus Attack Damage.<br><passed>Unique Passive - Satiation:</passed> Takedowns grant 15% Omnivamp for 8 seconds.</mainText>";
+    data["2517"].gold = { total: 3000, sell: 2100, purchasable: true };
+    data["2517"].tags = ["Damage", "LifeSteal", "Tenacity"];
+    data["2517"].stats = {
+        "flatPhysicalDamageMod": 60,
+        "percentLifeStealMod": 0.05, // Approximation for Omnivamp
+        "tenacity": 0.20
+    };
+
+    // 2520: Bastionbreaker
+    if (!data["2520"]) data["2520"] = { id: 2520 };
+    data["2520"].name = "Bastionbreaker";
+    data["2520"].description = "<mainText><stats>+55 Attack Damage<br>+22 Lethality<br>+15 Ability Haste</stats><br><br><passed>Unique Passive - Shaped Charge:</passed> Dealing ability damage deals bonus true damage.<br><passed>Unique Passive - Sabotage:</passed> Takedowns grant Sabotage. Your next attack against a Turret deals massive true damage.</mainText>";
+    data["2520"].gold = { total: 3200, sell: 2240, purchasable: true };
+    data["2520"].tags = ["Damage", "ArmorPenetration", "AbilityHaste"];
+    data["2520"].stats = {
+        "flatPhysicalDamageMod": 55,
+        "abilityHaste": 15
+        // Lethality is usually handled via hidden passive stats in Riot API
+    };
+
+    // 2522: Actualizer
+    if (!data["2522"]) data["2522"] = { id: 2522 };
+    data["2522"].name = "Actualizer";
+    data["2522"].description = "<mainText><stats>+90 Ability Power<br>+300 Mana<br>+10 Ability Haste</stats><br><br><active>Active - Mana Made Real:</active> Empower your Mana for 8s. Spells cost double but deal 18% bonus damage/healing. Cooldowns refresh 30% faster.</mainText>";
+    data["2522"].gold = { total: 3100, sell: 2170, purchasable: true };
+    data["2522"].tags = ["SpellDamage", "Mana", "AbilityHaste"];
+    data["2522"].stats = {
+        "flatMagicDamageMod": 90,
+        "flatMPPoolMod": 300,
+        "abilityHaste": 10
+    };
+
+    // 2524: Bandlepipes
+    if (!data["2524"]) data["2524"] = { id: 2524 };
+    data["2524"].name = "Bandlepipes";
+    data["2524"].description = "<mainText><stats>+200 Health<br>+20 Armor<br>+20 Magic Resist<br>+15 Ability Haste</stats><br><br><passed>Unique Passive - Fanfare:</passed> Immobilizing enemies grants an Aura. Allies gain Attack Speed, you gain Move Speed.</mainText>";
+    data["2524"].gold = { total: 2300, sell: 1610, purchasable: true };
+    data["2524"].tags = ["Health", "Armor", "SpellBlock", "AbilityHaste"];
+    data["2524"].stats = {
+        "flatHPPoolMod": 200,
+        "flatArmorMod": 20,
+        "flatSpellBlockMod": 20,
+        "abilityHaste": 15
+    };
+
+    // 2526: Whispering Circlet
+    if (!data["2526"]) data["2526"] = { id: 2526 };
+    data["2526"].name = "Whispering Circlet";
+    data["2526"].description = "<mainText><stats>+200 Health<br>+8% Heal & Shield Power<br>+300 Mana</stats><br><br><passed>Unique Passive - Manaflow:</passed> Hitting champions grants Max Mana. Transforms into Diadem of Songs at 360 Mana.</mainText>";
+    data["2526"].gold = { total: 2250, sell: 1575, purchasable: true };
+    data["2526"].tags = ["Health", "Mana", "AbilityHaste", "Active"];
+    data["2526"].stats = {
+        "flatHPPoolMod": 200,
+        "flatMPPoolMod": 300
+    };
+
+    // 2530: Diadem of Songs
+    if (!data["2530"]) data["2530"] = { id: 2530 };
+    data["2530"].name = "Diadem of Songs";
+    data["2530"].description = "<mainText><stats>+250 Health<br>+10% Heal & Shield Power<br>+1000 Mana</stats><br><br><passed>Unique Passive - Consonance:</passed> In combat, heal the lowest health ally based on your Mana.</mainText>";
+    data["2530"].gold = { total: 2250, sell: 1575, purchasable: false }; // Transform item
+    data["2530"].tags = ["Health", "Mana", "AbilityHaste"];
+    data["2530"].stats = {
+        "flatHPPoolMod": 250,
+        "flatMPPoolMod": 1000
+    };
+
+    console.log("Applied S16 Boot Stat & Description Patches (All T3)");
 }
 
 // Helper: Merge DDragon descriptions into Meraki data where missing
@@ -404,6 +547,15 @@ async function enrichWithDDragon(merakiData) {
                 if (!merakiData[itemId].gold && ddItem.gold) {
                     merakiData[itemId].gold = ddItem.gold;
                 }
+
+                // CRITICAL: Ensure 'from' (build path) and 'tags' are preserved
+                // Check Meraki first, but if missing/empty, use DDragon
+                if ((!merakiData[itemId].from || merakiData[itemId].from.length === 0) && ddItem.from) {
+                    merakiData[itemId].from = ddItem.from;
+                }
+                if ((!merakiData[itemId].tags || merakiData[itemId].tags.length === 0) && ddItem.tags) {
+                    merakiData[itemId].tags = ddItem.tags;
+                }
             }
         });
     } catch (e) {
@@ -415,9 +567,14 @@ async function enrichWithDDragon(merakiData) {
 export const isBoot = (itemId) => {
     if (!itemId || itemId === 0) return false;
     const data = itemDataMap[itemId];
+
+    // 1. Check Tags
     if (data && data.tags && data.tags.includes("Boots")) return true;
 
-    // Fallback for S16 custom items or missing tags
+    // 2. Dynamic Check: Builds from Boots of Speed (1001)
+    if (data && data.from && data.from.includes("1001")) return true;
+
+    // 3. Fallback for S16 custom items or missing tags
     const BOOT_IDS = [
         1001, // Boots
         3006, // Berserker's Greaves

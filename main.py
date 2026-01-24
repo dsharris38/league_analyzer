@@ -611,47 +611,17 @@ def run_analysis_pipeline(
                 
             return l_diag, mov
 
-        # SEQUENTIAL EXECUTION (Hybrid Strategy)
+        # SEQUENTIAL EXECUTION (Full Batch Strategy)
         # Re-map matches to IDs
         valid_tasks = []
         for m in matches:
             mid = m['metadata']['matchId']
             valid_tasks.append((mid, m))
         
-        # HYBRID ANALYSIS STRATEGY:
-        # Priority: 
-        # 1. Most recent 3 games (Instant feedback)
-        # 2. Recent Losses (Where coaching is needed most)
-        # 3. Cap total at 15 timelines.
+        # User requested Full Batch Processing for consistent UI data
+        # We removed the "Hybrid" optimization that was skipping timelines.
+        console.print(f"[bold]Processing Timeline for all {len(valid_tasks)} matches...[/bold]")
         
-        TIMELINE_CAP = 15
-        hybrid_tasks = []
-        
-        # valid_tasks contains (mid, match_dto)
-        for i, (mid, m_data) in enumerate(valid_tasks):
-            if len(hybrid_tasks) >= TIMELINE_CAP:
-                break
-            
-            # Always take the freshest 3 games
-            if i < 3:
-                hybrid_tasks.append((mid, m_data))
-                continue
-            
-            # For older games, only deep-analyze LOSSES
-            try:
-                # Find self
-                parts = m_data.get('info', {}).get('participants', [])
-                self_part = next((p for p in parts if p['puuid'] == puuid), None)
-                
-                if self_part and not self_part['win']:
-                    hybrid_tasks.append((mid, m_data))
-            except Exception:
-                pass
-        
-        if len(valid_tasks) > len(hybrid_tasks):
-            console.print(f"[dim]Hybrid Optimization: Selected {len(hybrid_tasks)} high-value timelines (Recent + Losses) from {len(valid_tasks)} games.[/dim]")
-            valid_tasks = hybrid_tasks
-
         # OPTIMIZED PARALLEL FETCHING
         # 1. Fetch all missing timelines in parallel
         
@@ -684,7 +654,11 @@ def run_analysis_pipeline(
             try:
                 tl = db.get_timeline(mid)
                 if tl:
-                    process_timeline(i, mid, m_data, tl)
+                    l_res, mov_res = process_timeline(i, mid, m_data, tl)
+                    if l_res:
+                        timeline_loss_diagnostics.append(l_res)
+                    if mov_res:
+                        movement_summaries.append(mov_res)
             except Exception as e:
                 console.print(f"[yellow]Error processing timeline {mid}: {e}[/yellow]")
             
@@ -863,8 +837,24 @@ def run_analysis_pipeline(
             latest_new = matches[0]['metadata']['matchId']
             # Check detailed_matches first (standard output), fallback to matches (legacy/raw)
             latest_old = None
-            if 'detailed_matches' in old_data and old_data['detailed_matches']:
-                latest_old = old_data['detailed_matches'][0].get('match_id')
+            cached_dm = old_data.get('detailed_matches', [])
+            
+            if cached_dm:
+                latest_old = cached_dm[0].get('match_id')
+                
+                # SCHEMA VALIDATION: Check for "Item Build" fix
+                # If the cache exists but lacks 'item_build' in detailed_matches, it's stale (pre-fix).
+                if 'item_build' not in cached_dm[0]:
+                    console.print("[yellow]Cache Invalid: Missing 'item_build' data. forcing re-run.[/yellow]")
+                    log_debug("Cache Invalid: Missing 'item_build'")
+                    latest_old = "FORCE_INVALIDATE" # Mismatch forces reload
+                
+                # COUNT VALIDATION: Check if we have enough matches
+                elif len(cached_dm) < match_count:
+                    console.print(f"[yellow]Cache Invalid: Insufficient matches ({len(cached_dm)} < {match_count}). forcing re-run.[/yellow]")
+                    log_debug(f"Cache Invalid: Count mismatch {len(cached_dm)} < {match_count}")
+                    latest_old = "FORCE_INVALIDATE"
+                    
             elif 'matches' in old_data and old_data['matches']:
                 latest_old = old_data.get('matches', [{}])[0].get('metadata', {}).get('matchId')
             

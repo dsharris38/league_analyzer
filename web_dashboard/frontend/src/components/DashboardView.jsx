@@ -83,7 +83,7 @@ export default function DashboardView({ data, filename, onBack, onUpdate, onPlay
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 15;
+    const ITEMS_PER_PAGE = 50;
 
     // Reset pagination when filters change
     useEffect(() => {

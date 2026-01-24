@@ -72,7 +72,10 @@ function App() {
     setLoading(true);
 
     try {
-      // 1. Check if analysis already exists (Fast Switch)
+      // 1. Check if analysis already exists (Fast Switch) - REMOVED to force backend smart resume
+      // We rely on the backend to handle caching and invalidation (e.g. match count changes)
+
+      /* 
       const res = await axios.get(`${config.API_URL}/api/analyses/?_t=${Date.now()}`);
       const files = res.data;
 
@@ -80,6 +83,17 @@ function App() {
       const match = files.find(f =>
         f.riot_id.toLowerCase().replace(/#/g, '').replace(/\s/g, '') === targetId
       );
+
+      if (match) {
+        console.log("Found existing analysis, loading:", match.filename);
+        saveToHistory(match.riot_id, match.region || region, match.filename);
+        handleSelect(match.filename);
+        return;
+      }
+      */
+
+      // Ensure saveToHistory is defined or moved if it was inside the loop interactively, 
+      // but here it is defined inside handleAnalyze scope, so we can just proceed.
 
       const saveToHistory = (entryRiotId, entryRegion, entryFilename) => {
         try {
@@ -99,13 +113,6 @@ function App() {
           console.error("Failed to save history", storageErr);
         }
       };
-
-      if (match) {
-        console.log("Found existing analysis, loading:", match.filename);
-        saveToHistory(match.riot_id, match.region || region, match.filename);
-        handleSelect(match.filename);
-        return;
-      }
 
       // 2. Run new analysis
       console.log("Starting new analysis for:", riotId);

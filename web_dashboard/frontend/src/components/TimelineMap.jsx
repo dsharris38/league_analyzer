@@ -780,77 +780,95 @@ export default function TimelineMap({ match, puuid, showWards = true }) {
             </div>
 
 
-            {/* Scoreboard Full Width */}
-            <div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden flex flex-col">
-                <div className="p-2 border-b border-slate-700 bg-slate-800/50">
-                    <h3 className="text-sm font-bold text-slate-300 uppercase">Scoreboard</h3>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                        <thead className="text-slate-500 bg-slate-900/50 border-b border-slate-700 sticky top-0 z-10 backdrop-blur-md">
-                            <tr>
-                                <th className="px-4 py-2">Champion</th>
-                                <th className="px-4 py-2 text-center">KDA</th>
-                                <th className="px-4 py-2 text-center">CS</th>
-                                <th className="px-4 py-2 text-center">Gold</th>
-                                <th className="px-4 py-2">Items</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-800">
-                            {match.participants.map(p => {
-                                const stats = currentStats[p.puuid];
-                                const isDead = championStates[p.puuid]?.isDead;
-                                const isBlue = isBlueTeam(p);
+            {/* Scoreboard Side-by-Side - Merged Container */}
+            <div className="bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
+                <div className="grid grid-cols-1 xl:grid-cols-2 divide-y xl:divide-y-0 xl:divide-x divide-slate-800">
+                    {[100, 200].map(teamId => {
+                        const isBlue = teamId === 100;
+                        const teamParticipants = match.participants.filter(p => isBlue ? isBlueTeam(p) : !isBlueTeam(p));
 
-                                return (
-                                    <tr key={p.puuid} className={clsx(
-                                        "transition-colors",
-                                        isDead ? "bg-red-900/20 grayscale opacity-70" : "hover:bg-slate-800/30"
-                                    )}>
-                                        <td className="px-4 py-2">
-                                            <div className="flex items-center gap-3">
-                                                <div className={clsx(
-                                                    "w-6 h-6 rounded-sm border",
-                                                    isDead ? "border-slate-600" :
-                                                        isBlue ? "border-blue-500" : "border-red-500"
-                                                )}>
-                                                    <img src={getChampionIconUrl(p.champion_name)} className="w-full h-full" />
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className={clsx("font-bold", isBlue ? "text-blue-400" : "text-red-400")}>
-                                                        {p.champion_name}
-                                                    </span>
-                                                    <span className="text-slate-500 text-[10px]">{p.riot_id.split('#')[0]}</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-1 text-center font-mono text-slate-300">
-                                            {stats.kills}/{stats.deaths}/{stats.assists}
-                                        </td>
-                                        <td className="px-4 py-1 text-center text-slate-400">
-                                            {stats.cs}
-                                        </td>
-                                        <td className="px-4 py-1 text-center text-yellow-600">
-                                            {(stats.gold / 1000).toFixed(1)}k
-                                        </td>
-                                        <td className="px-4 py-1">
-                                            <div className="flex gap-1">
-                                                {stats.items.map((itemId, i) => (
-                                                    itemId > 0 ? (
-                                                        <img key={i} src={getItemIconUrl(itemId)} className="w-6 h-6 rounded border border-slate-700" />
-                                                    ) : (
-                                                        <div key={i} className="w-6 h-6 rounded border border-slate-800 bg-slate-900/50" />
-                                                    )
-                                                ))}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                        return (
+                            <div key={teamId} className="flex flex-col bg-slate-900/50">
+                                <div className={clsx(
+                                    "p-2 border-b flex justify-between items-center",
+                                    isBlue ? "bg-blue-950/10 border-blue-900/10" : "bg-red-950/10 border-red-900/10"
+                                )}>
+                                    <h3 className={clsx("text-sm font-bold uppercase", isBlue ? "text-blue-400" : "text-red-400")}>
+                                        {isBlue ? "Blue Team" : "Red Team"}
+                                    </h3>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left text-xs">
+                                        <thead className={clsx(
+                                            "text-slate-500 border-b sticky top-0 z-10 backdrop-blur-md",
+                                            isBlue ? "bg-blue-950/5 border-blue-900/10" : "bg-red-950/5 border-red-900/10"
+                                        )}>
+                                            <tr>
+                                                <th className="px-3 py-2">Champion</th>
+                                                <th className="px-2 py-2 text-center">KDA</th>
+                                                <th className="px-2 py-2 text-center">CS</th>
+                                                <th className="px-2 py-2 text-center">Gold</th>
+                                                <th className="px-2 py-2">Items</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-800">
+                                            {teamParticipants.map(p => {
+                                                const stats = currentStats[p.puuid];
+                                                const isDead = championStates[p.puuid]?.isDead;
+
+                                                return (
+                                                    <tr key={p.puuid} className={clsx(
+                                                        "transition-colors",
+                                                        isDead ? "bg-red-900/20 grayscale opacity-70" : "hover:bg-slate-800/30"
+                                                    )}>
+                                                        <td className="px-3 py-2">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className={clsx(
+                                                                    "w-6 h-6 rounded-sm border shrink-0",
+                                                                    isDead ? "border-slate-600" :
+                                                                        isBlue ? "border-blue-500" : "border-red-500"
+                                                                )}>
+                                                                    <img src={getChampionIconUrl(p.champion_name)} className="w-full h-full" />
+                                                                </div>
+                                                                <div className="flex flex-col min-w-0">
+                                                                    <span className={clsx("font-bold truncate text-[11px]", isBlue ? "text-blue-400" : "text-red-400")}>
+                                                                        {p.champion_name}
+                                                                    </span>
+                                                                    <span className="text-slate-500 text-[9px] truncate">{p.riot_id.split('#')[0]}</span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-2 py-1 text-center font-mono text-slate-300">
+                                                            {stats.kills}/{stats.deaths}/{stats.assists}
+                                                        </td>
+                                                        <td className="px-2 py-1 text-center text-slate-400">
+                                                            {stats.cs}
+                                                        </td>
+                                                        <td className="px-2 py-1 text-center text-yellow-600">
+                                                            {(stats.gold / 1000).toFixed(1)}k
+                                                        </td>
+                                                        <td className="px-2 py-1">
+                                                            <div className="flex gap-0.5 flex-wrap w-24">
+                                                                {stats.items.map((itemId, i) => (
+                                                                    itemId > 0 ? (
+                                                                        <img key={i} src={getItemIconUrl(itemId)} className="w-5 h-5 rounded border border-slate-700" />
+                                                                    ) : (
+                                                                        <div key={i} className="w-5 h-5 rounded border border-slate-800 bg-slate-900/50" />
+                                                                    )
+                                                                ))}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
-            </div >
+            </div>
 
 
         </div >
