@@ -9379,3 +9379,3148 @@
 [DEBUG] Save Verified: True
 [DEBUG] Response JSON Size: 191 bytes
 [DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769282557.2511623
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.24s
+[DEBUG] Processed NA1_5472895375 in 0.31s
+[DEBUG] Processed NA1_5472852547 in 0.25s
+[DEBUG] Processed NA1_5472803939 in 0.30s
+[DEBUG] Processed NA1_5472775485 in 0.24s
+[DEBUG] Processed NA1_5472726145 in 0.29s
+[DEBUG] Processed NA1_5472688649 in 0.26s
+[DEBUG] Processed NA1_5472669736 in 0.18s
+[DEBUG] Processed NA1_5472624433 in 0.45s
+[DEBUG] Processed NA1_5471888096 in 0.22s
+[DEBUG] Processed NA1_5471848076 in 0.35s
+[DEBUG] Processed NA1_5471808080 in 0.19s
+[DEBUG] Processed NA1_5471780950 in 0.22s
+[DEBUG] Processed NA1_5471105029 in 0.24s
+[DEBUG] Processed NA1_5470897353 in 0.24s
+[DEBUG] Processed NA1_5470855249 in 0.25s
+[DEBUG] Processed NA1_5470783123 in 0.20s
+[DEBUG] Processed NA1_5470215030 in 0.21s
+[DEBUG] Processed NA1_5470163278 in 0.18s
+[DEBUG] Processed NA1_5470110908 in 0.22s
+[DEBUG] Processed NA1_5470050107 in 0.25s
+[DEBUG] Processed NA1_5470004233 in 0.22s
+[DEBUG] Processed NA1_5469358260 in 0.18s
+[DEBUG] Processed NA1_5469308220 in 0.32s
+[DEBUG] Processed NA1_5469251531 in 0.29s
+[DEBUG] Processed NA1_5469218363 in 0.25s
+[DEBUG] Processed NA1_5469181878 in 0.32s
+[DEBUG] Processed NA1_5469137202 in 0.23s
+[DEBUG] Processed NA1_5469094927 in 0.21s
+[DEBUG] Processed NA1_5469065424 in 0.20s
+[DEBUG] Processed NA1_5468413614 in 0.16s
+[DEBUG] Processed NA1_5468354309 in 0.25s
+[DEBUG] Processed NA1_5468310401 in 0.20s
+[DEBUG] Processed NA1_5468255915 in 0.26s
+[DEBUG] Processed NA1_5468166552 in 0.19s
+[DEBUG] Processed NA1_5468129316 in 0.21s
+[DEBUG] Processed NA1_5468009145 in 0.22s
+[DEBUG] Processed NA1_5467971837 in 0.25s
+[DEBUG] Processed NA1_5467922452 in 0.22s
+[DEBUG] Processed NA1_5467904056 in 0.21s
+[DEBUG] Processed NA1_5467890131 in 0.26s
+[DEBUG] Processed NA1_5467583491 in 0.20s
+[DEBUG] Processed NA1_5467546584 in 0.25s
+[DEBUG] Processed NA1_5467510185 in 0.28s
+[DEBUG] Processed NA1_5467472475 in 0.17s
+[DEBUG] Processed NA1_5467435075 in 0.20s
+[DEBUG] Processed NA1_5467412894 in 0.20s
+[DEBUG] Processed NA1_5467387093 in 0.19s
+[DEBUG] Processed NA1_5467097500 in 0.39s
+[DEBUG] Processed NA1_5467066894 in 0.40s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Fetching items from DataDragon (16.2.1)...
+[DEBUG] DDragon fetch successful. Items: 697
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769282613.3893363
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.18s
+[DEBUG] Processed NA1_5472895375 in 0.28s
+[DEBUG] Processed NA1_5472852547 in 0.22s
+[DEBUG] Processed NA1_5472803939 in 0.23s
+[DEBUG] Processed NA1_5472775485 in 0.19s
+[DEBUG] Processed NA1_5472726145 in 0.20s
+[DEBUG] Processed NA1_5472688649 in 0.23s
+[DEBUG] Processed NA1_5472669736 in 0.19s
+[DEBUG] Processed NA1_5472624433 in 0.27s
+[DEBUG] Processed NA1_5471888096 in 0.23s
+[DEBUG] Processed NA1_5471848076 in 0.21s
+[DEBUG] Processed NA1_5471808080 in 0.21s
+[DEBUG] Processed NA1_5471780950 in 0.22s
+[DEBUG] Processed NA1_5471105029 in 0.25s
+[DEBUG] Processed NA1_5470897353 in 0.23s
+[DEBUG] Processed NA1_5470855249 in 0.20s
+[DEBUG] Processed NA1_5470783123 in 0.18s
+[DEBUG] Processed NA1_5470215030 in 0.21s
+[DEBUG] Processed NA1_5470163278 in 0.21s
+[DEBUG] Processed NA1_5470110908 in 0.23s
+[DEBUG] Processed NA1_5470050107 in 0.27s
+[DEBUG] Processed NA1_5470004233 in 0.54s
+[DEBUG] Processed NA1_5469358260 in 0.23s
+[DEBUG] Processed NA1_5469308220 in 0.27s
+[DEBUG] Processed NA1_5469251531 in 0.19s
+[DEBUG] Processed NA1_5469218363 in 0.21s
+[DEBUG] Processed NA1_5469181878 in 0.16s
+[DEBUG] Processed NA1_5469137202 in 0.21s
+[DEBUG] Processed NA1_5469094927 in 0.28s
+[DEBUG] Processed NA1_5469065424 in 0.22s
+[DEBUG] Processed NA1_5468413614 in 0.20s
+[DEBUG] Processed NA1_5468354309 in 0.23s
+[DEBUG] Processed NA1_5468310401 in 0.24s
+[DEBUG] Processed NA1_5468255915 in 0.19s
+[DEBUG] Processed NA1_5468166552 in 0.22s
+[DEBUG] Processed NA1_5468129316 in 0.21s
+[DEBUG] Processed NA1_5468009145 in 0.23s
+[DEBUG] Processed NA1_5467971837 in 0.20s
+[DEBUG] Processed NA1_5467922452 in 0.23s
+[DEBUG] Processed NA1_5467904056 in 0.20s
+[DEBUG] Processed NA1_5467890131 in 0.22s
+[DEBUG] Processed NA1_5467583491 in 0.20s
+[DEBUG] Processed NA1_5467546584 in 0.21s
+[DEBUG] Processed NA1_5467510185 in 0.22s
+[DEBUG] Processed NA1_5467472475 in 0.20s
+[DEBUG] Processed NA1_5467435075 in 0.21s
+[DEBUG] Processed NA1_5467412894 in 0.20s
+[DEBUG] Processed NA1_5467387093 in 0.18s
+[DEBUG] Processed NA1_5467097500 in 0.23s
+[DEBUG] Processed NA1_5467066894 in 0.32s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769283260.6343684
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.29s
+[DEBUG] Processed NA1_5472895375 in 0.35s
+[DEBUG] Processed NA1_5472852547 in 0.18s
+[DEBUG] Processed NA1_5472803939 in 0.32s
+[DEBUG] Processed NA1_5472775485 in 0.21s
+[DEBUG] Processed NA1_5472726145 in 0.45s
+[DEBUG] Processed NA1_5472688649 in 0.34s
+[DEBUG] Processed NA1_5472669736 in 0.42s
+[DEBUG] Processed NA1_5472624433 in 0.28s
+[DEBUG] Processed NA1_5471888096 in 0.28s
+[DEBUG] Processed NA1_5471848076 in 0.29s
+[DEBUG] Processed NA1_5471808080 in 0.27s
+[DEBUG] Processed NA1_5471780950 in 0.25s
+[DEBUG] Processed NA1_5471105029 in 0.35s
+[DEBUG] Processed NA1_5470897353 in 0.21s
+[DEBUG] Processed NA1_5470855249 in 0.24s
+[DEBUG] Processed NA1_5470783123 in 0.23s
+[DEBUG] Processed NA1_5470215030 in 0.27s
+[DEBUG] Processed NA1_5470163278 in 0.25s
+[DEBUG] Processed NA1_5470110908 in 0.33s
+[DEBUG] Processed NA1_5470050107 in 0.23s
+[DEBUG] Processed NA1_5470004233 in 0.27s
+[DEBUG] Processed NA1_5469358260 in 0.30s
+[DEBUG] Processed NA1_5469308220 in 0.24s
+[DEBUG] Processed NA1_5469251531 in 0.22s
+[DEBUG] Processed NA1_5469218363 in 0.24s
+[DEBUG] Processed NA1_5469181878 in 0.24s
+[DEBUG] Processed NA1_5469137202 in 0.25s
+[DEBUG] Processed NA1_5469094927 in 0.29s
+[DEBUG] Processed NA1_5469065424 in 0.20s
+[DEBUG] Processed NA1_5468413614 in 0.26s
+[DEBUG] Processed NA1_5468354309 in 0.21s
+[DEBUG] Processed NA1_5468310401 in 0.35s
+[DEBUG] Processed NA1_5468255915 in 0.86s
+[DEBUG] Processed NA1_5468166552 in 2.22s
+[DEBUG] Processed NA1_5468129316 in 1.73s
+[DEBUG] Processed NA1_5468009145 in 0.46s
+[DEBUG] Processed NA1_5467971837 in 0.66s
+[DEBUG] Processed NA1_5467922452 in 0.26s
+[DEBUG] Processed NA1_5467904056 in 0.17s
+[DEBUG] Processed NA1_5467890131 in 0.22s
+[DEBUG] Processed NA1_5467583491 in 0.22s
+[DEBUG] Processed NA1_5467546584 in 0.23s
+[DEBUG] Processed NA1_5467510185 in 0.26s
+[DEBUG] Processed NA1_5467472475 in 0.22s
+[DEBUG] Processed NA1_5467435075 in 0.29s
+[DEBUG] Processed NA1_5467412894 in 0.19s
+[DEBUG] Processed NA1_5467387093 in 0.24s
+[DEBUG] Processed NA1_5467097500 in 0.31s
+[DEBUG] Processed NA1_5467066894 in 0.39s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769283352.364444
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.22s
+[DEBUG] Processed NA1_5472895375 in 0.24s
+[DEBUG] Processed NA1_5472852547 in 0.22s
+[DEBUG] Processed NA1_5472803939 in 0.24s
+[DEBUG] Processed NA1_5472775485 in 0.22s
+[DEBUG] Processed NA1_5472726145 in 0.27s
+[DEBUG] Processed NA1_5472688649 in 0.28s
+[DEBUG] Processed NA1_5472669736 in 0.22s
+[DEBUG] Processed NA1_5472624433 in 0.24s
+[DEBUG] Processed NA1_5471888096 in 0.26s
+[DEBUG] Processed NA1_5471848076 in 0.30s
+[DEBUG] Processed NA1_5471808080 in 0.24s
+[DEBUG] Processed NA1_5471780950 in 0.24s
+[DEBUG] Processed NA1_5471105029 in 0.23s
+[DEBUG] Processed NA1_5470897353 in 0.19s
+[DEBUG] Processed NA1_5470855249 in 0.24s
+[DEBUG] Processed NA1_5470783123 in 0.21s
+[DEBUG] Processed NA1_5470215030 in 0.23s
+[DEBUG] Processed NA1_5470163278 in 0.20s
+[DEBUG] Processed NA1_5470110908 in 0.24s
+[DEBUG] Processed NA1_5470050107 in 0.20s
+[DEBUG] Processed NA1_5470004233 in 0.24s
+[DEBUG] Processed NA1_5469358260 in 0.23s
+[DEBUG] Processed NA1_5469308220 in 0.20s
+[DEBUG] Processed NA1_5469251531 in 0.26s
+[DEBUG] Processed NA1_5469218363 in 0.21s
+[DEBUG] Processed NA1_5469181878 in 0.21s
+[DEBUG] Processed NA1_5469137202 in 0.28s
+[DEBUG] Processed NA1_5469094927 in 0.22s
+[DEBUG] Processed NA1_5469065424 in 0.20s
+[DEBUG] Processed NA1_5468413614 in 0.25s
+[DEBUG] Processed NA1_5468354309 in 0.26s
+[DEBUG] Processed NA1_5468310401 in 0.78s
+[DEBUG] Processed NA1_5468255915 in 0.27s
+[DEBUG] Processed NA1_5468166552 in 0.31s
+[DEBUG] Processed NA1_5468129316 in 0.22s
+[DEBUG] Processed NA1_5468009145 in 0.30s
+[DEBUG] Processed NA1_5467971837 in 0.22s
+[DEBUG] Processed NA1_5467922452 in 0.23s
+[DEBUG] Processed NA1_5467904056 in 0.21s
+[DEBUG] Processed NA1_5467890131 in 0.21s
+[DEBUG] Processed NA1_5467583491 in 0.26s
+[DEBUG] Processed NA1_5467546584 in 0.21s
+[DEBUG] Processed NA1_5467510185 in 0.21s
+[DEBUG] Processed NA1_5467472475 in 0.21s
+[DEBUG] Processed NA1_5467435075 in 0.23s
+[DEBUG] Processed NA1_5467412894 in 0.19s
+[DEBUG] Processed NA1_5467387093 in 0.23s
+[DEBUG] Processed NA1_5467097500 in 0.22s
+[DEBUG] Processed NA1_5467066894 in 0.25s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+[REQ] Status: 200
+
+[DEBUG] /api/analyze/ POST received at 1769283626.0275252
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.16s
+[DEBUG] Processed NA1_5472895375 in 0.24s
+[DEBUG] Processed NA1_5472852547 in 0.22s
+[DEBUG] Processed NA1_5472803939 in 0.19s
+[DEBUG] Processed NA1_5472775485 in 0.20s
+[DEBUG] Processed NA1_5472726145 in 0.22s
+[DEBUG] Processed NA1_5472688649 in 0.24s
+[DEBUG] Processed NA1_5472669736 in 0.18s
+[DEBUG] Processed NA1_5472624433 in 0.22s
+[DEBUG] Processed NA1_5471888096 in 0.22s
+[DEBUG] Processed NA1_5471848076 in 0.19s
+[DEBUG] Processed NA1_5471808080 in 0.18s
+[DEBUG] Processed NA1_5471780950 in 0.19s
+[DEBUG] Processed NA1_5471105029 in 0.23s
+[DEBUG] Processed NA1_5470897353 in 0.25s
+[DEBUG] Processed NA1_5470855249 in 0.26s
+[DEBUG] Processed NA1_5470783123 in 0.25s
+[DEBUG] Processed NA1_5470215030 in 0.19s
+[DEBUG] Processed NA1_5470163278 in 0.19s
+[DEBUG] Processed NA1_5470110908 in 0.21s
+[DEBUG] Processed NA1_5470050107 in 0.21s
+[DEBUG] Processed NA1_5470004233 in 0.22s
+[DEBUG] Processed NA1_5469358260 in 0.19s
+[DEBUG] Processed NA1_5469308220 in 0.18s
+[DEBUG] Processed NA1_5469251531 in 0.19s
+[DEBUG] Processed NA1_5469218363 in 0.20s
+[DEBUG] Processed NA1_5469181878 in 0.19s
+[DEBUG] Processed NA1_5469137202 in 0.20s
+[DEBUG] Processed NA1_5469094927 in 0.20s
+[DEBUG] Processed NA1_5469065424 in 0.23s
+[DEBUG] Processed NA1_5468413614 in 0.22s
+[DEBUG] Processed NA1_5468354309 in 0.22s
+[DEBUG] Processed NA1_5468310401 in 0.27s
+[DEBUG] Processed NA1_5468255915 in 0.20s
+[DEBUG] Processed NA1_5468166552 in 0.26s
+[DEBUG] Processed NA1_5468129316 in 0.32s
+[DEBUG] Processed NA1_5468009145 in 0.21s
+[DEBUG] Processed NA1_5467971837 in 0.19s
+[DEBUG] Processed NA1_5467922452 in 0.22s
+[DEBUG] Processed NA1_5467904056 in 0.24s
+[DEBUG] Processed NA1_5467890131 in 3.82s
+[DEBUG] Processed NA1_5467583491 in 0.19s
+[DEBUG] Processed NA1_5467546584 in 0.27s
+[DEBUG] Processed NA1_5467510185 in 0.26s
+[DEBUG] Processed NA1_5467472475 in 0.23s
+[DEBUG] Processed NA1_5467435075 in 0.29s
+[DEBUG] Processed NA1_5467412894 in 0.17s
+[DEBUG] Processed NA1_5467387093 in 0.42s
+[DEBUG] Processed NA1_5467097500 in 0.21s
+[DEBUG] Processed NA1_5467066894 in 0.23s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769283671.116894
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.17s
+[DEBUG] Processed NA1_5472895375 in 0.31s
+[DEBUG] Processed NA1_5472852547 in 0.27s
+[DEBUG] Processed NA1_5472803939 in 0.22s
+[DEBUG] Processed NA1_5472775485 in 0.21s
+[DEBUG] Processed NA1_5472726145 in 0.26s
+[DEBUG] Processed NA1_5472688649 in 0.25s
+[DEBUG] Processed NA1_5472669736 in 0.26s
+[DEBUG] Processed NA1_5472624433 in 0.26s
+[DEBUG] Processed NA1_5471888096 in 0.27s
+[DEBUG] Processed NA1_5471848076 in 0.33s
+[DEBUG] Processed NA1_5471808080 in 0.41s
+[DEBUG] Processed NA1_5471780950 in 0.59s
+[DEBUG] Processed NA1_5471105029 in 0.50s
+[DEBUG] Processed NA1_5470897353 in 0.36s
+[DEBUG] Processed NA1_5470855249 in 0.36s
+[DEBUG] Processed NA1_5470783123 in 0.40s
+[DEBUG] Processed NA1_5470215030 in 0.21s
+[DEBUG] Processed NA1_5470163278 in 0.24s
+[DEBUG] Processed NA1_5470110908 in 0.21s
+[DEBUG] Processed NA1_5470050107 in 0.25s
+[DEBUG] Processed NA1_5470004233 in 0.22s
+[DEBUG] Processed NA1_5469358260 in 0.28s
+[DEBUG] Processed NA1_5469308220 in 0.22s
+[DEBUG] Processed NA1_5469251531 in 0.20s
+[DEBUG] Processed NA1_5469218363 in 0.26s
+[DEBUG] Processed NA1_5469181878 in 0.22s
+[DEBUG] Processed NA1_5469137202 in 0.24s
+[DEBUG] Processed NA1_5469094927 in 0.26s
+[DEBUG] Processed NA1_5469065424 in 0.22s
+[DEBUG] Processed NA1_5468413614 in 0.21s
+[DEBUG] Processed NA1_5468354309 in 0.20s
+[DEBUG] Processed NA1_5468310401 in 0.30s
+[DEBUG] Processed NA1_5468255915 in 0.27s
+[DEBUG] Processed NA1_5468166552 in 0.21s
+[DEBUG] Processed NA1_5468129316 in 0.26s
+[DEBUG] Processed NA1_5468009145 in 0.25s
+[DEBUG] Processed NA1_5467971837 in 0.27s
+[DEBUG] Processed NA1_5467922452 in 0.20s
+[DEBUG] Processed NA1_5467904056 in 0.19s
+[DEBUG] Processed NA1_5467890131 in 0.20s
+[DEBUG] Processed NA1_5467583491 in 0.21s
+[DEBUG] Processed NA1_5467546584 in 0.67s
+[DEBUG] Processed NA1_5467510185 in 0.22s
+[DEBUG] Processed NA1_5467472475 in 0.21s
+[DEBUG] Processed NA1_5467435075 in 0.23s
+[DEBUG] Processed NA1_5467412894 in 0.24s
+[DEBUG] Processed NA1_5467387093 in 0.17s
+[DEBUG] Processed NA1_5467097500 in 0.18s
+[DEBUG] Processed NA1_5467066894 in 0.25s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769283952.1513734
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.20s
+[DEBUG] Processed NA1_5472895375 in 0.28s
+[DEBUG] Processed NA1_5472852547 in 0.18s
+[DEBUG] Processed NA1_5472803939 in 0.26s
+
+[DEBUG] /api/analyze/ POST received at 1769283963.6045911
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":null}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=None
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[DEBUG] Processed NA1_5472775485 in 0.23s
+[DEBUG] Pipeline Step: Fetching Match History...
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DEBUG] Processed NA1_5472726145 in 0.28s
+[DEBUG] Processed NA1_5472688649 in 0.23s
+[DEBUG] Processed NA1_5472669736 in 0.21s
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[DEBUG] Processed NA1_5472624433 in 0.21s
+[DEBUG] Processed NA1_5471888096 in 0.24s
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Processed NA1_5471848076 in 0.27s
+[DEBUG] Processed NA1_5471808080 in 0.58s
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Processed NA1_5471780950 in 0.22s
+
+[DEBUG] /api/analyze/ POST received at 1769283967.2021394
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DEBUG] Processed NA1_5471105029 in 0.20s
+[DEBUG] Processed NA1_5470897353 in 0.16s
+[DEBUG] Processed NA1_5470855249 in 0.18s
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DEBUG] Processed NA1_5470783123 in 0.20s
+[DEBUG] Processed NA1_5470215030 in 0.24s
+[DEBUG] Processed NA1_5470163278 in 0.20s
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Processed NA1_5470110908 in 0.54s
+[DEBUG] Processed NA1_5470050107 in 0.20s
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Processed NA1_5470004233 in 0.31s
+[DEBUG] Processed NA1_5469358260 in 0.51s
+[DEBUG] Processed NA1_5469308220 in 0.22s
+[DEBUG] Processed NA1_5469251531 in 0.22s
+[DEBUG] Processed NA1_5469218363 in 0.30s
+[DEBUG] Processed NA1_5469181878 in 0.79s
+[DEBUG] Processed NA1_5469137202 in 0.30s
+[DEBUG] Processed NA1_5469094927 in 0.89s
+[DEBUG] Processed NA1_5469065424 in 0.93s
+[DEBUG] Processed NA1_5468413614 in 0.60s
+[DEBUG] Processed NA1_5468354309 in 0.60s
+[DEBUG] Processed NA1_5468310401 in 0.65s
+[DEBUG] Processed NA1_5468255915 in 0.51s
+[DEBUG] Processed NA1_5468166552 in 0.35s
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5468129316 in 0.48s
+[DEBUG] Processed NA1_5472968072 in 0.59s
+[DEBUG] Processed NA1_5472895375 in 1.09s
+[DEBUG] Processed NA1_5468009145 in 1.40s
+[DEBUG] Processed NA1_5472852547 in 0.73s
+[DEBUG] Processed NA1_5472803939 in 0.44s
+[DEBUG] Processed NA1_5472775485 in 0.28s
+[DEBUG] Processed NA1_5472726145 in 1.59s
+[DEBUG] Processed NA1_5467971837 in 3.76s
+[DEBUG] Processed NA1_5472688649 in 0.50s
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5467922452 in 0.46s
+[DEBUG] Processed NA1_5472669736 in 0.42s
+[DEBUG] Processed NA1_5467904056 in 0.54s
+[DEBUG] Processed NA1_5472968072 in 0.87s
+[DEBUG] Processed NA1_5472624433 in 0.57s
+[DEBUG] Processed NA1_5467890131 in 0.44s
+[DEBUG] Processed NA1_5472895375 in 0.44s
+[DEBUG] Processed NA1_5471888096 in 0.39s
+[DEBUG] Processed NA1_5467583491 in 0.45s
+[DEBUG] Processed NA1_5472852547 in 0.39s
+[DEBUG] Processed NA1_5471848076 in 0.54s
+[DEBUG] Processed NA1_5467546584 in 0.49s
+[DEBUG] Processed NA1_5472803939 in 0.34s
+[DEBUG] Processed NA1_5471808080 in 0.49s
+[DEBUG] Processed NA1_5467510185 in 0.47s
+[DEBUG] Processed NA1_5472775485 in 0.44s
+[DEBUG] Processed NA1_5471780950 in 0.37s
+[DEBUG] Processed NA1_5467472475 in 0.38s
+[DEBUG] Processed NA1_5471105029 in 0.40s
+[DEBUG] Processed NA1_5472726145 in 0.76s
+[DEBUG] Processed NA1_5470897353 in 0.28s
+[DEBUG] Processed NA1_5467435075 in 0.76s
+[DEBUG] Processed NA1_5472688649 in 0.23s
+[DEBUG] Processed NA1_5472669736 in 0.18s
+[DEBUG] Processed NA1_5470855249 in 0.49s
+[DEBUG] Processed NA1_5467412894 in 0.19s
+[DEBUG] Processed NA1_5472624433 in 0.35s
+[DEBUG] Processed NA1_5467387093 in 0.33s
+[DEBUG] Processed NA1_5470783123 in 0.33s
+[DEBUG] Processed NA1_5471888096 in 0.53s
+[DEBUG] Processed NA1_5470215030 in 0.33s
+[DEBUG] Processed NA1_5467097500 in 0.34s
+[DEBUG] Processed NA1_5470163278 in 0.20s
+[DEBUG] Processed NA1_5471848076 in 0.70s
+[DEBUG] Processed NA1_5467066894 in 0.39s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Processed NA1_5470110908 in 0.74s
+[DEBUG] Processed NA1_5471808080 in 0.75s
+[DEBUG] Processed NA1_5470050107 in 0.31s
+[DEBUG] Processed NA1_5471780950 in 0.27s
+[DEBUG] Building detailed_matches...
+[DEBUG] Processed NA1_5470004233 in 0.38s
+[DEBUG] Processed NA1_5471105029 in 0.39s
+[DEBUG] Processed NA1_5469358260 in 0.36s
+[DEBUG] Processed NA1_5470897353 in 0.31s
+[DEBUG] Processed NA1_5470855249 in 0.43s
+[DEBUG] Processed NA1_5469308220 in 0.59s
+[DEBUG] Processed NA1_5470783123 in 0.36s
+[DEBUG] Processed NA1_5469251531 in 0.39s
+[DEBUG] Processed NA1_5470215030 in 0.28s
+[DEBUG] Processed NA1_5469218363 in 0.29s
+[DEBUG] Processed NA1_5469181878 in 0.43s
+[DEBUG] Processed NA1_5470163278 in 0.78s
+[DEBUG] Processed NA1_5470110908 in 0.57s
+[DEBUG] Processed NA1_5469137202 in 0.97s
+[DEBUG] Processed NA1_5470050107 in 0.32s
+[DEBUG] Processed NA1_5469094927 in 0.32s
+[DEBUG] Processed NA1_5470004233 in 0.34s
+[DEBUG] Processed NA1_5469065424 in 0.29s
+[DEBUG] Processed NA1_5469358260 in 0.32s
+[DEBUG] Processed NA1_5468413614 in 0.28s
+[DEBUG] Processed NA1_5468354309 in 0.17s
+[DEBUG] Processed NA1_5469308220 in 0.54s
+[DEBUG] Processed NA1_5468310401 in 0.33s
+[DEBUG] Processed NA1_5469251531 in 0.33s
+[DEBUG] Processed NA1_5469218363 in 0.17s
+[DEBUG] Processed NA1_5468255915 in 0.57s
+[DEBUG] Processed NA1_5469181878 in 0.29s
+[DEBUG] Processed NA1_5468166552 in 0.36s
+[DEBUG] Processed NA1_5468129316 in 0.20s
+[DEBUG] Processed NA1_5469137202 in 0.57s
+[DEBUG] Processed NA1_5469094927 in 0.21s
+[DEBUG] Processed NA1_5468009145 in 0.60s
+[DEBUG] Processed NA1_5469065424 in 0.34s
+[DEBUG] Processed NA1_5467971837 in 0.34s
+[DEBUG] Processed NA1_5467922452 in 0.21s
+[DEBUG] Processed NA1_5468413614 in 0.58s
+[DEBUG] Processed NA1_5467904056 in 0.37s
+[DEBUG] Processed NA1_5468354309 in 0.34s
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Processed NA1_5468310401 in 0.22s
+[DEBUG] Processed NA1_5467890131 in 0.82s
+[DEBUG] Processed NA1_5468255915 in 0.41s
+[DEBUG] Processed NA1_5468166552 in 0.22s
+[DEBUG] Processed NA1_5467583491 in 0.61s
+[DEBUG] Processed NA1_5467546584 in 0.78s
+[DEBUG] Processed NA1_5468129316 in 1.28s
+[DEBUG] Processed NA1_5467510185 in 0.45s
+[DEBUG] Processed NA1_5468009145 in 0.59s
+[DEBUG] Processed NA1_5467472475 in 0.53s
+[DEBUG] Processed NA1_5467971837 in 1.86s
+[DEBUG] Processed NA1_5467435075 in 2.98s
+[DEBUG] Processed NA1_5467922452 in 1.80s
+[DEBUG] Processed NA1_5467412894 in 2.05s
+[DEBUG] Processed NA1_5467904056 in 2.28s
+[DEBUG] Processed NA1_5467387093 in 0.85s
+[DEBUG] Processed NA1_5467890131 in 1.00s
+[DEBUG] Processed NA1_5467097500 in 0.89s
+[DEBUG] Processed NA1_5467583491 in 0.69s
+[DEBUG] Processed NA1_5467066894 in 0.79s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Processed NA1_5467546584 in 0.72s
+[DEBUG] Processed NA1_5467510185 in 0.42s
+[DEBUG] Building detailed_matches...
+[DEBUG] Processed NA1_5467472475 in 0.60s
+[DEBUG] Processed NA1_5467435075 in 1.20s
+[DEBUG] Processed NA1_5467412894 in 1.63s
+[DEBUG] Processed NA1_5467387093 in 0.61s
+[DEBUG] Processed NA1_5467097500 in 0.36s
+[DEBUG] Processed NA1_5467066894 in 0.59s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769284046.2356095
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769284055.36847
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] Status: 200
+mericas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 262 bytes
+[DEBUG] Sending Response object now.
+[DEBUG] Existing analysis check done. Found: True
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.23s
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Processed NA1_5472895375 in 0.35s
+[DEBUG] Processed NA1_5472852547 in 0.25s
+[DEBUG] Processed NA1_5472803939 in 0.19s
+[DEBUG] Processed NA1_5472775485 in 0.16s
+[DEBUG] Processed NA1_5472726145 in 0.24s
+[DEBUG] Processed NA1_5472688649 in 0.41s
+[DEBUG] Processed NA1_5472669736 in 0.35s
+[DEBUG] Processed NA1_5472624433 in 0.42s
+[DEBUG] Processed NA1_5471888096 in 0.45s
+[DEBUG] Processed NA1_5471848076 in 0.45s
+[DEBUG] Processed NA1_5471808080 in 0.27s
+[DEBUG] Processed NA1_5471780950 in 0.43s
+[DEBUG] Processed NA1_5471105029 in 0.29s
+[DEBUG] Processed NA1_5470897353 in 0.37s
+[DEBUG] Processed NA1_5470855249 in 0.55s
+[DEBUG] Processed NA1_5470783123 in 0.52s
+[DEBUG] Processed NA1_5470215030 in 0.42s
+[DEBUG] Processed NA1_5470163278 in 0.68s
+[DEBUG] Processed NA1_5470110908 in 0.74s
+[DEBUG] Processed NA1_5470050107 in 0.48s
+[DEBUG] Processed NA1_5470004233 in 0.57s
+[DEBUG] Processed NA1_5469358260 in 0.49s
+[DEBUG] Processed NA1_5469308220 in 0.46s
+[DEBUG] Processed NA1_5469251531 in 0.33s
+[DEBUG] Processed NA1_5469218363 in 0.16s
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5469181878 in 0.30s
+[DEBUG] Processed NA1_5472968072 in 0.42s
+[DEBUG] Processed NA1_5469137202 in 0.60s
+[DEBUG] Processed NA1_5469094927 in 0.19s
+[DEBUG] Processed NA1_5472895375 in 0.76s
+[DEBUG] Processed NA1_5469065424 in 0.47s
+[DEBUG] Processed NA1_5472852547 in 0.49s
+[DEBUG] Processed NA1_5468413614 in 0.37s
+[DEBUG] Processed NA1_5472803939 in 0.49s
+[DEBUG] Processed NA1_5468354309 in 0.44s
+[DEBUG] Processed NA1_5472775485 in 0.47s
+[DEBUG] Processed NA1_5468310401 in 0.42s
+[DEBUG] Processed NA1_5472726145 in 0.51s
+[DEBUG] Processed NA1_5468255915 in 0.49s
+[DEBUG] Processed NA1_5472688649 in 0.33s
+[DEBUG] Processed NA1_5468166552 in 0.34s
+[DEBUG] Processed NA1_5472669736 in 0.41s
+[DEBUG] Processed NA1_5468129316 in 0.44s
+[DEBUG] Processed NA1_5468009145 in 0.29s
+[DEBUG] Processed NA1_5472624433 in 0.81s
+[DEBUG] Processed NA1_5467971837 in 0.52s
+[DEBUG] Processed NA1_5471888096 in 0.52s
+[DEBUG] Processed NA1_5467922452 in 0.48s
+[DEBUG] Processed NA1_5471848076 in 0.53s
+[DEBUG] Processed NA1_5467904056 in 0.49s
+[DEBUG] Processed NA1_5471808080 in 0.82s
+[DEBUG] Processed NA1_5471780950 in 0.28s
+[DEBUG] Processed NA1_5467890131 in 1.34s
+[DEBUG] Processed NA1_5467583491 in 0.29s
+[DEBUG] Processed NA1_5471105029 in 1.08s
+[DEBUG] Processed NA1_5467546584 in 0.35s
+[DEBUG] Processed NA1_5470897353 in 0.54s
+[DEBUG] Processed NA1_5467510185 in 0.40s
+[DEBUG] Processed NA1_5470855249 in 0.46s
+[DEBUG] Processed NA1_5467472475 in 0.42s
+[DEBUG] Processed NA1_5470783123 in 0.43s
+[DEBUG] Processed NA1_5467435075 in 0.41s
+[DEBUG] Processed NA1_5470215030 in 0.42s
+[DEBUG] Processed NA1_5467412894 in 0.38s
+[DEBUG] Processed NA1_5467387093 in 0.17s
+[DEBUG] Processed NA1_5470163278 in 0.59s
+[DEBUG] Processed NA1_5467097500 in 0.46s
+[DEBUG] Processed NA1_5470110908 in 0.56s
+[DEBUG] Processed NA1_5467066894 in 0.62s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Processed NA1_5470050107 in 0.76s
+[DEBUG] Building per_game_items...
+[DEBUG] Processed NA1_5470004233 in 0.80s
+[DEBUG] Building detailed_matches...
+[DEBUG] Processed NA1_5469358260 in 0.31s
+[DEBUG] Processed NA1_5469308220 in 0.23s
+[DEBUG] Processed NA1_5469251531 in 0.24s
+[DEBUG] Processed NA1_5469218363 in 0.22s
+[DEBUG] Processed NA1_5469181878 in 0.30s
+[DEBUG] Processed NA1_5469137202 in 0.47s
+[DEBUG] Processed NA1_5469094927 in 0.32s
+[DEBUG] Processed NA1_5469065424 in 0.16s
+[DEBUG] Processed NA1_5468413614 in 0.29s
+[DEBUG] Processed NA1_5468354309 in 0.29s
+[DEBUG] Processed NA1_5468310401 in 0.35s
+[DEBUG] Processed NA1_5468255915 in 0.32s
+[DEBUG] Processed NA1_5468166552 in 0.52s
+[DEBUG] Processed NA1_5468129316 in 0.30s
+[DEBUG] Processed NA1_5468009145 in 0.27s
+[DEBUG] Processed NA1_5467971837 in 0.36s
+[DEBUG] Processed NA1_5467922452 in 0.39s
+[DEBUG] Processed NA1_5467904056 in 0.23s
+[DEBUG] Processed NA1_5467890131 in 0.26s
+[DEBUG] Processed NA1_5467583491 in 0.22s
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Processed NA1_5467546584 in 0.33s
+[DEBUG] Processed NA1_5467510185 in 0.28s
+[DEBUG] Processed NA1_5467472475 in 0.29s
+[DEBUG] Processed NA1_5467435075 in 0.25s
+[DEBUG] Processed NA1_5467412894 in 0.25s
+[DEBUG] Processed NA1_5467387093 in 0.32s
+[DEBUG] Processed NA1_5467097500 in 0.27s
+[DEBUG] Processed NA1_5467066894 in 0.48s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+
+[DEBUG] /api/analyze/ POST received at 1769284125.6288362
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+
+[DEBUG] /api/analyze/ POST received at 1769284211.690823
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.20s
+[DEBUG] Processed NA1_5472895375 in 0.21s
+[DEBUG] Processed NA1_5472852547 in 0.18s
+[DEBUG] Processed NA1_5472803939 in 0.20s
+[DEBUG] Processed NA1_5472775485 in 0.21s
+[DEBUG] Processed NA1_5472726145 in 0.23s
+[DEBUG] Processed NA1_5472688649 in 0.20s
+[DEBUG] Processed NA1_5472669736 in 0.19s
+[DEBUG] Processed NA1_5472624433 in 0.25s
+[DEBUG] Processed NA1_5471888096 in 0.19s
+[DEBUG] Processed NA1_5471848076 in 0.20s
+[DEBUG] Processed NA1_5471808080 in 0.24s
+[DEBUG] Processed NA1_5471780950 in 0.21s
+[DEBUG] Processed NA1_5471105029 in 0.24s
+[DEBUG] Processed NA1_5470897353 in 0.26s
+[DEBUG] Processed NA1_5470855249 in 0.30s
+[DEBUG] Processed NA1_5470783123 in 0.21s
+[DEBUG] Processed NA1_5470215030 in 0.22s
+[DEBUG] Processed NA1_5470163278 in 0.18s
+[DEBUG] Processed NA1_5470110908 in 0.23s
+[DEBUG] Processed NA1_5470050107 in 0.24s
+[DEBUG] Processed NA1_5470004233 in 0.22s
+[DEBUG] Processed NA1_5469358260 in 0.25s
+[DEBUG] Processed NA1_5469308220 in 0.23s
+[DEBUG] Processed NA1_5469251531 in 0.23s
+[DEBUG] Processed NA1_5469218363 in 0.24s
+[DEBUG] Processed NA1_5469181878 in 0.22s
+[DEBUG] Processed NA1_5469137202 in 0.25s
+[DEBUG] Processed NA1_5469094927 in 0.23s
+[DEBUG] Processed NA1_5469065424 in 0.19s
+[DEBUG] Processed NA1_5468413614 in 0.18s
+[DEBUG] Processed NA1_5468354309 in 0.21s
+[DEBUG] Processed NA1_5468310401 in 0.25s
+[DEBUG] Processed NA1_5468255915 in 0.32s
+[DEBUG] Processed NA1_5468166552 in 0.21s
+[DEBUG] Processed NA1_5468129316 in 0.19s
+[DEBUG] Processed NA1_5468009145 in 0.28s
+[DEBUG] Processed NA1_5467971837 in 0.25s
+[DEBUG] Processed NA1_5467922452 in 0.19s
+[DEBUG] Processed NA1_5467904056 in 0.22s
+[DEBUG] Processed NA1_5467890131 in 0.18s
+[DEBUG] Processed NA1_5467583491 in 0.21s
+[DEBUG] Processed NA1_5467546584 in 0.19s
+[DEBUG] Processed NA1_5467510185 in 0.23s
+[DEBUG] Processed NA1_5467472475 in 0.18s
+[DEBUG] Processed NA1_5467435075 in 0.19s
+[DEBUG] Processed NA1_5467412894 in 0.18s
+[DEBUG] Processed NA1_5467387093 in 0.17s
+[DEBUG] Processed NA1_5467097500 in 0.26s
+[DEBUG] Processed NA1_5467066894 in 0.20s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+ed: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769284258.1681414
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.19s
+[DEBUG] Processed NA1_5472895375 in 0.30s
+[DEBUG] Processed NA1_5472852547 in 0.18s
+[DEBUG] Processed NA1_5472803939 in 0.21s
+[DEBUG] Processed NA1_5472775485 in 0.23s
+[DEBUG] Processed NA1_5472726145 in 0.27s
+[DEBUG] Processed NA1_5472688649 in 0.33s
+[DEBUG] Processed NA1_5472669736 in 0.22s
+[DEBUG] Processed NA1_5472624433 in 0.25s
+[DEBUG] Processed NA1_5471888096 in 0.24s
+[DEBUG] Processed NA1_5471848076 in 0.31s
+[DEBUG] Processed NA1_5471808080 in 0.23s
+[DEBUG] Processed NA1_5471780950 in 0.29s
+[DEBUG] Processed NA1_5471105029 in 0.30s
+[DEBUG] Processed NA1_5470897353 in 0.26s
+[DEBUG] Processed NA1_5470855249 in 0.36s
+[DEBUG] Processed NA1_5470783123 in 0.25s
+[DEBUG] Processed NA1_5470215030 in 0.41s
+[DEBUG] Processed NA1_5470163278 in 0.26s
+[DEBUG] Processed NA1_5470110908 in 0.22s
+[DEBUG] Processed NA1_5470050107 in 0.34s
+[DEBUG] Processed NA1_5470004233 in 0.31s
+[DEBUG] Processed NA1_5469358260 in 0.24s
+[DEBUG] Processed NA1_5469308220 in 0.26s
+[DEBUG] Processed NA1_5469251531 in 0.26s
+[DEBUG] Processed NA1_5469218363 in 0.28s
+[DEBUG] Processed NA1_5469181878 in 0.32s
+[DEBUG] Processed NA1_5469137202 in 0.23s
+[DEBUG] Processed NA1_5469094927 in 0.24s
+[DEBUG] Processed NA1_5469065424 in 0.22s
+[DEBUG] Processed NA1_5468413614 in 0.22s
+[DEBUG] Processed NA1_5468354309 in 0.22s
+[DEBUG] Processed NA1_5468310401 in 0.25s
+[DEBUG] Processed NA1_5468255915 in 0.29s
+[DEBUG] Processed NA1_5468166552 in 0.24s
+[DEBUG] Processed NA1_5468129316 in 0.32s
+[DEBUG] Processed NA1_5468009145 in 0.23s
+[DEBUG] Processed NA1_5467971837 in 0.20s
+[DEBUG] Processed NA1_5467922452 in 0.23s
+[DEBUG] Processed NA1_5467904056 in 0.24s
+[DEBUG] Processed NA1_5467890131 in 0.20s
+[DEBUG] Processed NA1_5467583491 in 0.20s
+[DEBUG] Processed NA1_5467546584 in 0.26s
+[DEBUG] Processed NA1_5467510185 in 0.22s
+[DEBUG] Processed NA1_5467472475 in 0.27s
+[DEBUG] Processed NA1_5467435075 in 0.29s
+[DEBUG] Processed NA1_5467412894 in 0.33s
+[DEBUG] Processed NA1_5467387093 in 0.20s
+[DEBUG] Processed NA1_5467097500 in 0.26s
+[DEBUG] Processed NA1_5467066894 in 0.22s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+
+[DEBUG] /api/analyze/ POST received at 1769284317.5791512
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+
+[DEBUG] /api/analyze/ POST received at 1769284375.6186905
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.21s
+[DEBUG] Processed NA1_5472895375 in 0.34s
+[DEBUG] Processed NA1_5472852547 in 0.32s
+[DEBUG] Processed NA1_5472803939 in 0.19s
+[DEBUG] Processed NA1_5472775485 in 0.23s
+[DEBUG] Processed NA1_5472726145 in 0.23s
+[DEBUG] Processed NA1_5472688649 in 0.40s
+[DEBUG] Processed NA1_5472669736 in 0.20s
+[DEBUG] Processed NA1_5472624433 in 0.22s
+[DEBUG] Processed NA1_5471888096 in 0.24s
+[DEBUG] Processed NA1_5471848076 in 0.24s
+[DEBUG] Processed NA1_5471808080 in 0.19s
+[DEBUG] Processed NA1_5471780950 in 0.18s
+[DEBUG] Processed NA1_5471105029 in 0.21s
+[DEBUG] Processed NA1_5470897353 in 0.22s
+[DEBUG] Processed NA1_5470855249 in 0.26s
+[DEBUG] Processed NA1_5470783123 in 0.25s
+[DEBUG] Processed NA1_5470215030 in 0.20s
+[DEBUG] Processed NA1_5470163278 in 0.28s
+[DEBUG] Processed NA1_5470110908 in 0.21s
+[DEBUG] Processed NA1_5470050107 in 0.22s
+[DEBUG] Processed NA1_5470004233 in 0.23s
+[DEBUG] Processed NA1_5469358260 in 0.26s
+[DEBUG] Processed NA1_5469308220 in 0.24s
+[DEBUG] Processed NA1_5469251531 in 0.26s
+[DEBUG] Processed NA1_5469218363 in 0.29s
+[DEBUG] Processed NA1_5469181878 in 0.22s
+[DEBUG] Processed NA1_5469137202 in 0.22s
+[DEBUG] Processed NA1_5469094927 in 0.24s
+[DEBUG] Processed NA1_5469065424 in 0.29s
+[DEBUG] Processed NA1_5468413614 in 0.20s
+[DEBUG] Processed NA1_5468354309 in 0.17s
+[DEBUG] Processed NA1_5468310401 in 0.21s
+[DEBUG] Processed NA1_5468255915 in 0.22s
+[DEBUG] Processed NA1_5468166552 in 0.25s
+[DEBUG] Processed NA1_5468129316 in 0.20s
+[DEBUG] Processed NA1_5468009145 in 0.21s
+[DEBUG] Processed NA1_5467971837 in 0.20s
+[DEBUG] Processed NA1_5467922452 in 0.20s
+[DEBUG] Processed NA1_5467904056 in 0.25s
+[DEBUG] Processed NA1_5467890131 in 0.22s
+[DEBUG] Processed NA1_5467583491 in 0.18s
+[DEBUG] Processed NA1_5467546584 in 0.20s
+[DEBUG] Processed NA1_5467510185 in 0.22s
+[DEBUG] Processed NA1_5467472475 in 0.20s
+[DEBUG] Processed NA1_5467435075 in 0.22s
+[DEBUG] Processed NA1_5467412894 in 0.16s
+[DEBUG] Processed NA1_5467387093 in 0.20s
+[DEBUG] Processed NA1_5467097500 in 0.22s
+[DEBUG] Processed NA1_5467066894 in 0.22s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769284418.5273662
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.25s
+[DEBUG] Processed NA1_5472895375 in 0.32s
+[DEBUG] Processed NA1_5472852547 in 0.28s
+[DEBUG] Processed NA1_5472803939 in 0.31s
+[DEBUG] Processed NA1_5472775485 in 0.35s
+[DEBUG] Processed NA1_5472726145 in 0.27s
+[DEBUG] Processed NA1_5472688649 in 0.23s
+[DEBUG] Processed NA1_5472669736 in 0.24s
+[DEBUG] Processed NA1_5472624433 in 0.28s
+[DEBUG] Processed NA1_5471888096 in 0.24s
+[DEBUG] Processed NA1_5471848076 in 0.24s
+[DEBUG] Processed NA1_5471808080 in 0.22s
+[DEBUG] Processed NA1_5471780950 in 0.33s
+[DEBUG] Processed NA1_5471105029 in 0.29s
+[DEBUG] Processed NA1_5470897353 in 0.27s
+[DEBUG] Processed NA1_5470855249 in 0.28s
+[DEBUG] Processed NA1_5470783123 in 0.20s
+[DEBUG] Processed NA1_5470215030 in 0.20s
+[DEBUG] Processed NA1_5470163278 in 0.28s
+[DEBUG] Processed NA1_5470110908 in 0.32s
+[DEBUG] Processed NA1_5470050107 in 0.21s
+[DEBUG] Processed NA1_5470004233 in 0.24s
+[DEBUG] Processed NA1_5469358260 in 0.26s
+[DEBUG] Processed NA1_5469308220 in 0.26s
+[DEBUG] Processed NA1_5469251531 in 0.48s
+[DEBUG] Processed NA1_5469218363 in 0.25s
+[DEBUG] Processed NA1_5469181878 in 0.25s
+[DEBUG] Processed NA1_5469137202 in 0.24s
+[DEBUG] Processed NA1_5469094927 in 0.23s
+[DEBUG] Processed NA1_5469065424 in 0.27s
+[DEBUG] Processed NA1_5468413614 in 0.24s
+[DEBUG] Processed NA1_5468354309 in 0.19s
+[DEBUG] Processed NA1_5468310401 in 0.28s
+[DEBUG] Processed NA1_5468255915 in 0.28s
+[DEBUG] Processed NA1_5468166552 in 0.22s
+[DEBUG] Processed NA1_5468129316 in 0.29s
+[DEBUG] Processed NA1_5468009145 in 0.30s
+[DEBUG] Processed NA1_5467971837 in 0.26s
+[DEBUG] Processed NA1_5467922452 in 0.28s
+[DEBUG] Processed NA1_5467904056 in 0.19s
+[DEBUG] Processed NA1_5467890131 in 0.24s
+[DEBUG] Processed NA1_5467583491 in 0.26s
+[DEBUG] Processed NA1_5467546584 in 0.22s
+[DEBUG] Processed NA1_5467510185 in 0.20s
+[DEBUG] Processed NA1_5467472475 in 0.24s
+[DEBUG] Processed NA1_5467435075 in 0.23s
+[DEBUG] Processed NA1_5467412894 in 0.22s
+[DEBUG] Processed NA1_5467387093 in 0.21s
+[DEBUG] Processed NA1_5467097500 in 0.31s
+[DEBUG] Processed NA1_5467066894 in 0.28s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[REQ] Status: 200
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769284545.5675166
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.19s
+[DEBUG] Processed NA1_5472895375 in 0.24s
+[DEBUG] Processed NA1_5472852547 in 0.21s
+[DEBUG] Processed NA1_5472803939 in 0.32s
+[DEBUG] Processed NA1_5472775485 in 0.36s
+[DEBUG] Processed NA1_5472726145 in 0.31s
+[DEBUG] Processed NA1_5472688649 in 0.31s
+[DEBUG] Processed NA1_5472669736 in 0.29s
+[DEBUG] Processed NA1_5472624433 in 0.26s
+[DEBUG] Processed NA1_5471888096 in 0.23s
+[DEBUG] Processed NA1_5471848076 in 0.23s
+[DEBUG] Processed NA1_5471808080 in 0.19s
+[DEBUG] Processed NA1_5471780950 in 0.20s
+[DEBUG] Processed NA1_5471105029 in 0.27s
+[DEBUG] Processed NA1_5470897353 in 0.24s
+[DEBUG] Processed NA1_5470855249 in 0.31s
+[DEBUG] Processed NA1_5470783123 in 0.23s
+[DEBUG] Processed NA1_5470215030 in 0.26s
+[DEBUG] Processed NA1_5470163278 in 0.24s
+[DEBUG] Processed NA1_5470110908 in 0.25s
+[DEBUG] Processed NA1_5470050107 in 0.21s
+[DEBUG] Processed NA1_5470004233 in 0.31s
+[DEBUG] Processed NA1_5469358260 in 0.20s
+[DEBUG] Processed NA1_5469308220 in 0.25s
+[DEBUG] Processed NA1_5469251531 in 0.25s
+[DEBUG] Processed NA1_5469218363 in 0.34s
+[DEBUG] Processed NA1_5469181878 in 0.20s
+[DEBUG] Processed NA1_5469137202 in 0.20s
+[DEBUG] Processed NA1_5469094927 in 0.22s
+[DEBUG] Processed NA1_5469065424 in 0.25s
+[DEBUG] Processed NA1_5468413614 in 0.21s
+[DEBUG] Processed NA1_5468354309 in 0.23s
+[DEBUG] Processed NA1_5468310401 in 0.36s
+[DEBUG] Processed NA1_5468255915 in 0.23s
+[DEBUG] Processed NA1_5468166552 in 0.25s
+[DEBUG] Processed NA1_5468129316 in 0.21s
+[DEBUG] Processed NA1_5468009145 in 0.30s
+[DEBUG] Processed NA1_5467971837 in 0.21s
+[DEBUG] Processed NA1_5467922452 in 0.23s
+[DEBUG] Processed NA1_5467904056 in 0.25s
+[DEBUG] Processed NA1_5467890131 in 0.20s
+[DEBUG] Processed NA1_5467583491 in 0.24s
+[DEBUG] Processed NA1_5467546584 in 0.21s
+[DEBUG] Processed NA1_5467510185 in 0.22s
+[DEBUG] Processed NA1_5467472475 in 0.21s
+[DEBUG] Processed NA1_5467435075 in 0.20s
+[DEBUG] Processed NA1_5467412894 in 0.21s
+[DEBUG] Processed NA1_5467387093 in 0.21s
+[DEBUG] Processed NA1_5467097500 in 0.25s
+[DEBUG] Processed NA1_5467066894 in 0.25s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+[REQ] Status: 200
+
+[DEBUG] /api/analyze/ POST received at 1769284606.1177912
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.17s
+[DEBUG] Processed NA1_5472895375 in 0.21s
+[DEBUG] Processed NA1_5472852547 in 0.20s
+[DEBUG] Processed NA1_5472803939 in 0.23s
+[DEBUG] Processed NA1_5472775485 in 0.26s
+[DEBUG] Processed NA1_5472726145 in 0.29s
+[DEBUG] Processed NA1_5472688649 in 0.23s
+[DEBUG] Processed NA1_5472669736 in 0.25s
+[DEBUG] Processed NA1_5472624433 in 0.25s
+[DEBUG] Processed NA1_5471888096 in 0.24s
+[DEBUG] Processed NA1_5471848076 in 0.24s
+[DEBUG] Processed NA1_5471808080 in 0.34s
+[DEBUG] Processed NA1_5471780950 in 0.46s
+[DEBUG] Processed NA1_5471105029 in 0.23s
+[DEBUG] Processed NA1_5470897353 in 0.34s
+[DEBUG] Processed NA1_5470855249 in 0.22s
+[DEBUG] Processed NA1_5470783123 in 0.24s
+[DEBUG] Processed NA1_5470215030 in 0.22s
+[DEBUG] Processed NA1_5470163278 in 0.22s
+[DEBUG] Processed NA1_5470110908 in 0.28s
+[DEBUG] Processed NA1_5470050107 in 0.27s
+[DEBUG] Processed NA1_5470004233 in 0.26s
+[DEBUG] Processed NA1_5469358260 in 0.28s
+[DEBUG] Processed NA1_5469308220 in 0.32s
+[DEBUG] Processed NA1_5469251531 in 0.51s
+[DEBUG] Processed NA1_5469218363 in 0.19s
+[DEBUG] Processed NA1_5469181878 in 0.21s
+[DEBUG] Processed NA1_5469137202 in 0.27s
+[DEBUG] Processed NA1_5469094927 in 0.19s
+[DEBUG] Processed NA1_5469065424 in 0.20s
+[DEBUG] Processed NA1_5468413614 in 0.30s
+[DEBUG] Processed NA1_5468354309 in 0.27s
+[DEBUG] Processed NA1_5468310401 in 0.18s
+[DEBUG] Processed NA1_5468255915 in 0.26s
+[DEBUG] Processed NA1_5468166552 in 0.21s
+[DEBUG] Processed NA1_5468129316 in 0.18s
+[DEBUG] Processed NA1_5468009145 in 0.25s
+[DEBUG] Processed NA1_5467971837 in 0.24s
+[DEBUG] Processed NA1_5467922452 in 0.19s
+[DEBUG] Processed NA1_5467904056 in 0.20s
+[DEBUG] Processed NA1_5467890131 in 0.27s
+[DEBUG] Processed NA1_5467583491 in 0.36s
+[DEBUG] Processed NA1_5467546584 in 0.22s
+[DEBUG] Processed NA1_5467510185 in 0.34s
+[DEBUG] Processed NA1_5467472475 in 0.24s
+[DEBUG] Processed NA1_5467435075 in 0.28s
+[DEBUG] Processed NA1_5467412894 in 0.27s
+[DEBUG] Processed NA1_5467387093 in 0.26s
+[DEBUG] Processed NA1_5467097500 in 0.23s
+[DEBUG] Processed NA1_5467066894 in 0.28s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+[REQ] Status: 200
+
+[DEBUG] /api/analyze/ POST received at 1769284875.281033
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.21s
+[DEBUG] Processed NA1_5472895375 in 0.54s
+[DEBUG] Processed NA1_5472852547 in 0.55s
+[DEBUG] Processed NA1_5472803939 in 0.25s
+[DEBUG] Processed NA1_5472775485 in 0.63s
+[DEBUG] Processed NA1_5472726145 in 0.48s
+[DEBUG] Processed NA1_5472688649 in 0.23s
+[DEBUG] Processed NA1_5472669736 in 0.22s
+[DEBUG] Processed NA1_5472624433 in 0.24s
+[DEBUG] Processed NA1_5471888096 in 0.23s
+[DEBUG] Processed NA1_5471848076 in 0.21s
+[DEBUG] Processed NA1_5471808080 in 0.23s
+[DEBUG] Processed NA1_5471780950 in 0.21s
+[DEBUG] Processed NA1_5471105029 in 0.24s
+[DEBUG] Processed NA1_5470897353 in 0.21s
+[DEBUG] Processed NA1_5470855249 in 0.25s
+[DEBUG] Processed NA1_5470783123 in 0.19s
+[DEBUG] Processed NA1_5470215030 in 0.21s
+[DEBUG] Processed NA1_5470163278 in 0.25s
+[DEBUG] Processed NA1_5470110908 in 0.23s
+[DEBUG] Processed NA1_5470050107 in 0.20s
+[DEBUG] Processed NA1_5470004233 in 0.20s
+[DEBUG] Processed NA1_5469358260 in 0.25s
+[DEBUG] Processed NA1_5469308220 in 0.24s
+[DEBUG] Processed NA1_5469251531 in 0.28s
+[DEBUG] Processed NA1_5469218363 in 0.20s
+[DEBUG] Processed NA1_5469181878 in 0.30s
+[DEBUG] Processed NA1_5469137202 in 0.24s
+[DEBUG] Processed NA1_5469094927 in 0.22s
+[DEBUG] Processed NA1_5469065424 in 0.19s
+[DEBUG] Processed NA1_5468413614 in 0.29s
+[DEBUG] Processed NA1_5468354309 in 0.28s
+[DEBUG] Processed NA1_5468310401 in 0.25s
+[DEBUG] Processed NA1_5468255915 in 0.26s
+[DEBUG] Processed NA1_5468166552 in 0.45s
+[DEBUG] Processed NA1_5468129316 in 0.32s
+[DEBUG] Processed NA1_5468009145 in 0.23s
+[DEBUG] Processed NA1_5467971837 in 0.22s
+[DEBUG] Processed NA1_5467922452 in 0.20s
+[DEBUG] Processed NA1_5467904056 in 0.29s
+[DEBUG] Processed NA1_5467890131 in 0.23s
+[DEBUG] Processed NA1_5467583491 in 0.19s
+[DEBUG] Processed NA1_5467546584 in 0.24s
+[DEBUG] Processed NA1_5467510185 in 0.21s
+[DEBUG] Processed NA1_5467472475 in 0.26s
+[DEBUG] Processed NA1_5467435075 in 0.21s
+[DEBUG] Processed NA1_5467412894 in 0.24s
+[DEBUG] Processed NA1_5467387093 in 0.28s
+[DEBUG] Processed NA1_5467097500 in 0.22s
+[DEBUG] Processed NA1_5467066894 in 0.34s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769284921.346524
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.17s
+[DEBUG] Processed NA1_5472895375 in 0.33s
+[DEBUG] Processed NA1_5472852547 in 1.05s
+[DEBUG] Processed NA1_5472803939 in 0.21s
+[DEBUG] Processed NA1_5472775485 in 0.22s
+[DEBUG] Processed NA1_5472726145 in 0.43s
+[DEBUG] Processed NA1_5472688649 in 0.30s
+[DEBUG] Processed NA1_5472669736 in 0.26s
+[DEBUG] Processed NA1_5472624433 in 0.34s
+[DEBUG] Processed NA1_5471888096 in 0.36s
+[DEBUG] Processed NA1_5471848076 in 0.27s
+[DEBUG] Processed NA1_5471808080 in 0.25s
+[DEBUG] Processed NA1_5471780950 in 0.28s
+[DEBUG] Processed NA1_5471105029 in 0.27s
+[DEBUG] Processed NA1_5470897353 in 0.22s
+[DEBUG] Processed NA1_5470855249 in 0.27s
+[DEBUG] Processed NA1_5470783123 in 0.25s
+[DEBUG] Processed NA1_5470215030 in 0.25s
+[DEBUG] Processed NA1_5470163278 in 0.23s
+[DEBUG] Processed NA1_5470110908 in 2.35s
+[DEBUG] Processed NA1_5470050107 in 0.24s
+[DEBUG] Processed NA1_5470004233 in 0.22s
+[DEBUG] Processed NA1_5469358260 in 0.18s
+[DEBUG] Processed NA1_5469308220 in 0.25s
+[DEBUG] Processed NA1_5469251531 in 2.04s
+[DEBUG] Processed NA1_5469218363 in 1.46s
+[DEBUG] Processed NA1_5469181878 in 0.76s
+[DEBUG] Processed NA1_5469137202 in 0.91s
+[DEBUG] Processed NA1_5469094927 in 0.34s
+[DEBUG] Processed NA1_5469065424 in 1.45s
+[DEBUG] Processed NA1_5468413614 in 1.61s
+[DEBUG] Processed NA1_5468354309 in 1.12s
+[DEBUG] Processed NA1_5468310401 in 1.01s
+[DEBUG] Processed NA1_5468255915 in 0.38s
+[DEBUG] Processed NA1_5468166552 in 0.21s
+[DEBUG] Processed NA1_5468129316 in 0.22s
+[DEBUG] Processed NA1_5468009145 in 0.25s
+[DEBUG] Processed NA1_5467971837 in 0.22s
+[DEBUG] Processed NA1_5467922452 in 0.27s
+[DEBUG] Processed NA1_5467904056 in 0.28s
+[DEBUG] Processed NA1_5467890131 in 0.19s
+[DEBUG] Processed NA1_5467583491 in 0.23s
+[DEBUG] Processed NA1_5467546584 in 0.24s
+[DEBUG] Processed NA1_5467510185 in 0.22s
+[DEBUG] Processed NA1_5467472475 in 0.20s
+[DEBUG] Processed NA1_5467435075 in 0.20s
+[DEBUG] Processed NA1_5467412894 in 0.19s
+[DEBUG] Processed NA1_5467387093 in 0.21s
+[DEBUG] Processed NA1_5467097500 in 0.26s
+[DEBUG] Processed NA1_5467066894 in 0.23s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769285283.7473242
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines (Batched)...
+[DEBUG] Processed NA1_5472968072 in 0.15s
+[DEBUG] Processed NA1_5472895375 in 0.31s
+[DEBUG] Processed NA1_5472852547 in 0.26s
+[DEBUG] Processed NA1_5472803939 in 0.27s
+[DEBUG] Processed NA1_5472775485 in 0.23s
+[DEBUG] Processed NA1_5472726145 in 0.25s
+[DEBUG] Processed NA1_5472688649 in 0.23s
+[DEBUG] Processed NA1_5472669736 in 0.24s
+[DEBUG] Processed NA1_5472624433 in 0.29s
+[DEBUG] Processed NA1_5471888096 in 0.28s
+[DEBUG] Processed NA1_5471848076 in 0.44s
+[DEBUG] Processed NA1_5471808080 in 0.45s
+[DEBUG] Processed NA1_5471780950 in 0.25s
+[DEBUG] Processed NA1_5471105029 in 0.36s
+[DEBUG] Processed NA1_5470897353 in 0.23s
+[DEBUG] Processed NA1_5470855249 in 0.36s
+[DEBUG] Processed NA1_5470783123 in 0.23s
+[DEBUG] Processed NA1_5470215030 in 0.22s
+[DEBUG] Processed NA1_5470163278 in 0.28s
+[DEBUG] Processed NA1_5470110908 in 0.27s
+[DEBUG] Processed NA1_5470050107 in 0.24s
+[DEBUG] Processed NA1_5470004233 in 0.26s
+[DEBUG] Processed NA1_5469358260 in 0.20s
+[DEBUG] Processed NA1_5469308220 in 0.20s
+[DEBUG] Processed NA1_5469251531 in 0.32s
+[DEBUG] Processed NA1_5469218363 in 0.18s
+[DEBUG] Processed NA1_5469181878 in 0.25s
+[DEBUG] Processed NA1_5469137202 in 0.22s
+[DEBUG] Processed NA1_5469094927 in 0.47s
+[DEBUG] Processed NA1_5469065424 in 0.24s
+[DEBUG] Processed NA1_5468413614 in 0.26s
+[DEBUG] Processed NA1_5468354309 in 0.20s
+[DEBUG] Processed NA1_5468310401 in 0.41s
+[DEBUG] Processed NA1_5468255915 in 0.23s
+[DEBUG] Processed NA1_5468166552 in 0.26s
+[DEBUG] Processed NA1_5468129316 in 0.27s
+[DEBUG] Processed NA1_5468009145 in 0.35s
+[DEBUG] Processed NA1_5467971837 in 0.33s
+[DEBUG] Processed NA1_5467922452 in 0.33s
+[DEBUG] Processed NA1_5467904056 in 0.19s
+[DEBUG] Processed NA1_5467890131 in 0.21s
+[DEBUG] Processed NA1_5467583491 in 0.68s
+[DEBUG] Processed NA1_5467546584 in 0.76s
+[DEBUG] Processed NA1_5467510185 in 0.52s
+[DEBUG] Processed NA1_5467472475 in 2.95s
+[DEBUG] Processed NA1_5467435075 in 1.75s
+[DEBUG] Processed NA1_5467412894 in 0.17s
+[DEBUG] Processed NA1_5467387093 in 0.16s
+[DEBUG] Processed NA1_5467097500 in 0.26s
+[DEBUG] Processed NA1_5467066894 in 0.28s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769287771.262386
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[DEBUG] Error in View: run_analysis_pipeline() got an unexpected keyword argument 'force_refresh'
+
+[DEBUG] /api/analyze/ POST received at 1769287932.7005494
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.06s
+[DEBUG] Processed NA1_5472895375 in 0.08s
+[DEBUG] Processed NA1_5472852547 in 0.04s
+[DEBUG] Processed NA1_5472803939 in 0.06s
+[DEBUG] Processed NA1_5472775485 in 0.05s
+[DEBUG] Processed NA1_5472726145 in 0.06s
+[DEBUG] Processed NA1_5472688649 in 0.07s
+[DEBUG] Processed NA1_5472669736 in 0.05s
+[DEBUG] Processed NA1_5472624433 in 0.06s
+[DEBUG] Processed NA1_5471888096 in 0.06s
+[DEBUG] Processed NA1_5471848076 in 0.06s
+[DEBUG] Processed NA1_5471808080 in 0.07s
+[DEBUG] Processed NA1_5471780950 in 0.06s
+[DEBUG] Processed NA1_5471105029 in 0.06s
+[DEBUG] Processed NA1_5470897353 in 0.06s
+[DEBUG] Processed NA1_5470855249 in 0.07s
+[DEBUG] Processed NA1_5470783123 in 0.05s
+[DEBUG] Processed NA1_5470215030 in 0.05s
+[DEBUG] Processed NA1_5470163278 in 0.05s
+[DEBUG] Processed NA1_5470110908 in 0.06s
+[DEBUG] Processed NA1_5470050107 in 0.07s
+[DEBUG] Processed NA1_5470004233 in 0.06s
+[DEBUG] Processed NA1_5469358260 in 0.05s
+[DEBUG] Processed NA1_5469308220 in 0.06s
+[DEBUG] Processed NA1_5469251531 in 0.07s
+[DEBUG] Processed NA1_5469218363 in 0.05s
+[DEBUG] Processed NA1_5469181878 in 0.06s
+[DEBUG] Processed NA1_5469137202 in 0.06s
+[DEBUG] Processed NA1_5469094927 in 0.06s
+[DEBUG] Processed NA1_5469065424 in 0.06s
+[DEBUG] Processed NA1_5468413614 in 0.06s
+[DEBUG] Processed NA1_5468354309 in 0.05s
+[DEBUG] Processed NA1_5468310401 in 0.06s
+[DEBUG] Processed NA1_5468255915 in 0.06s
+[DEBUG] Processed NA1_5468166552 in 0.08s
+[DEBUG] Processed NA1_5468129316 in 0.06s
+[DEBUG] Processed NA1_5468009145 in 0.13s
+[DEBUG] Processed NA1_5467971837 in 0.06s
+[DEBUG] Processed NA1_5467922452 in 0.05s
+[DEBUG] Processed NA1_5467904056 in 0.05s
+[DEBUG] Processed NA1_5467890131 in 0.06s
+[DEBUG] Processed NA1_5467583491 in 0.05s
+[DEBUG] Processed NA1_5467546584 in 0.06s
+[DEBUG] Processed NA1_5467510185 in 0.05s
+[DEBUG] Processed NA1_5467472475 in 0.06s
+[DEBUG] Processed NA1_5467435075 in 0.06s
+[DEBUG] Processed NA1_5467412894 in 0.04s
+[DEBUG] Processed NA1_5467387093 in 0.05s
+[DEBUG] Processed NA1_5467097500 in 0.06s
+[DEBUG] Processed NA1_5467066894 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769287963.943678
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.05s
+[DEBUG] Processed NA1_5472895375 in 0.06s
+[DEBUG] Processed NA1_5472852547 in 0.05s
+[DEBUG] Processed NA1_5472803939 in 0.06s
+[DEBUG] Processed NA1_5472775485 in 0.05s
+[DEBUG] Processed NA1_5472726145 in 0.06s
+[DEBUG] Processed NA1_5472688649 in 0.05s
+[DEBUG] Processed NA1_5472669736 in 0.04s
+[DEBUG] Processed NA1_5472624433 in 0.06s
+[DEBUG] Processed NA1_5471888096 in 0.05s
+[DEBUG] Processed NA1_5471848076 in 0.07s
+[DEBUG] Processed NA1_5471808080 in 0.06s
+[DEBUG] Processed NA1_5471780950 in 0.05s
+[DEBUG] Processed NA1_5471105029 in 0.06s
+[DEBUG] Processed NA1_5470897353 in 0.06s
+[DEBUG] Processed NA1_5470855249 in 0.07s
+[DEBUG] Processed NA1_5470783123 in 0.05s
+[DEBUG] Processed NA1_5470215030 in 0.05s
+[DEBUG] Processed NA1_5470163278 in 0.05s
+[DEBUG] Processed NA1_5470110908 in 0.06s
+[DEBUG] Processed NA1_5470050107 in 0.06s
+[DEBUG] Processed NA1_5470004233 in 0.07s
+[DEBUG] Processed NA1_5469358260 in 0.05s
+[DEBUG] Processed NA1_5469308220 in 0.06s
+[DEBUG] Processed NA1_5469251531 in 0.05s
+[DEBUG] Processed NA1_5469218363 in 0.05s
+[DEBUG] Processed NA1_5469181878 in 0.06s
+[DEBUG] Processed NA1_5469137202 in 0.05s
+[DEBUG] Processed NA1_5469094927 in 0.06s
+[DEBUG] Processed NA1_5469065424 in 0.06s
+[DEBUG] Processed NA1_5468413614 in 0.05s
+[DEBUG] Processed NA1_5468354309 in 0.05s
+[DEBUG] Processed NA1_5468310401 in 0.05s
+[DEBUG] Processed NA1_5468255915 in 0.06s
+[DEBUG] Processed NA1_5468166552 in 0.06s
+[DEBUG] Processed NA1_5468129316 in 0.06s
+[DEBUG] Processed NA1_5468009145 in 0.07s
+[DEBUG] Processed NA1_5467971837 in 0.06s
+[DEBUG] Processed NA1_5467922452 in 0.05s
+[DEBUG] Processed NA1_5467904056 in 0.06s
+[DEBUG] Processed NA1_5467890131 in 0.04s
+[DEBUG] Processed NA1_5467583491 in 0.06s
+[DEBUG] Processed NA1_5467546584 in 0.06s
+[DEBUG] Processed NA1_5467510185 in 0.09s
+[DEBUG] Processed NA1_5467472475 in 0.09s
+[DEBUG] Processed NA1_5467435075 in 0.07s
+[DEBUG] Processed NA1_5467412894 in 0.06s
+[DEBUG] Processed NA1_5467387093 in 0.05s
+[DEBUG] Processed NA1_5467097500 in 0.07s
+[DEBUG] Processed NA1_5467066894 in 0.07s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+
+[DEBUG] /api/analyze/ POST received at 1769287988.5455785
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.05s
+[DEBUG] Processed NA1_5472895375 in 0.06s
+[DEBUG] Processed NA1_5472852547 in 0.04s
+[DEBUG] Processed NA1_5472803939 in 0.06s
+[DEBUG] Processed NA1_5472775485 in 0.05s
+[DEBUG] Processed NA1_5472726145 in 0.06s
+[DEBUG] Processed NA1_5472688649 in 0.05s
+[DEBUG] Processed NA1_5472669736 in 0.04s
+[DEBUG] Processed NA1_5472624433 in 0.05s
+[DEBUG] Processed NA1_5471888096 in 0.06s
+[DEBUG] Processed NA1_5471848076 in 0.06s
+[DEBUG] Processed NA1_5471808080 in 0.05s
+[DEBUG] Processed NA1_5471780950 in 0.06s
+[DEBUG] Processed NA1_5471105029 in 0.07s
+[DEBUG] Processed NA1_5470897353 in 0.05s
+[DEBUG] Processed NA1_5470855249 in 0.06s
+[DEBUG] Processed NA1_5470783123 in 0.05s
+[DEBUG] Processed NA1_5470215030 in 0.05s
+[DEBUG] Processed NA1_5470163278 in 0.05s
+[DEBUG] Processed NA1_5470110908 in 0.06s
+[DEBUG] Processed NA1_5470050107 in 0.05s
+[DEBUG] Processed NA1_5470004233 in 0.06s
+[DEBUG] Processed NA1_5469358260 in 0.06s
+[DEBUG] Processed NA1_5469308220 in 0.06s
+[DEBUG] Processed NA1_5469251531 in 0.06s
+[DEBUG] Processed NA1_5469218363 in 0.06s
+[DEBUG] Processed NA1_5469181878 in 0.06s
+[DEBUG] Processed NA1_5469137202 in 0.05s
+[DEBUG] Processed NA1_5469094927 in 0.05s
+[DEBUG] Processed NA1_5469065424 in 0.05s
+[DEBUG] Processed NA1_5468413614 in 0.05s
+[DEBUG] Processed NA1_5468354309 in 0.04s
+[DEBUG] Processed NA1_5468310401 in 0.06s
+[DEBUG] Processed NA1_5468255915 in 0.06s
+[DEBUG] Processed NA1_5468166552 in 0.07s
+[DEBUG] Processed NA1_5468129316 in 0.05s
+[DEBUG] Processed NA1_5468009145 in 0.06s
+[DEBUG] Processed NA1_5467971837 in 0.05s
+[DEBUG] Processed NA1_5467922452 in 0.06s
+[DEBUG] Processed NA1_5467904056 in 0.05s
+[DEBUG] Processed NA1_5467890131 in 0.04s
+[DEBUG] Processed NA1_5467583491 in 0.05s
+[DEBUG] Processed NA1_5467546584 in 0.05s
+[DEBUG] Processed NA1_5467510185 in 0.05s
+[DEBUG] Processed NA1_5467472475 in 0.05s
+[DEBUG] Processed NA1_5467435075 in 0.06s
+[DEBUG] Processed NA1_5467412894 in 0.05s
+[DEBUG] Processed NA1_5467387093 in 0.05s
+[DEBUG] Processed NA1_5467097500 in 0.15s
+[DEBUG] Processed NA1_5467066894 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769288017.961956
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.05s
+[DEBUG] Processed NA1_5472895375 in 0.06s
+[DEBUG] Processed NA1_5472852547 in 0.05s
+[DEBUG] Processed NA1_5472803939 in 0.06s
+[DEBUG] Processed NA1_5472775485 in 0.04s
+[DEBUG] Processed NA1_5472726145 in 0.06s
+[DEBUG] Processed NA1_5472688649 in 0.06s
+[DEBUG] Processed NA1_5472669736 in 0.05s
+[DEBUG] Processed NA1_5472624433 in 0.06s
+[DEBUG] Processed NA1_5471888096 in 0.06s
+[DEBUG] Processed NA1_5471848076 in 0.06s
+[DEBUG] Processed NA1_5471808080 in 0.06s
+[DEBUG] Processed NA1_5471780950 in 0.05s
+[DEBUG] Processed NA1_5471105029 in 0.07s
+[DEBUG] Processed NA1_5470897353 in 0.05s
+[DEBUG] Processed NA1_5470855249 in 0.06s
+[DEBUG] Processed NA1_5470783123 in 0.06s
+[DEBUG] Processed NA1_5470215030 in 0.05s
+[DEBUG] Processed NA1_5470163278 in 0.06s
+[DEBUG] Processed NA1_5470110908 in 0.06s
+[DEBUG] Processed NA1_5470050107 in 0.06s
+[DEBUG] Processed NA1_5470004233 in 0.06s
+[DEBUG] Processed NA1_5469358260 in 0.06s
+[DEBUG] Processed NA1_5469308220 in 0.06s
+[DEBUG] Processed NA1_5469251531 in 0.06s
+[DEBUG] Processed NA1_5469218363 in 0.06s
+[DEBUG] Processed NA1_5469181878 in 0.05s
+[DEBUG] Processed NA1_5469137202 in 0.06s
+[DEBUG] Processed NA1_5469094927 in 0.05s
+[DEBUG] Processed NA1_5469065424 in 0.05s
+[DEBUG] Processed NA1_5468413614 in 0.06s
+[DEBUG] Processed NA1_5468354309 in 0.04s
+[DEBUG] Processed NA1_5468310401 in 0.06s
+[DEBUG] Processed NA1_5468255915 in 0.05s
+[DEBUG] Processed NA1_5468166552 in 0.05s
+[DEBUG] Processed NA1_5468129316 in 0.05s
+[DEBUG] Processed NA1_5468009145 in 0.06s
+[DEBUG] Processed NA1_5467971837 in 0.07s
+[DEBUG] Processed NA1_5467922452 in 0.08s
+[DEBUG] Processed NA1_5467904056 in 0.07s
+[DEBUG] Processed NA1_5467890131 in 0.04s
+[DEBUG] Processed NA1_5467583491 in 0.06s
+[DEBUG] Processed NA1_5467546584 in 0.06s
+[DEBUG] Processed NA1_5467510185 in 0.06s
+[DEBUG] Processed NA1_5467472475 in 0.07s
+[DEBUG] Processed NA1_5467435075 in 0.06s
+[DEBUG] Processed NA1_5467412894 in 0.06s
+[DEBUG] Processed NA1_5467387093 in 0.05s
+[DEBUG] Processed NA1_5467097500 in 0.08s
+[DEBUG] Processed NA1_5467066894 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769288057.8430846
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.06s
+[DEBUG] Processed NA1_5472895375 in 0.06s
+[DEBUG] Processed NA1_5472852547 in 0.05s
+[DEBUG] Processed NA1_5472803939 in 0.08s
+[DEBUG] Processed NA1_5472775485 in 0.06s
+[DEBUG] Processed NA1_5472726145 in 0.07s
+[DEBUG] Processed NA1_5472688649 in 0.06s
+[DEBUG] Processed NA1_5472669736 in 0.05s
+[DEBUG] Processed NA1_5472624433 in 0.06s
+[DEBUG] Processed NA1_5471888096 in 0.06s
+[DEBUG] Processed NA1_5471848076 in 0.06s
+[DEBUG] Processed NA1_5471808080 in 0.07s
+[DEBUG] Processed NA1_5471780950 in 0.07s
+[DEBUG] Processed NA1_5471105029 in 0.07s
+[DEBUG] Processed NA1_5470897353 in 0.06s
+[DEBUG] Processed NA1_5470855249 in 0.07s
+[DEBUG] Processed NA1_5470783123 in 0.06s
+[DEBUG] Processed NA1_5470215030 in 0.11s
+[DEBUG] Processed NA1_5470163278 in 0.05s
+[DEBUG] Processed NA1_5470110908 in 0.06s
+[DEBUG] Processed NA1_5470050107 in 0.06s
+[DEBUG] Processed NA1_5470004233 in 0.06s
+[DEBUG] Processed NA1_5469358260 in 0.05s
+[DEBUG] Processed NA1_5469308220 in 0.07s
+[DEBUG] Processed NA1_5469251531 in 0.06s
+[DEBUG] Processed NA1_5469218363 in 0.05s
+[DEBUG] Processed NA1_5469181878 in 0.05s
+[DEBUG] Processed NA1_5469137202 in 0.05s
+[DEBUG] Processed NA1_5469094927 in 0.05s
+[DEBUG] Processed NA1_5469065424 in 0.05s
+[DEBUG] Processed NA1_5468413614 in 0.06s
+[DEBUG] Processed NA1_5468354309 in 0.05s
+[DEBUG] Processed NA1_5468310401 in 0.08s
+[DEBUG] Processed NA1_5468255915 in 0.06s
+[DEBUG] Processed NA1_5468166552 in 0.06s
+[DEBUG] Processed NA1_5468129316 in 0.06s
+[DEBUG] Processed NA1_5468009145 in 0.07s
+[DEBUG] Processed NA1_5467971837 in 0.05s
+[DEBUG] Processed NA1_5467922452 in 0.05s
+[DEBUG] Processed NA1_5467904056 in 0.05s
+[DEBUG] Processed NA1_5467890131 in 0.04s
+[DEBUG] Processed NA1_5467583491 in 0.05s
+[DEBUG] Processed NA1_5467546584 in 0.05s
+[DEBUG] Processed NA1_5467510185 in 0.05s
+[DEBUG] Processed NA1_5467472475 in 0.06s
+[DEBUG] Processed NA1_5467435075 in 0.06s
+[DEBUG] Processed NA1_5467412894 in 0.05s
+[DEBUG] Processed NA1_5467387093 in 0.04s
+[DEBUG] Processed NA1_5467097500 in 0.06s
+[DEBUG] Processed NA1_5467066894 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769288088.5808141
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.06s
+[DEBUG] Processed NA1_5472895375 in 0.09s
+[DEBUG] Processed NA1_5472852547 in 0.08s
+[DEBUG] Processed NA1_5472803939 in 0.06s
+[DEBUG] Processed NA1_5472775485 in 0.07s
+[DEBUG] Processed NA1_5472726145 in 0.06s
+[DEBUG] Processed NA1_5472688649 in 0.05s
+[DEBUG] Processed NA1_5472669736 in 0.05s
+[DEBUG] Processed NA1_5472624433 in 0.06s
+[DEBUG] Processed NA1_5471888096 in 0.07s
+[DEBUG] Processed NA1_5471848076 in 0.06s
+[DEBUG] Processed NA1_5471808080 in 0.06s
+[DEBUG] Processed NA1_5471780950 in 0.07s
+[DEBUG] Processed NA1_5471105029 in 0.07s
+[DEBUG] Processed NA1_5470897353 in 0.05s
+[DEBUG] Processed NA1_5470855249 in 0.06s
+[DEBUG] Processed NA1_5470783123 in 0.05s
+[DEBUG] Processed NA1_5470215030 in 0.05s
+[DEBUG] Processed NA1_5470163278 in 0.06s
+[DEBUG] Processed NA1_5470110908 in 0.06s
+[DEBUG] Processed NA1_5470050107 in 0.06s
+[DEBUG] Processed NA1_5470004233 in 0.06s
+[DEBUG] Processed NA1_5469358260 in 0.06s
+[DEBUG] Processed NA1_5469308220 in 0.06s
+[DEBUG] Processed NA1_5469251531 in 0.05s
+[DEBUG] Processed NA1_5469218363 in 0.05s
+[DEBUG] Processed NA1_5469181878 in 0.06s
+[DEBUG] Processed NA1_5469137202 in 0.05s
+[DEBUG] Processed NA1_5469094927 in 0.05s
+[DEBUG] Processed NA1_5469065424 in 0.05s
+[DEBUG] Processed NA1_5468413614 in 0.05s
+[DEBUG] Processed NA1_5468354309 in 0.04s
+[DEBUG] Processed NA1_5468310401 in 0.06s
+[DEBUG] Processed NA1_5468255915 in 0.07s
+[DEBUG] Processed NA1_5468166552 in 0.06s
+[DEBUG] Processed NA1_5468129316 in 0.05s
+[DEBUG] Processed NA1_5468009145 in 0.06s
+[DEBUG] Processed NA1_5467971837 in 0.06s
+[DEBUG] Processed NA1_5467922452 in 0.07s
+[DEBUG] Processed NA1_5467904056 in 0.05s
+[DEBUG] Processed NA1_5467890131 in 0.05s
+[DEBUG] Processed NA1_5467583491 in 0.06s
+[DEBUG] Processed NA1_5467546584 in 0.13s
+[DEBUG] Processed NA1_5467510185 in 0.05s
+[DEBUG] Processed NA1_5467472475 in 0.05s
+[DEBUG] Processed NA1_5467435075 in 0.05s
+[DEBUG] Processed NA1_5467412894 in 0.04s
+[DEBUG] Processed NA1_5467387093 in 0.04s
+[DEBUG] Processed NA1_5467097500 in 0.06s
+[DEBUG] Processed NA1_5467066894 in 0.07s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+
+[DEBUG] /api/analyze/ POST received at 1769288102.1158617
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.05s
+[DEBUG] Processed NA1_5472895375 in 0.07s
+[DEBUG] Processed NA1_5472852547 in 0.05s
+[DEBUG] Processed NA1_5472803939 in 0.06s
+[DEBUG] Processed NA1_5472775485 in 0.05s
+[DEBUG] Processed NA1_5472726145 in 0.06s
+[DEBUG] Processed NA1_5472688649 in 0.05s
+[DEBUG] Processed NA1_5472669736 in 0.05s
+[DEBUG] Processed NA1_5472624433 in 0.06s
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Processed NA1_5471888096 in 0.14s
+[DEBUG] Pipeline Step: Calling AI...
+[DEBUG] Processed NA1_5471848076 in 0.32s
+[DEBUG] Processed NA1_5471808080 in 0.09s
+[DEBUG] Processed NA1_5471780950 in 0.06s
+[DEBUG] Processed NA1_5471105029 in 0.06s
+[DEBUG] Processed NA1_5470897353 in 0.05s
+[DEBUG] Processed NA1_5470855249 in 0.08s
+[DEBUG] Processed NA1_5470783123 in 0.05s
+[DEBUG] Processed NA1_5470215030 in 0.06s
+[DEBUG] Processed NA1_5470163278 in 0.05s
+[DEBUG] Processed NA1_5470110908 in 0.07s
+[DEBUG] Processed NA1_5470050107 in 0.06s
+[DEBUG] Processed NA1_5470004233 in 0.06s
+[DEBUG] Processed NA1_5469358260 in 0.06s
+[DEBUG] Processed NA1_5469308220 in 0.06s
+[DEBUG] Processed NA1_5469251531 in 0.06s
+[DEBUG] Processed NA1_5469218363 in 0.06s
+[DEBUG] Processed NA1_5469181878 in 0.05s
+[DEBUG] Processed NA1_5469137202 in 0.06s
+[DEBUG] Processed NA1_5469094927 in 0.07s
+[DEBUG] Processed NA1_5469065424 in 0.17s
+[DEBUG] Processed NA1_5468413614 in 0.05s
+[DEBUG] Processed NA1_5468354309 in 0.05s
+[DEBUG] Processed NA1_5468310401 in 0.06s
+[DEBUG] Processed NA1_5468255915 in 0.07s
+[DEBUG] Processed NA1_5468166552 in 0.14s
+[DEBUG] Processed NA1_5468129316 in 0.12s
+[DEBUG] Processed NA1_5468009145 in 0.08s
+[DEBUG] Processed NA1_5467971837 in 0.07s
+[DEBUG] Processed NA1_5467922452 in 0.07s
+[DEBUG] Processed NA1_5467904056 in 0.44s
+[DEBUG] Processed NA1_5467890131 in 0.09s
+[DEBUG] Processed NA1_5467583491 in 0.08s
+[DEBUG] Processed NA1_5467546584 in 0.08s
+[DEBUG] Processed NA1_5467510185 in 0.07s
+[DEBUG] Processed NA1_5467472475 in 0.07s
+[DEBUG] Processed NA1_5467435075 in 0.08s
+[DEBUG] Processed NA1_5467412894 in 0.07s
+[DEBUG] Processed NA1_5467387093 in 0.07s
+[DEBUG] Processed NA1_5467097500 in 0.08s
+[DEBUG] Processed NA1_5467066894 in 0.09s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769288134.2418704
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun #0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.04s
+[DEBUG] Processed NA1_5472895375 in 0.07s
+[DEBUG] Processed NA1_5472852547 in 0.04s
+[DEBUG] Processed NA1_5472803939 in 0.05s
+[DEBUG] Processed NA1_5472775485 in 0.05s
+[DEBUG] Processed NA1_5472726145 in 0.05s
+[DEBUG] Processed NA1_5472688649 in 0.05s
+[DEBUG] Processed NA1_5472669736 in 0.04s
+[DEBUG] Processed NA1_5472624433 in 0.05s
+[DEBUG] Processed NA1_5471888096 in 0.07s
+[DEBUG] Processed NA1_5471848076 in 0.04s
+[DEBUG] Processed NA1_5471808080 in 0.05s
+[DEBUG] Processed NA1_5471780950 in 0.04s
+[DEBUG] Processed NA1_5471105029 in 0.05s
+[DEBUG] Processed NA1_5470897353 in 0.04s
+[DEBUG] Processed NA1_5470855249 in 0.05s
+[DEBUG] Processed NA1_5470783123 in 0.04s
+[DEBUG] Processed NA1_5470215030 in 0.04s
+[DEBUG] Processed NA1_5470163278 in 0.04s
+[DEBUG] Processed NA1_5470110908 in 0.04s
+[DEBUG] Processed NA1_5470050107 in 0.04s
+[DEBUG] Processed NA1_5470004233 in 0.05s
+[DEBUG] Processed NA1_5469358260 in 0.04s
+[DEBUG] Processed NA1_5469308220 in 0.04s
+[DEBUG] Processed NA1_5469251531 in 0.04s
+[DEBUG] Processed NA1_5469218363 in 0.04s
+[DEBUG] Processed NA1_5469181878 in 0.04s
+[DEBUG] Processed NA1_5469137202 in 0.04s
+[DEBUG] Processed NA1_5469094927 in 0.05s
+[DEBUG] Processed NA1_5469065424 in 0.04s
+[DEBUG] Processed NA1_5468413614 in 0.04s
+[DEBUG] Processed NA1_5468354309 in 0.04s
+[DEBUG] Processed NA1_5468310401 in 0.04s
+[DEBUG] Processed NA1_5468255915 in 0.04s
+[DEBUG] Processed NA1_5468166552 in 0.04s
+[DEBUG] Processed NA1_5468129316 in 0.04s
+[DEBUG] Processed NA1_5468009145 in 0.05s
+[DEBUG] Processed NA1_5467971837 in 0.04s
+[DEBUG] Processed NA1_5467922452 in 0.04s
+[DEBUG] Processed NA1_5467904056 in 0.05s
+[DEBUG] Processed NA1_5467890131 in 0.04s
+[DEBUG] Processed NA1_5467583491 in 0.05s
+[DEBUG] Processed NA1_5467546584 in 0.05s
+[DEBUG] Processed NA1_5467510185 in 0.04s
+[DEBUG] Processed NA1_5467472475 in 0.05s
+[DEBUG] Processed NA1_5467435075 in 0.06s
+[DEBUG] Processed NA1_5467412894 in 0.05s
+[DEBUG] Processed NA1_5467387093 in 0.06s
+[DEBUG] Processed NA1_5467097500 in 0.12s
+[DEBUG] Processed NA1_5467066894 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 259 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769288326.1680272
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+
+[DEBUG] /api/analyze/ POST received at 1769288549.1517065
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+
+[DEBUG] /api/analyze/ POST received at 1769288554.4927244
+[DEBUG] Raw Body: {"riot_id":"im having fun #0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun #0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+
+[DEBUG] /api/analyze/ POST received at 1769288900.5534194
+[DEBUG] Raw Body: {"riot_id":"bingbong#nabab","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":null}
+[DEBUG-V2] Params: riot_id=bingbong#nabab, count=50, ai=False, refresh=True, puuid=None
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for bingbong#nabab (AI=False, Region=NA)
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/bingbong/nabab (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472755747 in 0.13s
+[DEBUG] Processed NA1_5472708336 in 0.07s
+[DEBUG] Processed NA1_5472360466 in 0.06s
+[DEBUG] Processed NA1_5471852274 in 0.06s
+[DEBUG] Processed NA1_5471014784 in 0.05s
+[DEBUG] Processed NA1_5470955614 in 0.05s
+[DEBUG] Processed NA1_5470595457 in 0.05s
+[DEBUG] Processed NA1_5468925037 in 0.05s
+[DEBUG] Processed NA1_5468899830 in 0.06s
+[DEBUG] Processed NA1_5468890508 in 0.04s
+[DEBUG] Processed NA1_5468246038 in 0.08s
+[DEBUG] Processed NA1_5468184692 in 0.06s
+[DEBUG] Processed NA1_5468166908 in 0.05s
+[DEBUG] Processed NA1_5468129516 in 0.06s
+[DEBUG] Processed NA1_5467864909 in 0.05s
+[DEBUG] Processed NA1_5467845725 in 0.05s
+[DEBUG] Processed NA1_5467831938 in 0.06s
+[DEBUG] Processed NA1_5467824012 in 0.06s
+[DEBUG] Processed NA1_5467815881 in 0.06s
+[DEBUG] Processed NA1_5467233504 in 0.32s
+
+[DEBUG] /api/analyze/ POST received at 1769288911.669766
+[DEBUG] Raw Body: {"riot_id":"im having fun","match_count":20,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun, count=20, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DEBUG] Processed NA1_5467097500 in 0.06s
+[DEBUG] Processed NA1_5467066894 in 0.08s
+[DEBUG] Processed NA1_5467029403 in 0.06s
+[DEBUG] Processed NA1_5466996860 in 0.07s
+[DEBUG] Processed NA1_5466974441 in 0.07s
+[DEBUG] Processed NA1_5466953592 in 0.11s
+[DEBUG] Processed NA1_5466932632 in 0.06s
+[DEBUG] Processed NA1_5466839605 in 0.07s
+[DEBUG] Processed NA1_5466835921 in 0.07s
+[DEBUG] Processed NA1_5466193070 in 0.06s
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[DEBUG] Processed NA1_5440971601 in 0.13s
+[REQ] Status: 200
+A1_5440587655 in 0.09s
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DEBUG] Processed NA1_5440548755 in 0.11s
+[DEBUG] Processed NA1_5440501117 in 0.14s
+[DEBUG] Processed NA1_5439016293 in 0.08s
+[DEBUG] Processed NA1_5438723114 in 0.10s
+[DEBUG] Processed NA1_5438691546 in 0.13s
+[DEBUG] Processed NA1_5438671646 in 0.11s
+[DEBUG] Processed NA1_5438532073 in 0.06s
+[REQ] Status: 200
+A1_5438514700 in 0.08s
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 20, 'queue': 420}
+[DEBUG] Processed NA1_5437905271 in 1.23s
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 20
+[DEBUG] Processed NA1_5437862952 in 0.23s
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Processed NA1_5437829240 in 0.11s
+[DEBUG] Processed NA1_5437805044 in 0.09s
+[DEBUG] Processed NA1_5437761732 in 0.13s
+[DEBUG] Processed NA1_5437613355 in 0.12s
+[DEBUG] Processed NA1_5437591225 in 1.08s
+[DEBUG] Processed NA1_5437259551 in 0.20s
+[DEBUG] Processed NA1_5436964749 in 0.12s
+[DEBUG] Processed NA1_5436928379 in 0.13s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Start Processing 20 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.06s
+[DEBUG] Processed NA1_5472895375 in 0.07s
+[DEBUG] Processed NA1_5472852547 in 0.05s
+[DEBUG] Processed NA1_5472803939 in 0.06s
+[DEBUG] Processed NA1_5472775485 in 0.05s
+[DEBUG] Processed NA1_5472726145 in 0.07s
+[DEBUG] Processed NA1_5472688649 in 0.06s
+[DEBUG] Processed NA1_5472669736 in 0.05s
+[DEBUG] Processed NA1_5472624433 in 0.06s
+[DEBUG] Building detailed_matches...
+[DEBUG] Processed NA1_5471888096 in 0.07s
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w (Attempt 1) Params: None
+[DEBUG] Processed NA1_5471848076 in 0.06s
+[DEBUG] Processed NA1_5471808080 in 0.06s
+[DEBUG] Processed NA1_5471780950 in 0.06s
+[REQ] Status: 200
+[DEBUG] Processed NA1_5471105029 in 0.06s
+[DEBUG] Processed NA1_5470897353 in 0.09s
+[DEBUG] Processed NA1_5470855249 in 0.10s
+[DEBUG] Processed NA1_5470783123 in 0.06s
+[DEBUG] Processed NA1_5470215030 in 0.06s
+[DEBUG] Processed NA1_5470163278 in 0.05s
+[DEBUG] Processed NA1_5470110908 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+
+[DEBUG] /api/analyze/ POST received at 1769288919.380252
+[DEBUG] Raw Body: {"riot_id":"im having fun#0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":false,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun#0001, count=50, ai=False, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun#0001 (AI=False, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DB] Attempting to save analysis for bingbong#nabab...
+[DB] Attempting to save analysis for im having fun#0001...
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DB] Found 1 candidates for bingbong_nabab
+[DB] Found 1 candidates for im having fun_0001
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.10s
+[DEBUG] Processed NA1_5472895375 in 0.10s
+[DEBUG] Processed NA1_5472852547 in 0.09s
+[DEBUG] Processed NA1_5472803939 in 0.10s
+[DEBUG] Processed NA1_5472775485 in 0.10s
+[DEBUG] Processed NA1_5472726145 in 0.11s
+[DEBUG] Processed NA1_5472688649 in 0.09s
+[DEBUG] Processed NA1_5472669736 in 0.09s
+[DEBUG] Processed NA1_5472624433 in 0.10s
+[DEBUG] Processed NA1_5471888096 in 0.10s
+[DEBUG] Processed NA1_5471848076 in 0.10s
+[DEBUG] Processed NA1_5471808080 in 0.10s
+[DEBUG] Processed NA1_5471780950 in 0.10s
+[DEBUG] Processed NA1_5471105029 in 0.10s
+[DEBUG] Processed NA1_5470897353 in 0.11s
+[DEBUG] Processed NA1_5470855249 in 0.11s
+[DEBUG] Processed NA1_5470783123 in 0.11s
+[DEBUG] Processed NA1_5470215030 in 0.11s
+[DEBUG] Processed NA1_5470163278 in 0.08s
+[DEBUG] Processed NA1_5470110908 in 0.06s
+[DEBUG] Processed NA1_5470050107 in 0.11s
+[DEBUG] Processed NA1_5470004233 in 0.08s
+[DEBUG] Processed NA1_5469358260 in 0.06s
+[DEBUG] Processed NA1_5469308220 in 0.07s
+[DEBUG] Processed NA1_5469251531 in 0.07s
+[DEBUG] Processed NA1_5469218363 in 0.07s
+[DEBUG] Processed NA1_5469181878 in 0.06s
+[DEBUG] Processed NA1_5469137202 in 0.08s
+[DEBUG] Processed NA1_5469094927 in 0.06s
+[DEBUG] Processed NA1_5469065424 in 0.06s
+[DEBUG] Processed NA1_5468413614 in 0.06s
+[DEBUG] Processed NA1_5468354309 in 0.06s
+[DEBUG] Processed NA1_5468310401 in 0.06s
+[DEBUG] Processed NA1_5468255915 in 0.07s
+[DEBUG] Processed NA1_5468166552 in 0.07s
+[DEBUG] Processed NA1_5468129316 in 0.06s
+[DEBUG] Processed NA1_5468009145 in 0.07s
+[DEBUG] Processed NA1_5467971837 in 0.05s
+[DB] Saved analysis for bingbong#nabab successfully.
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[DEBUG] Processed NA1_5467922452 in 0.15s
+[DB] Saved analysis for im having fun#0001 successfully.
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[DEBUG] Processed NA1_5467904056 in 0.61s
+[DB] Attempting to save analysis for bingbong#nabab...
+[DB] Attempting to save analysis for im having fun#0001...
+[DEBUG] Processed NA1_5467890131 in 0.11s
+[DEBUG] Processed NA1_5467583491 in 0.05s
+[DEBUG] Processed NA1_5467546584 in 0.04s
+[DEBUG] Processed NA1_5467510185 in 0.04s
+[DEBUG] Processed NA1_5467472475 in 0.05s
+[DEBUG] Processed NA1_5467435075 in 0.05s
+[DEBUG] Processed NA1_5467412894 in 0.04s
+[DEBUG] Processed NA1_5467387093 in 0.05s
+[DEBUG] Processed NA1_5467097500 in 0.05s
+[DEBUG] Processed NA1_5467066894 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DB] Found 1 candidates for im having fun_0001
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DB] Found 1 candidates for bingbong_nabab
+[DB] Attempting to save analysis for im having fun#0001...
+[DB] Found 1 candidates for im having fun_0001
+[DB] Saved analysis for im having fun#0001 successfully.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 253 bytes
+[DEBUG] Sending Response object now.
+
+[DEBUG] /api/analyze/ POST received at 1769288938.5877738
+[DEBUG] Raw Body: {"riot_id":"im having fun","match_count":20,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun, count=20, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 20, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 20
+[DEBUG] Pipeline Step: Processing Timelines...
+[DB] Saved analysis for bingbong#nabab successfully.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[DEBUG] Start Processing 20 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.09s
+[DEBUG] Processed NA1_5472895375 in 0.08s
+[DEBUG] Processed NA1_5472852547 in 0.05s
+[DEBUG] Processed NA1_5472803939 in 0.06s
+[DEBUG] Processed NA1_5472775485 in 0.05s
+[DEBUG] Processed NA1_5472726145 in 0.06s
+[DEBUG] Processed NA1_5472688649 in 0.06s
+[DEBUG] Processed NA1_5472669736 in 0.05s
+[DEBUG] Processed NA1_5472624433 in 0.06s
+[DEBUG] Processed NA1_5471888096 in 0.05s
+[DEBUG] Processed NA1_5471848076 in 0.05s
+[DEBUG] Processed NA1_5471808080 in 0.06s
+[DEBUG] Processed NA1_5471780950 in 0.06s
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[DEBUG] Processed NA1_5471105029 in 0.06s
+[DEBUG] Processed NA1_5470897353 in 0.04s
+[DEBUG] Processed NA1_5470855249 in 0.05s
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[DEBUG] Processed NA1_5470783123 in 0.05s
+[DEBUG] Processed NA1_5470215030 in 0.05s
+[DEBUG] Processed NA1_5470163278 in 0.05s
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Processed NA1_5470110908 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 400, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DB] Saved analysis for im having fun#0001 successfully.
+[DEBUG] Response JSON Size: 242 bytes
+[DEBUG] Sending Response object now.
+[DEBUG] Building detailed_matches...
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+
+[DEBUG] /api/analyze/ POST received at 1769288946.0379417
+[DEBUG] Raw Body: {"riot_id":"bingbong#nabab","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":null}
+[DEBUG-V2] Params: riot_id=bingbong#nabab, count=50, ai=True, refresh=True, puuid=None
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for bingbong#nabab (AI=True, Region=NA)
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DB] Attempting to save analysis for im having fun#0001...
+[DEBUG] DB Init Done. Checking existing analysis...
+[REQ] Status: 200
+[DB] Attempting to save analysis for im having fun#0001...
+[DB] Found 1 candidates for im having fun_0001
+[DB] Found 1 candidates for im having fun_0001
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/bingbong/nabab (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w (Attempt 1) Params: None
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Pipeline Step: Processing Timelines...
+[DB] Saved analysis for im having fun#0001 successfully.
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[DB] Saved analysis for im having fun#0001 successfully.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472755747 in 0.07s
+[DEBUG] Processed NA1_5472708336 in 0.06s
+[DEBUG] Processed NA1_5472360466 in 0.08s
+[DEBUG] Processed NA1_5471852274 in 0.06s
+[DEBUG] Processed NA1_5471014784 in 0.06s
+[DEBUG] Processed NA1_5470955614 in 0.08s
+[DEBUG] Save Verified: True
+[DEBUG] Processed NA1_5470595457 in 0.26s
+[DEBUG] Response JSON Size: 258 bytes
+[DEBUG] Sending Response object now.
+[DEBUG] Processed NA1_5468925037 in 0.15s
+69288960.7747824
+[DEBUG] Raw Body: {"riot_id":"im having fun#0001","match_count":50,"region":"NA","force_refresh":true,"call_ai":true,"use_timeline":true,"puuid":"T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw"}
+[DEBUG-V2] Params: riot_id=im having fun#0001, count=50, ai=True, refresh=True, puuid=T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw
+[DEBUG-V2] Starting pipeline...
+[MAIN-PY] Pipeline Start for im having fun#0001 (AI=True, Region=NA)
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DEBUG] Processed NA1_5468899830 in 0.12s
+[DEBUG] Processed NA1_5468890508 in 0.07s
+[DEBUG] Processed NA1_5468246038 in 0.10s
+[DEBUG] Processed NA1_5468184692 in 0.09s
+[DEBUG] Processed NA1_5468166908 in 0.08s
+[DEBUG] Processed NA1_5468129516 in 0.10s
+[DEBUG] Processed NA1_5467864909 in 0.08s
+[DEBUG] Processed NA1_5467845725 in 0.07s
+[DEBUG] Processed NA1_5467831938 in 0.07s
+[REQ] Status: 200
+[DEBUG] Pipeline Step: Fetching Match History...
+[DEBUG] Init Database...
+[DEBUG] DB Init Done. Checking existing analysis...
+[DEBUG] Processed NA1_5467824012 in 0.06s
+[DEBUG] Processed NA1_5467815881 in 0.06s
+[DEBUG] Processed NA1_5467233504 in 0.05s
+[DEBUG] Processed NA1_5467097500 in 0.06s
+[DEBUG] Processed NA1_5467066894 in 0.07s
+[DEBUG] Processed NA1_5467029403 in 0.07s
+[DEBUG] Processed NA1_5466996860 in 0.07s
+[DEBUG] Processed NA1_5466974441 in 0.06s
+[DEBUG] Processed NA1_5466953592 in 0.06s
+[DEBUG] Processed NA1_5466932632 in 0.06s
+[DEBUG] Processed NA1_5466839605 in 0.06s
+[DEBUG] Processed NA1_5466835921 in 0.06s
+[DEBUG] Processed NA1_5466193070 in 0.07s
+[DEBUG] Processed NA1_5440971601 in 0.15s
+[DEBUG] Processed NA1_5440587655 in 1.11s
+[DEBUG] Processed NA1_5440548755 in 0.24s
+[DEBUG] Processed NA1_5440501117 in 0.16s
+[DEBUG] Processed NA1_5439016293 in 0.10s
+[DEBUG] Existing analysis check done. Found: True
+[DEBUG] Fetching account from Riot...
+[REQ] GET https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/im%20having%20fun/0001 (Attempt 1) Params: None
+[DEBUG] Processed NA1_5438723114 in 0.33s
+[DEBUG] Processed NA1_5438691546 in 0.16s
+[REQ] Status: 200
+[DEBUG] Account fetched. Fetching Summoner...
+[REQ] GET https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DEBUG] Processed NA1_5438671646 in 0.11s
+[DEBUG] Processed NA1_5438532073 in 0.07s
+[DEBUG] Processed NA1_5438514700 in 0.09s
+[DEBUG] Processed NA1_5437905271 in 0.08s
+[DEBUG] Processed NA1_5437862952 in 0.15s
+[DEBUG] Processed NA1_5437829240 in 0.10s
+[DEBUG] Processed NA1_5437805044 in 0.09s
+[DEBUG] Processed NA1_5437761732 in 0.11s
+[REQ] Status: 200
+[REQ] GET https://na1.api.riotgames.com/lol/league/v4/entries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[DEBUG] Processed NA1_5437613355 in 0.12s
+[REQ] Status: 200
+[DEBUG] Fetching Match IDs...
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 50, 'queue': 420}
+[DEBUG] Processed NA1_5437591225 in 0.15s
+[DEBUG] Processed NA1_5437259551 in 0.11s
+[REQ] Status: 200
+[DEBUG] Match IDs fetched: 50
+[DEBUG] Processed NA1_5436964749 in 0.10s
+[DEBUG] Processed NA1_5436928379 in 0.12s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DEBUG] Pipeline Step: Processing Timelines...
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w (Attempt 1) Params: None
+[REQ] Status: 200
+[DEBUG] Start Processing 50 timelines...
+[DEBUG] Processed NA1_5472968072 in 0.06s
+[DEBUG] Processed NA1_5472895375 in 0.06s
+[DEBUG] Processed NA1_5472852547 in 0.05s
+[DEBUG] Processed NA1_5472803939 in 0.06s
+[DEBUG] Processed NA1_5472775485 in 0.06s
+[DEBUG] Processed NA1_5472726145 in 0.06s
+[DEBUG] Processed NA1_5472688649 in 0.06s
+[DEBUG] Processed NA1_5472669736 in 0.05s
+[DEBUG] Processed NA1_5472624433 in 0.06s
+[DEBUG] Processed NA1_5471888096 in 0.06s
+[DEBUG] Processed NA1_5471848076 in 0.12s
+[DB] Attempting to save analysis for bingbong#nabab...
+[DEBUG] Processed NA1_5471808080 in 0.31s
+[DEBUG] Processed NA1_5471780950 in 0.13s
+[DEBUG] Processed NA1_5471105029 in 0.09s
+[DEBUG] Processed NA1_5470897353 in 0.05s
+[DEBUG] Processed NA1_5470855249 in 0.06s
+[DEBUG] Processed NA1_5470783123 in 0.06s
+[DEBUG] Processed NA1_5470215030 in 0.05s
+[DEBUG] Processed NA1_5470163278 in 0.05s
+[DEBUG] Processed NA1_5470110908 in 0.05s
+[DEBUG] Processed NA1_5470050107 in 0.05s
+[DEBUG] Processed NA1_5470004233 in 0.06s
+[DEBUG] Processed NA1_5469358260 in 0.06s
+[DEBUG] Processed NA1_5469308220 in 0.05s
+[DEBUG] Processed NA1_5469251531 in 0.05s
+[DEBUG] Processed NA1_5469218363 in 0.05s
+[DEBUG] Processed NA1_5469181878 in 0.05s
+[DEBUG] Processed NA1_5469137202 in 0.06s
+[DEBUG] Processed NA1_5469094927 in 0.05s
+[DEBUG] Processed NA1_5469065424 in 0.05s
+[DEBUG] Processed NA1_5468413614 in 0.05s
+[DEBUG] Processed NA1_5468354309 in 0.05s
+[DEBUG] Processed NA1_5468310401 in 0.06s
+[DEBUG] Processed NA1_5468255915 in 0.06s
+[DEBUG] Processed NA1_5468166552 in 0.05s
+[DEBUG] Processed NA1_5468129316 in 0.05s
+[DEBUG] Processed NA1_5468009145 in 0.06s
+[DEBUG] Processed NA1_5467971837 in 0.05s
+[DEBUG] Processed NA1_5467922452 in 0.05s
+[DEBUG] Processed NA1_5467904056 in 0.05s
+[DEBUG] Processed NA1_5467890131 in 0.05s
+[DEBUG] Processed NA1_5467583491 in 0.04s
+[DEBUG] Processed NA1_5467546584 in 0.05s
+[DEBUG] Processed NA1_5467510185 in 0.05s
+[DEBUG] Processed NA1_5467472475 in 0.06s
+[DEBUG] Processed NA1_5467435075 in 0.05s
+[DEBUG] Processed NA1_5467412894 in 0.05s
+[DEBUG] Processed NA1_5467387093 in 0.05s
+[DEBUG] Processed NA1_5467097500 in 0.07s
+[DEBUG] Processed NA1_5467066894 in 0.06s
+[DEBUG] Starting enrich_coaching_data...
+[DEBUG] Building per_game_items...
+[DB] Found 1 candidates for bingbong_nabab
+[DEBUG] Building detailed_matches...
+[REQ] GET https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw (Attempt 1) Params: None
+[REQ] Status: 200
+[DB] Attempting to save analysis for im having fun#0001...
+[DB] Found 1 candidates for im having fun_0001
+[DB] Saved analysis for bingbong#nabab successfully.
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[DB] Saved analysis for im having fun#0001 successfully.
+[MAIN-PY] Force Refresh: Bypassing cache checks.
+[MAIN-PY] Starting AI Agent Exec...
+[DEBUG] Pipeline Step: Calling AI...
+[DB] Attempting to save analysis for im having fun#0001...
+[DB] Found 1 candidates for im having fun_0001
+[DB] Saved analysis for im having fun#0001 successfully.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 253 bytes
+[DEBUG] Sending Response object now.
+[REQ] Status: 200
+[DB] Attempting to save analysis for bingbong#nabab...
+[DB] Found 1 candidates for bingbong_nabab
+[DB] Saved analysis for bingbong#nabab successfully.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/iLKI__Gn5Q6g2j030u5UdMF200rwkH6goQfFrqzyXQEriFEQL81YgbeBRweRpw5u3tH5LGePi_Rp5w/ids (Attempt 1) Params: {'start': 400, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 242 bytes
+[DEBUG] Sending Response object now.
+[DB] Attempting to save analysis for im having fun#0001...
+[DB] Found 1 candidates for im having fun_0001
+[DB] Saved analysis for im having fun#0001 successfully.
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 0, 'count': 100, 'queue': 420}
+[DEBUG] Pipeline finished successfully
+[DEBUG] Verifying Save...
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 100, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 200, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[REQ] GET https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/T19jPR6RdvW7ce0qoZzKtBf11tn4k8NbzanSBjcxkQlES6LRzIoOzuKwizCflm4R7uShtaaekcHqEw/ids (Attempt 1) Params: {'start': 300, 'count': 100, 'queue': 420}
+[REQ] Status: 200
+[DEBUG] Save Verified: True
+[DEBUG] Response JSON Size: 258 bytes
+[DEBUG] Sending Response object now.
