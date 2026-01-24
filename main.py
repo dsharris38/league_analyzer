@@ -616,8 +616,8 @@ def run_analysis_pipeline(
 
         # 2. Process Sequentially (Batch Strategy to Save RAM)
         # Processing 50 timelines at once can consume > 512MB RAM.
-        # We process in small batches and explicitly GC.
-        BATCH_SIZE = 5
+        # We process in extremely small batches (1) for 512MB instances.
+        BATCH_SIZE = 1
         console.print(f"[bold]Processing {len(valid_tasks)} timelines in batches of {BATCH_SIZE}...[/bold]")
         
         with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Start Processing {len(valid_tasks)} timelines (Batched)...\n")
@@ -639,8 +639,8 @@ def run_analysis_pipeline(
                         l_res, mov_res = process_timeline(total_idx, mid, m_data, tl)
                         if l_res:
                             timeline_loss_diagnostics.append(l_res)
-                        if mov_res:
-                            movement_summaries.append(mov_res)
+                        # if mov_res:
+                        #     movement_summaries.append(mov_res)
                         
                         # Aggressive Cleanup: Delete timeline object immediately after use
                         del tl
@@ -654,20 +654,6 @@ def run_analysis_pipeline(
             # End of Batch: Force Garbage Collection
             import gc
             gc.collect()
-            t_start_tl = time.time()
-            try:
-                tl = db.get_timeline(mid)
-                if tl:
-                    l_res, mov_res = process_timeline(i, mid, m_data, tl)
-                    if l_res:
-                        timeline_loss_diagnostics.append(l_res)
-                    if mov_res:
-                        movement_summaries.append(mov_res)
-            except Exception as e:
-                console.print(f"[yellow]Error processing timeline {mid}: {e}[/yellow]")
-            
-            dur = time.time() - t_start_tl
-            with open("backend_debug.txt", "a") as f: f.write(f"[DEBUG] Processed {mid} in {dur:.2f}s\n")
 
     t_processing = time.time()
     console.print(f"[cyan]TIMING: Match & Timeline Processing took {t_processing - t_bulk:.2f}s[/cyan]")
@@ -677,13 +663,15 @@ def run_analysis_pipeline(
     gc.collect()
 
     # Enrich analysis with macro, comp, and itemization data
+    # Enrich analysis with macro, comp, and itemization data
     analysis = enrich_coaching_data(
         matches=matches,
         match_ids=match_ids,
         puuid=puuid,
         analysis=base_analysis,
         timeline_loss_diagnostics=timeline_loss_diagnostics,
-        movement_summaries=movement_summaries,
+        movement_summaries=[], # Empty to force lazy loading
+        db_client=db # Pass DB for lazy loading
     )
     
     # Identify review candidates and classify matches

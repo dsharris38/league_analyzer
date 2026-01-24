@@ -467,16 +467,10 @@ def enrich_coaching_data(
     puuid: str,
     analysis: Dict[str, Any],
     timeline_loss_diagnostics: List[Dict[str, Any]],
-    movement_summaries: List[Dict[str, Any]],  # currently unused but reserved for future
+    movement_summaries: List[Dict[str, Any]],  
+    db_client=None, # Optional DB connection for lazy loading (Low RAM mode)
 ) -> Dict[str, Any]:
-    """Enrich the core analysis dict with extra coaching-friendly structures.
-
-    - Adds macro_profile (from timeline_loss_diagnostics)
-    - Adds per_game_comp (from matches)
-    - Adds per_game_items + itemization_profile (from matches + Data Dragon)
-
-    Returns a *new* analysis dict (shallow copy) with extra keys.
-    """
+    """Enrich the core analysis dict with extra coaching-friendly structures."""
     with open("backend_debug.txt", "a") as f: f.write("[DEBUG] Starting enrich_coaching_data...\n")
     new_analysis = dict(analysis)
 
@@ -489,12 +483,23 @@ def enrich_coaching_data(
 
     # Merge timeline data into detailed_matches
     # movement_summaries contains the output of analyze_timeline_movement
+    # If using Low RAM mode, movement_summaries might be empty, so we fetch from DB on demand.
     timeline_map = {m["match_id"]: m for m in movement_summaries}
     
     for dm in detailed_matches:
         mid = dm["match_id"]
-        if mid in timeline_map:
-            t_data = timeline_map[mid]
+        t_data = timeline_map.get(mid)
+        
+        # LAZY LOAD from DB if missing (Low RAM Optimization)
+        if not t_data and db_client:
+            try:
+                cached = db_client.get_timeline_analysis(mid)
+                if cached:
+                    t_data = cached.get("movement")
+            except Exception:
+                pass
+        
+        if t_data:
             dm["skill_order"] = t_data.get("skill_order", [])
             dm["item_build"] = t_data.get("item_build", [])
             
