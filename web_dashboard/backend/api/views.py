@@ -213,6 +213,9 @@ class AnalysisLookupView(APIView):
         if not riot_id:
             return Response({'error': 'riot_id is required'}, status=status.HTTP_400_BAD_REQUEST)
             
+        # Decode URL-encoded chars (e.g. %20 -> space) if they leaked through
+        riot_id = unquote(riot_id)
+            
         try:
             from database import Database
             db = Database()
