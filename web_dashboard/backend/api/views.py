@@ -44,20 +44,21 @@ class AnalysisDetailView(APIView):
         
         # Parse Riot ID from virtual filename: league_analysis_Name_Tag.json
         # Format: league_analysis_{safe_id}.json where safe_id has _ instead of #
-        # But wait, original code saved as Name_TAG.json.
-        # Ideally we stored the exact Riot ID in the DB.
-        # Frontend passes "league_analysis_Name_TAG.json".
         
         try:
-
             from database import Database
             db = Database()
             
             # Use fuzzy finder for robust lookup
             # 1. Strip helper prefix/suffix if present (Frontend sends "league_analysis_X.json")
-            core_id = filename
-            if core_id.startswith("league_analysis_") and core_id.endswith(".json"):
-                 core_id = core_id[len("league_analysis_"):-5]
+            core_id = filename.strip().rstrip('/')
+            
+            # Aggressive cleaning (Replace instead of If-Block to avoid edge cases)
+            if core_id.lower().startswith("league_analysis_"):
+                core_id = core_id[16:] # len("league_analysis_")
+            
+            if core_id.lower().endswith(".json"):
+                core_id = core_id[:-5]
 
             # This handles "league_analysis_..." prefix AND raw Riot IDs
             # It normalizes spaces, tags, etc.
