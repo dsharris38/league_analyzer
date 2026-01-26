@@ -1,7 +1,15 @@
-Nexus is a full-stack advanced analytics platform for League of Legends that bridges the gap between raw match data and actionable player insights.
+# League Analyzer (Nexus)
+
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+
+**Nexus** is a full-stack advanced analytics platform for League of Legends that bridges the gap between raw match data and actionable player insights.
 
 ---
-📖 About The Project
+
+## 📖 About The Project
 
 ### The Problem
 League of Legends matches generate thousands of data points, but existing tools often present this information in a vacuum. Players are told *what* their stats were (e.g., "Drafting 7cs/min"), but rarely *why* it mattered in the context of that specific game state or team composition.
